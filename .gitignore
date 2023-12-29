@@ -1,5 +1,9 @@
+<<<<<<< HEAD
 /frontend/node_modules
 /backend/node_modules
 /frontend/.next
+=======
+/node_modules
+>>>>>>> 86fdbe849c45fb8adc95c58497c9480cb8f2568a
 .env
 ```
