@@ -33,7 +33,6 @@ interface Section {
 const CreateUser: React.FC = () => {
   const [tableNo, setTableNo] = useState<Number>(0);
   const [chairsNo, setChairsNo] = useState<Number>(0);
-  const [sections, setSections] = useState<Section[]>([]);
   const [section, setSection] = useState<string | undefined>();
   const tableStatus = true;
 
@@ -46,25 +45,19 @@ const CreateUser: React.FC = () => {
       queryClient.invalidateQueries("tables");
       setTableNo(0);
       setChairsNo(0);
+      toast({
+        title: "طاولة جديدة",
+        description: `لقد قمت بإنشاء طاولة جديدة برقم ${tableNo}`,
+      });
     },
     onError(error, status) {
       toast({
-        title: "Error",
-        duration: 5000,
+        variant: "destructive",
+        title: `الطاولة رقم ${tableNo} موجودة بالفعل`,
       });
     },
   });
 
-  const handleCreateTable = async () => {
-    try {
-      const table = await checkTable(tableNo);
-      if (table.data) {
-        return <div>table Already Exist</div>;
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     addTableMutation.mutate({ tableNo, chairsNo, tableStatus, section });
