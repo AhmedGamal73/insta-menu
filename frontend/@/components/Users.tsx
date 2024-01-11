@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link";
 
 interface User {
   name: string;
@@ -17,7 +18,9 @@ const Users: React.FC<IndexProps> = ({ users }) => {
       {users &&
         users.map((user, index) => (
           <div key={index}>
-            <h2>{user.name}</h2>
+            <Link href={`/users/${encodeURIComponent(user._id)}`}>
+              <h2>{user.name}</h2>
+            </Link>
           </div>
         ))}
     </div>

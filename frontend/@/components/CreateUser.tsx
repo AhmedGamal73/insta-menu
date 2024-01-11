@@ -1,70 +1,127 @@
-import React, { useState } from "react";
+"use client";
 
-interface CreateUserProps {
-  fetchUsers: () => void;
+import React, { useEffect, useState } from "react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { useToast } from "./ui/use-toast";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import {
+  Select,
+  SelectContent,
+  SelectTrigger,
+  SelectItem,
+  SelectValue,
+} from "@/components/ui/select";
+import { SelectGroup } from "@radix-ui/react-select";
+import { QueryClientProvider, useMutation, useQueryClient } from "react-query";
+import { addTable, checkTable } from "@/hooks/use-table";
+import useSection from "@/hooks/use-section";
+
+// Schema & Types
+const tableFormSchema = z.object({
+  tableNo: z.number().positive().int(),
+  chairsNo: z.number().positive().int(),
+  section: z.string().nonempty(),
+});
+
+interface Section {
+  _id: string;
+  name: string;
 }
 
-const CreateUser: React.FC<CreateUserProps> = ({ fetchUsers }) => {
-  const [name, setName] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
+const CreateUser: React.FC = () => {
+  const [tableNo, setTableNo] = useState<Number>(0);
+  const [chairsNo, setChairsNo] = useState<Number>(0);
+  const [sections, setSections] = useState<Section[]>([]);
+  const [section, setSection] = useState<string | undefined>();
+  const tableStatus = true;
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const { data, status } = useSection();
 
-    try {
-      const res = await fetch("http://localhost:3001/users", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ name, email, password }),
+  const addTableMutation = useMutation(addTable, {
+    onSuccess(data, variables, context) {
+      queryClient.invalidateQueries("tables");
+      setTableNo(0);
+      setChairsNo(0);
+    },
+    onError(error, status) {
+      toast({
+        title: "Error",
+        duration: 5000,
       });
+    },
+  });
 
-      if (!res.ok) {
-        const err = await res.text();
-        throw new Error(err);
+  const handleCreateTable = async () => {
+    try {
+      const table = await checkTable(tableNo);
+      if (table.data) {
+        return <div>table Already Exist</div>;
       }
-
-      fetchUsers(); // Re-fetch users after creation
     } catch (err) {
       console.log(err);
     }
-
-    // Clear input fields after submission
-    setName("");
-    setEmail("");
-    setPassword("");
   };
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    addTableMutation.mutate({ tableNo, chairsNo, tableStatus, section });
+    console.log(tableNo, chairsNo, tableStatus, section);
+  };
+
   return (
     <div>
-      <h1>Create User</h1>
-      <form onSubmit={handleSubmit}>
+      <form className="flex gap-x-2" onSubmit={handleSubmit}>
         <div>
-          <label>Name: </label>
-          <input
-            type="text"
+          <Input
+            placeholder="أدخل رقم الطاولة"
+            type="number"
             required
-            onChange={(e) => setName(e.target.value)}
+            onChange={(e) => setTableNo(+e.target.value)}
           />
         </div>
         <div>
-          <label>Email: </label>
-          <input
-            type="email"
+          <Input
+            placeholder="أدخل عدد الكراسي"
+            type="number"
             required
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => setChairsNo(+e.target.value)}
           />
         </div>
         <div>
-          <label>Password: </label>
-          <input
-            type="password"
-            required
-            onChange={(e) => setPassword(e.target.value)}
-          />
+          <Select
+            onValueChange={(e) => {
+              const newSection = data.find((section) => section._id === e);
+              if (newSection) {
+                setSection(newSection.name);
+                console.log(section);
+              }
+            }}
+          >
+            <SelectTrigger className="w-[280px]">
+              <SelectValue placeholder="اختر القسم" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                {data &&
+                  data.map((section) => {
+                    return (
+                      <SelectItem
+                        className="text-right"
+                        key={section._id}
+                        value={section._id}
+                      >
+                        {section.name}
+                      </SelectItem>
+                    );
+                  })}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
         </div>
-        <button type="submit">Create User</button>
+        <Button type="submit">أنشئ طاولة جديدة</Button>
       </form>
     </div>
   );

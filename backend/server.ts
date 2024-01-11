@@ -1,68 +1,31 @@
-import http, { Server } from 'http';
-import app from './app';
-import mongoose from 'mongoose';
-import express from 'express';
-import { MONGO_URL } from './config/database';
-import cors from 'cors';
+require("dotenv").config();
+require("./config/database").connect(); // database connection
+import http, { Server } from "http";
+import mongoose from "mongoose";
+import express from "express";
+import { MONGO_URL } from "./config/database";
+import cors from "cors";
+import usersRouter from "./api/table";
+import qrRouter from "./api/qrcode";
+import sectionRouter from "./api/section";
+
+const { API_PORT } = process.env; // Destructure the 'API_PORT' property from 'process.env' object
+const port = (process.env.API_PORT as String) || API_PORT; // Declare and assign a value to the 'port' variable
+
+const app = express();
+
+app.options("*", cors());
 
 app.use(cors());
 app.use(express.json());
+app.use("/api", usersRouter); // Use the 'usersRouter' object for all routes starting with '/api/users'
+app.use("/api", qrRouter); // Use the 'usersRouter' object for all routes starting with '/api/users'
+app.use("/api", sectionRouter); // Use the 'usersRouter' object for all routes starting with '/api/users'
 
 mongoose.connect(MONGO_URL);
 
 const server: Server = http.createServer(app);
 
-const API_PORT: string | undefined = process.env.API_PORT;
-const port: string | number = process.env.PORT || API_PORT || 3001; // default port to listen
-
-
-const User = mongoose.model('User');
-
-app.get('/user/:email', async (req, res) => {
-    try {
-        const user = await User.findOne({ email: req.params.email });
-        if (user) {
-            res.json(user);
-        } else {
-            res.status(404).send('User not found');
-        }
-    } catch (err) {
-        console.error(err);
-        res.status(500).send('Server error');
-    }
-});
-
-// fetching all users
-app.get('/users', async (req, res) => {
-    try {
-        const users = await User.find({});
-        res.json(users);
-    } catch (err) {
-        console.error(err);
-        res.status(500).send('Server error');
-    }
-});
-
-// Create new user
-app.post('/users', async (req, res) => {
-    try {
-        const newUser = await User.create(req.body);
-        res.json(newUser);
-    } catch (err) {
-        console.error(err);
-        if (err instanceof Error) {
-            const errorCode = (err as any).code
-            if (errorCode === 11000) {
-                res.status(400).send('Duplicate email');
-            } else {
-            res.status(500).send('Server error');
-            }
-            res.status(400).send('User already exists');
-    }
-}
-})
-
-
 server.listen(port, () => {
-    console.log(`Server started at http://localhost:${port}`);
+  console.log(`Server started at http://localhost:${port}`);
 });
