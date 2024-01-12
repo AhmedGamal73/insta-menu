@@ -1,9 +1,9 @@
 // Generate QR code for table
 import express, { Request, Response } from "express";
-import Table from "../model/table";
-import ConnectedDevice from "../model/connectedDevice";
+import Table from "../models/table";
+import ConnectedDevice from "../models/connectedDevice";
 import QR from "qrcode";
-import qrCode, { IQRCode } from "../model/qrCode";
+import qrCode, { IQRCode } from "../models/qrCode";
 import jwt from "jsonwebtoken";
 
 const qrRouter = express.Router();
@@ -87,7 +87,7 @@ qrRouter.post("/qr/scan", async (req: Request, res: Response) => {
       tableId: (decoded as any).tableId,
       qrCodeId: QRcode._id,
       deviceName: deviceInformation.deviceName,
-      deviceModel: deviceInformation.deviceModel,
+      devicemodels: deviceInformation.deviceModel,
       deviceOS: deviceInformation.deviceOS,
       deviceVersion: deviceInformation.deviceVersion,
     };

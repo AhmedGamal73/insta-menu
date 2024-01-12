@@ -1,8 +1,8 @@
 import express, { Request, Response } from "express";
-import Table from "../model/table";
+import Table from "../models/table";
 import jwt from "jsonwebtoken";
-import { ITable } from "../model/table";
-import Section from "../model/section";
+import { ITable } from "../models/table";
+import Section from "../models/section";
 
 // Dynamic route for table
 const tableRouter = express.Router();

@@ -91,6 +91,10 @@ export const columns: ColumnDef<Table>[] = [
     header: () => <div className="text-right">القسم الخاص بالطاولة</div>,
   },
   {
+    accessorKey: "section.name",
+    header: () => <div className="text-right">القسم الخاص بالطاولة</div>,
+  },
+  {
     id: "actions",
     header: () => <div>المزيد</div>,
     cell: ({ row }) => {

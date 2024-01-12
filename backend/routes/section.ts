@@ -1,6 +1,6 @@
 import { Router, Request, Response } from "express";
-import Section from "../model/section";
-import section from "../model/section";
+import Section from "../models/section";
+import section from "../models/section";
 
 const sectionRouter = Router();
 
