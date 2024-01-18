@@ -1,10 +1,9 @@
 import { Router, Request, Response } from "express";
 import Section from "../models/section";
-import section from "../models/section";
 
 const sectionRouter = Router();
 
-sectionRouter.post("/section", async (req: Request, res: Response) => {
+sectionRouter.post("/", async (req: Request, res: Response) => {
   try {
     const { name } = req.body;
     const finalName = name.toLowerCase();
@@ -23,7 +22,7 @@ sectionRouter.post("/section", async (req: Request, res: Response) => {
   }
 });
 
-sectionRouter.get("/section/:name", async (req, res) => {
+sectionRouter.get("/:name", async (req, res) => {
   try {
     const section = await Section.findOne({
       name: req.params.name.toLowerCase(),
@@ -38,7 +37,7 @@ sectionRouter.get("/section/:name", async (req, res) => {
   }
 });
 
-sectionRouter.get("/sections", async (req, res) => {
+sectionRouter.get("/", async (req, res) => {
   try {
     const sections = await Section.find({});
     res.json(sections);

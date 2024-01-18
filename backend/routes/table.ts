@@ -8,7 +8,7 @@ import Section from "../models/section";
 const tableRouter = express.Router();
 
 // Create new table
-tableRouter.post("/table", async (req, res) => {
+tableRouter.post("/", async (req, res) => {
   try {
     const { tableNo }: ITable = req.body;
 
@@ -97,7 +97,7 @@ tableRouter.post("/login", async (req: Request, res: Response) => {
 });
 
 // fetching a table
-tableRouter.get("/table/:tableNo", async (req, res) => {
+tableRouter.get("/:tableNo", async (req, res) => {
   try {
     const table = await Table.findOne({ tableNo: req.params.tableNo });
     if (table) {
@@ -112,7 +112,7 @@ tableRouter.get("/table/:tableNo", async (req, res) => {
 });
 
 // fetching all tables
-tableRouter.get("/tables", async (req, res) => {
+tableRouter.get("/", async (req, res) => {
   try {
     const tables = await Table.find().populate("section", "name _id");
     res.json(tables);
@@ -123,7 +123,7 @@ tableRouter.get("/tables", async (req, res) => {
 });
 
 // Delete table
-tableRouter.delete("/table/:tableNo", async (req, res) => {
+tableRouter.delete("/:tableNo", async (req, res) => {
   try {
     const table = await Table.findOneAndDelete({ tableNo: req.params.tableNo });
 
@@ -139,7 +139,7 @@ tableRouter.delete("/table/:tableNo", async (req, res) => {
 });
 
 // Update table
-tableRouter.put("/table/:tableNo", async (req: Request, res: Response) => {
+tableRouter.put("/:tableNo", async (req: Request, res: Response) => {
   try {
     // Find the section by name
     const section = await Section.findOne({ name: req.body.section });

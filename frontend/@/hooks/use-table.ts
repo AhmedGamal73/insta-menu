@@ -9,7 +9,7 @@ export type Table = {
 };
 
 const tableApi = axios.create({
-  baseURL: "http://localhost:3001/api",
+  baseURL: "http://localhost:3001",
 });
 
 // Get tables data
@@ -17,7 +17,7 @@ export const useTable = () => {
   return useQuery({
     queryKey: ["tables"],
     queryFn: async () => {
-      const { data } = await tableApi.get("/tables");
+      const { data } = await tableApi.get("/table");
       return data;
     },
   });
@@ -25,7 +25,7 @@ export const useTable = () => {
 
 // Add new table
 export const getTables = async () => {
-  return await tableApi.get("/tables");
+  return await tableApi.get("/table");
 };
 
 export const addTable = async (table: Table) => {
@@ -33,7 +33,7 @@ export const addTable = async (table: Table) => {
 };
 
 export const checkTable = async (tableNo: Number) => {
-  return await tableApi.get(`/table/${tableNo}`);
+  return await tableApi.get(`/product/${tableNo}`);
 };
 
 export default useTable;

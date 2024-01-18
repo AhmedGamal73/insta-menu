@@ -2,12 +2,12 @@ import mongoose, { Schema, Document } from "mongoose";
 
 interface ICategory extends Document {
   name: string;
-  products: string[];
+  total: number;
 }
 
 const categorySchema = new Schema({
   name: { type: String, required: true },
-  products: [{ type: Schema.Types.ObjectId, ref: "Product" }],
+  total: { type: Number, default: 0 },
 });
 
 export default mongoose.model<ICategory>("Category", categorySchema);

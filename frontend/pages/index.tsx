@@ -1,17 +1,21 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-
-interface User {
-  name: string;
-  email: string;
-  password: string;
-}
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 
 export default function App(): any {
+  const router = useRouter();
+
+  useEffect(() => {
+    if (window.innerWidth > 768) {
+      router.push("/t");
+    }
+  }, []);
+
   return (
     <div className="flex justify-center flex-col gap-12 pe-4 ps-4">
       Dashbaord
-      <Link href="/users">
+      <Link href="/menu">
         <Button variant="destructive">List of Tables</Button>
       </Link>
     </div>

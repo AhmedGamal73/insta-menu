@@ -2,6 +2,43 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: "ibm-plex";
+  src: url("/fonts/IBMPlexSansArabic-SemiBold.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "ibm-plex-bold";
+  src: url("/fonts/IBMPlexSansArabic-SemiBold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+}
+
+@layer base {
+  .font-ibm-plex {
+    font-family: "ibm-plex", sans-serif;
+  }
+
+  .font-ibm-plex-bold {
+    font-family: "ibm-plex-bold", sans-serif;
+  }
+}
+h1,
+h2,
+h3 {
+  @apply font-ibm-plex-bold;
+}
+
+p,
+span,
+li,
+div,
+a {
+  @apply font-ibm-plex;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -16,14 +53,20 @@
     --primary: 220.9 39.3% 11%;
     --primary-foreground: 210 20% 98%;
 
-    --secondary: 220 14.3% 95.9%;
-    --secondary-foreground: 220.9 39.3% 11%;
+    /* --secondary: 220 14.3% 95.9%;
+    --secondary-foreground: 220.9 39.3% 11%; */
 
     --muted: 220 14.3% 95.9%;
     --muted-foreground: 220 8.9% 46.1%;
 
     --accent: 220 14.3% 95.9%;
     --accent-foreground: 220.9 39.3% 11%;
+
+    --secondary: #cf8600;
+    --secondary-foreground: #fff;
+
+    --text: 180 0% 44%;
+    --text-foreground: 180 0% 44%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 20% 98%;
@@ -41,14 +84,10 @@
     box-sizing: border-box;
   }
 
-  a {
-    color: inherit;
-    text-decoration: none;
-  }
-
   .dark {
     --background: 224 71.4% 4.1%;
     --foreground: 210 20% 98%;
+    --base-foreground: 210 20% 98%;
 
     --card: 224 71.4% 4.1%;
     --card-foreground: 210 20% 98%;
@@ -84,4 +123,32 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+h2 {
+  @apply text-primary text-2xl;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+p {
+  font-size: 18px;
+  color: hsl(var(--text-foreground));
+}
+
+h2 {
+  font-size: 24px;
+  color: hsl(var(--primary));
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }

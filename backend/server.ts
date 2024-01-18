@@ -5,11 +5,13 @@ import mongoose from "mongoose";
 import express from "express";
 import { MONGO_URL } from "./config/database";
 import cors from "cors";
-import usersRouter from "./routes/table";
+import tableRouter from "./routes/table";
 import qrRouter from "./routes/qrcode";
 import sectionRouter from "./routes/section";
 import productRouter from "./routes/product";
 import categoryRouter from "./routes/category";
+import addon from "./models/addon";
+import addonsRouter from "./routes/addon";
 
 const { API_PORT } = process.env; // Destructure the 'API_PORT' property from 'process.env' object
 const port = (process.env.API_PORT as String) || API_PORT; // Declare and assign a value to the 'port' variable
@@ -20,11 +22,12 @@ app.options("*", cors());
 
 app.use(cors());
 app.use(express.json());
-app.use("/api", usersRouter); // Use the 'usersRouter' object for all routes starting with '/api/users'
-app.use("/api", qrRouter); // Use the 'usersRouter' object for all routes starting with '/api/users'
-app.use("/api", sectionRouter); // Use the 'usersRouter' object for all routes starting with '/api/users'
-app.use("/api", productRouter);
-app.use("/api", categoryRouter);
+app.use("/api", qrRouter);
+app.use("/section", sectionRouter);
+app.use("/table", tableRouter);
+app.use("/product", productRouter);
+app.use("/category", categoryRouter);
+app.use("/addon", addonsRouter);
 
 mongoose.connect(MONGO_URL);
 

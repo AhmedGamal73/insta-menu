@@ -5,7 +5,7 @@ import Product from "../models/product";
 const categoryRouter = express.Router();
 
 // Create a category
-categoryRouter.post("/category", async (req: Request, res: Response) => {
+categoryRouter.post("/", async (req: Request, res: Response) => {
   try {
     const { name } = req.body;
 
@@ -27,9 +27,10 @@ categoryRouter.post("/category", async (req: Request, res: Response) => {
   }
 });
 
-categoryRouter.get("/categories", async (req: Request, res: Response) => {
+// Get all categories
+categoryRouter.get("/", async (req: Request, res: Response) => {
   try {
-    const categories = await Category.find().populate("products", "name _id");
+    const categories = await Category.find();
     res.json(categories);
   } catch (err) {
     console.log(err);
@@ -37,7 +38,7 @@ categoryRouter.get("/categories", async (req: Request, res: Response) => {
 });
 
 categoryRouter.get(
-  "/categories/:categoryName/products",
+  "/:categoryName/products",
   async (req: Request, res: Response) => {
     try {
       const { categoryName } = req.params;
@@ -45,7 +46,6 @@ categoryRouter.get(
       if (!category) {
         return res.status(404).json({ message: "Category Not Found" });
       }
-      console.log(category._id);
       const products = await Product.find({ category: category._id });
       res.json(products);
     } catch (err) {
@@ -53,4 +53,26 @@ categoryRouter.get(
     }
   }
 );
+
+// Update category
+categoryRouter.put("/:categoryName", async (req: Request, res: Response) => {
+  const { categoryName } = req.params;
+  const update = req.body;
+  try {
+    const category = await Category.findOneAndUpdate(
+      { name: categoryName },
+      update,
+      {
+        new: true,
+      }
+    );
+    if (!category) {
+      return res.status(404).json({ message: "Category Not Found" });
+    }
+    category.save();
+    res.json(category);
+  } catch (err) {
+    res.status(500).json({ message: err });
+  }
+});
 export default categoryRouter;
