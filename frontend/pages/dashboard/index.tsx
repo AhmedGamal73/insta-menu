@@ -3,7 +3,7 @@ import Layout from "./layout";
 const Dashboard = () => {
   return (
     <>
-      <Layout>
+      <Layout title={""} desc={""}>
         <h1>Dashboard</h1>
       </Layout>
     </>

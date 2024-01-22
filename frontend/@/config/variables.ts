@@ -3,6 +3,7 @@ interface IRestaurantTabs {
   name: string;
   desc: string;
   component: string;
+  path: string;
 }
 interface IVariables {
   curancy: string;
@@ -20,18 +21,21 @@ const variables: IVariables = {
         name: "الطاولات",
         desc: "قسم الطاولات يمكنك من خلاله إضافة وتعديل وحدف الطاولات وتعديل الطاولات المحجزوة، وإنشاء كيو آر كود للطاولات والمزيد",
         component: "tables",
+        path: "/tables",
       },
       {
         id: 1,
         name: "الأقسام",
         desc: "نحن فخورون بتقديم تجربة طعام لا تُنسى تمتزج فيها المأكولات الشهية بالضيافة",
-        component: "/sections",
+        component: "sections",
+        path: "/sections",
       },
       {
         id: 2,
         name: "النادل",
         desc: "النادل الممتاز هو الروح الحية لتجربة تناول الطعام في أي مطعم. إليك وصف للنادل الممتاز",
-        component: "/waiter",
+        component: "waiter",
+        path: "/waiter",
       },
     ],
   },

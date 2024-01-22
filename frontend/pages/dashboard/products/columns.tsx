@@ -67,6 +67,26 @@ export const columns: ColumnDef<Product>[] = [
     },
   },
   {
+    accessorKey: "price",
+    header: "السعر",
+    cell: ({ row }) => {
+      const salePrice = row.original.salePrice;
+      return !salePrice ? (
+        <div className="flex gap-1">
+          <span>{row.getValue("price")}</span>
+          <span>ج.م</span>
+        </div>
+      ) : (
+        <div className="flex flex-col">
+          <span className="line-through text-gray-500">
+            {row.getValue("price")}
+          </span>
+          <span className="">{salePrice}</span>
+        </div>
+      );
+    },
+  },
+  {
     accessorKey: "actions",
     header: "",
     cell: ({ row }) => {

@@ -1,18 +1,14 @@
-import CreateUser from "@/components/dashboard/restaurant/CreateUser";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { DataTable } from "@/components/ui/data-table";
 import useTable from "@/hooks/use-table";
 import { RocketIcon } from "lucide-react";
-import { columns } from "../../../../pages/dashboard/restaurant/columns";
+import { columns } from "@/components/dashboard/restaurant/TablesColumns";
 
 const Tables = () => {
   const { data, status } = useTable();
 
   return (
     <>
-      <div>
-        <CreateUser />
-      </div>
       <div>
         {status === "loading" ? (
           "يتم التحميل..."

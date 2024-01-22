@@ -87,7 +87,7 @@ export const columns: ColumnDef<Table>[] = [
     header: () => <div className="text-right">عدد المقاعد</div>,
   },
   {
-    accessorKey: "section.name",
+    accessorKey: "sectionId.name",
     header: () => <div className="text-right">القسم الخاص بالطاولة</div>,
   },
   {
@@ -133,7 +133,9 @@ export const columns: ColumnDef<Table>[] = [
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                   <AlertDialogCancel>إلغاء</AlertDialogCancel>
-                  <AlertDialogAction>الإستمرار</AlertDialogAction>
+                  <AlertDialogAction>
+                    <button>إستمرار</button>
+                  </AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>
             </AlertDialog>

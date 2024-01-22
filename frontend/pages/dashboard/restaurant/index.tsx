@@ -1,38 +1,27 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Layout from "../layout";
 import variables from "@/config/variables";
 import Tables from "@/components/dashboard/restaurant/Tables";
 import Sections from "@/components/dashboard/restaurant/Sections";
 import Waiters from "@/components/dashboard/restaurant/Waiters";
-import { Button } from "@/components/ui/button";
-
-export const FetchUsersContext = React.createContext<
-  (() => Promise<void>) | undefined
->(undefined);
+import { CreateSection } from "@/components/dashboard/restaurant/CreateSection";
+import { CreateTable } from "@/components/dashboard/restaurant/CreateTable";
 
 export default function DemoPage() {
   const [activeTab, setActiveTab] = useState<number>(0);
-  const tab = variables.dashboardTabs.restaurant;
+  const tabs = variables.dashboardTabs.restaurant;
 
-  useEffect(() => {
-    console.log(activeTab);
-  });
   return (
-    <Layout title={tab[activeTab]?.name} desc={tab[activeTab]?.desc}>
+    <Layout title={tabs[activeTab]?.name} desc={tabs[activeTab]?.desc}>
       <div className="w-full flex justify-between items-center px-5 border-b-2">
         <div className="flex gap-2 w-1/2">
-          {variables.dashboardTabs.restaurant.map((tab) => {
+          {tabs.map((tab) => {
             return (
               <button
                 key={tab.id}
-                className={
-                  "rounded-none py-2 text-text font-light px-4 text-lg" +
-                  `${
-                    activeTab === tab.id
-                      ? "border-b-1 border-red-500 text-red-500"
-                      : ""
-                  }`
-                }
+                className={`rounded-none border-0 py-4 text-text  font-light px-4 text-sm${
+                  activeTab === tab.id ? " border-b-4 border-primary" : ""
+                } transition-all duration-200 ease-in-out`}
                 onClick={() => setActiveTab(tab.id)}
               >
                 {tab.name}
@@ -40,13 +29,20 @@ export default function DemoPage() {
             );
           })}
         </div>
+        {tabs[activeTab]?.component === "sections" ? (
+          <CreateSection />
+        ) : tabs[activeTab]?.component === "tables" ? (
+          <CreateTable />
+        ) : (
+          ""
+        )}
       </div>
       <div className="flex flex-col gap-4 p-5">
-        {tab[activeTab]?.component === "tables" ? (
+        {tabs[activeTab]?.component === "tables" ? (
           <Tables />
-        ) : tab[activeTab]?.component === "sections" ? (
+        ) : tabs[activeTab]?.component === "sections" ? (
           <Sections />
-        ) : tab[activeTab]?.component === "users" ? (
+        ) : tabs[activeTab]?.component === "users" ? (
           <Waiters />
         ) : (
           " لا يوجد محتوي "

@@ -5,15 +5,15 @@ export interface ITable extends Document {
   tableStatus: boolean;
   chairsNo: number;
   token?: string;
-  section?: string;
+  sectionId?: string;
 }
 
 const tableSchema = new Schema({
   tableNo: { type: Number, required: true },
-  tableStatus: { type: Boolean, required: true },
+  tableStatus: { type: Boolean, required: false, default: true },
   chairsNo: { type: Number, required: true },
   token: { type: String },
-  section: {
+  sectionId: {
     type: Types.ObjectId,
     ref: "Section",
   },

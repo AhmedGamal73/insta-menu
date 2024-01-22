@@ -6,7 +6,7 @@ interface ICartItem extends Document {
 }
 
 interface ICart extends Document {
-  user: String;
+  customerId: string;
   items: ICartItem[];
   quantity: Number;
 }

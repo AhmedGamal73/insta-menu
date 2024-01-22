@@ -1,36 +1,14 @@
 "use client";
-
-import React, { useEffect, useState } from "react";
-import { Input } from "@/components/ui/input";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "../../ui/use-toast";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import {
-  Select,
-  SelectContent,
-  SelectTrigger,
-  SelectItem,
-  SelectValue,
-} from "@/components/ui/select";
-import { SelectGroup } from "@radix-ui/react-select";
-import { QueryClientProvider, useMutation, useQueryClient } from "react-query";
-import { addTable, checkTable } from "@/hooks/use-table";
+import { useMutation, useQueryClient } from "react-query";
+import { addTable } from "@/hooks/use-table";
 import useSection from "@/hooks/use-section";
+import { Dialog, DialogTrigger } from "@radix-ui/react-dialog";
+import { Plus } from "lucide-react";
 
-// Schema & Types
-const tableFormSchema = z.object({
-  tableNo: z.number().positive().int(),
-  chairsNo: z.number().positive().int(),
-  section: z.string().nonempty(),
-});
-
-interface Section {
-  _id: string;
-  name: string;
-}
-
-const CreateUser: React.FC = () => {
+export const CreateUser: React.FC = () => {
   const [tableNo, setTableNo] = useState<Number>(0);
   const [chairsNo, setChairsNo] = useState<Number>(0);
   const [section, setSection] = useState<string | undefined>();
@@ -38,7 +16,7 @@ const CreateUser: React.FC = () => {
 
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const { data, status } = useSection();
+  const { data: tables } = useSection();
 
   const addTableMutation = useMutation(addTable, {
     onSuccess(data, variables, context) {
@@ -65,58 +43,22 @@ const CreateUser: React.FC = () => {
   };
 
   return (
-    <div>
-      <form className="flex gap-x-2" onSubmit={handleSubmit}>
-        <div>
-          <Input
-            placeholder="أدخل رقم الطاولة"
-            type="number"
-            required
-            onChange={(e) => setTableNo(+e.target.value)}
-          />
-        </div>
-        <div>
-          <Input
-            placeholder="أدخل عدد الكراسي"
-            type="number"
-            required
-            onChange={(e) => setChairsNo(+e.target.value)}
-          />
-        </div>
-        <div>
-          <Select
-            onValueChange={(e) => {
-              const newSection = data.find((section) => section._id === e);
-              if (newSection) {
-                setSection(newSection.name);
-                console.log(section);
-              }
-            }}
-          >
-            <SelectTrigger className="w-[280px]">
-              <SelectValue placeholder="اختر القسم" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                {data &&
-                  data.map((section) => {
-                    return (
-                      <SelectItem
-                        className="text-right"
-                        key={section._id}
-                        value={section._id}
-                      >
-                        {section.name}
-                      </SelectItem>
-                    );
-                  })}
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-        </div>
-        <Button type="submit">أنشئ طاولة جديدة</Button>
-      </form>
-    </div>
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger dir="rtl" asChild>
+        <Button variant="destructive">
+          <Plus className="me-2 w-4 h-4" />
+          إنشاء قسم جديد
+        </Button>
+      </DialogTrigger>
+      <DialogContent dir="rtl" className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle> إنشاء قسم جديد</DialogTitle>
+          <DialogDescription>
+            قم بإنشاء قسم جديد للمطعم مرتبط بالطاولات والنادل المسئول
+          </DialogDescription>
+        </DialogHeader>
+        <SectoinForm />
+      </DialogContent>
+    </Dialog>
   );
 };
-export default CreateUser;

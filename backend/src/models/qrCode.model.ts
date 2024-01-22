@@ -18,4 +18,4 @@ const qrCodeSchema: Schema<IQRCode> = new Schema({
   disabled: { type: Boolean, default: false },
 });
 
-export default mongoose.model("qrCode", qrCodeSchema);
+export default mongoose.model("Qrcode", qrCodeSchema);

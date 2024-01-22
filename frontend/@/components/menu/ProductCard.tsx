@@ -15,17 +15,17 @@ const ProductCard = ({ product, index }) => {
       <img src="/product.webp" className="pe-3 w-[90px]" alt="" />
       <div className="flex items-center w-full gap-4">
         <div className="flex flex-col gap-2 text-start">
-          <h3 className="text-secondary">{product.name}</h3>
+          <h5 className="text-secondary">{product.name}</h5>
           <p>{product.description}</p>
         </div>
         {product.variable && product.sizes && product.sizes.length > 0 ? (
           <div className="flex items-center gap-2">
-            <h6 className="text-bold">{product.sizes[0].price}</h6>
+            <h6>{product.sizes[0].price}</h6>
             <span className="text-xs">{variables.curancy}</span>
           </div>
         ) : product.price ? (
           <div className="flex items-center gap-2">
-            <h5>{product.price}</h5>
+            <h6>{product.price}</h6>
             <span className=" text-xs">{variables.curancy}</span>
           </div>
         ) : null}

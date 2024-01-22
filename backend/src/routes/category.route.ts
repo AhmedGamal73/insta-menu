@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express";
-import Category from "../models/category";
-import Product from "../models/product";
+
+import Category from "../models/category.model";
+import Product from "../models/product.model";
 
 const categoryRouter = express.Router();
 

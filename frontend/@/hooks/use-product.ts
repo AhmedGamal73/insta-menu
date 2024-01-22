@@ -5,7 +5,7 @@ const productApi = axios.create({
   baseURL: "http://localhost:3001",
 });
 
-export type IProduct = {
+export type Product = {
   _id?: string;
   name: string;
   price?: null;

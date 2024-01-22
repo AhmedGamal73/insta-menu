@@ -1,6 +1,11 @@
 import express, { Request, Response } from "express";
-import Product from "../models/product";
-import Category from "../models/category";
+
+import Product from "../models/product.model";
+import Category from "../models/category.model";
+import {
+  postProductController,
+  getProductsController,
+} from "../controllers/product.controller";
 
 // Dynamic route for product
 const productRouter = express.Router();
@@ -8,63 +13,10 @@ const productRouter = express.Router();
 export default productRouter;
 
 // Create a product
-productRouter.post("/", async (req: Request, res: Response) => {
-  try {
-    const { sizes, variable, imgURL, name, categoryName, ...productData } =
-      req.body;
-
-    // Validate if product exist in our database
-    const productExist = await Product.findOne({ name });
-    if (productExist) {
-      return res.status(400).send("Product Already Exist");
-    }
-
-    // Find category
-    const category = await Category.findOne({ name: categoryName });
-    if (!category) {
-      return res.status(400).send("Category Not Exist");
-    }
-
-    // Validate if product is variable
-    if (sizes.length > 0 && variable === false) {
-      return res.status(400).send("Product is not variable");
-    }
-
-    // Create product image
-    const img = "http://localhost:3001/content/demo.jfif";
-
-    const newProduct = new Product({
-      ...productData,
-      category: category._id,
-      name,
-      imgURL: img,
-    });
-    await newProduct.save();
-
-    const populatedProduct = await Product.findById(newProduct._id).populate(
-      "category",
-      "name _id"
-    );
-
-    ++category.total; // Increment category total
-    await category.save();
-
-    return res.status(201).json(populatedProduct);
-  } catch (err) {
-    console.log(err);
-  }
-});
+productRouter.post("/", postProductController);
 
 // Get all products
-productRouter.get("/", async (req, res) => {
-  try {
-    const products = await Product.find().populate("category", "name");
-    res.json(products);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send("Server error");
-  }
-});
+productRouter.get("/", getProductsController);
 
 // Get product by id
 productRouter.get("/:id", async (req, res) => {

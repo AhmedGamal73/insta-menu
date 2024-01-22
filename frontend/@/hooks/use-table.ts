@@ -1,11 +1,11 @@
 import axios from "axios";
 import { useQuery } from "react-query";
 
-export type Table = {
+export type ITable = {
   tableNo: Number;
-  tableStatus: boolean;
+  tableStatus?: boolean;
   chairsNo: Number;
-  section: string;
+  sectionId: string;
 };
 
 const tableApi = axios.create({
@@ -28,12 +28,14 @@ export const getTables = async () => {
   return await tableApi.get("/table");
 };
 
-export const addTable = async (table: Table) => {
+// Add new table
+export const addTable = async (table: ITable) => {
   return await tableApi.post("/table", table);
 };
 
-export const checkTable = async (tableNo: Number) => {
-  return await tableApi.get(`/product/${tableNo}`);
+// Delete table
+export const deleteTable = async (tableNo: Number) => {
+  return await tableApi.delete(`/table/${tableNo}`);
 };
 
 export default useTable;

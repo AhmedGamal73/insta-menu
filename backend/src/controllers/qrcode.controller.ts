@@ -1,67 +1,25 @@
-// Generate QR code for table
 import express, { Request, Response } from "express";
-import Table from "../models/table";
-import ConnectedDevice from "../models/connectedDevice";
-import QR from "qrcode";
-import qrCode, { IQRCode } from "../models/qrCode";
 import jwt from "jsonwebtoken";
+import QR from "qrcode";
 
-const qrRouter = express.Router();
+import Table from "../models/table.model";
+import qrCode, { IQRCode } from "../models/qrCode.model";
+import ConnectedDevice from "../models/connectedDevice";
+import { generateQrCode } from "../services/qrcode.service";
 
-qrRouter.post("/qr/create", async (req: Request, res: Response) => {
+// Post Qrcode
+export async function postQrcode(req: Request, res: Response) {
   try {
     const { tableId } = req.body;
-
-    // Validate table id
-    if (!tableId) {
-      res.status(400).send("Table ID id is required");
-    }
-
-    // Get table from database
-    const table = await Table.findById(tableId);
-
-    // Validate if table exist in our database
-    if (!table) {
-      res.status(404).send("Table not found");
-    }
-
-    const qrExist = await qrCode.findOne({ tableId });
-
-    // Create QR code if not exist
-    if (!qrExist) {
-      // Create QR code and save to database
-      await qrCode.create({ tableId });
-    } else {
-      await qrCode.findOneAndUpdate({ tableId }, { $set: { disabled: true } });
-      await qrCode.create({ tableId });
-    }
-
-    // Generate encrypted data
-    const TOKEN_KEY = process.env.TOKEN_KEY;
-    if (!TOKEN_KEY) {
-      throw new Error("TOKEN_KEY is not set");
-    }
-
-    const encryptedData = jwt.sign(
-      { tableId: table?._id, tableNo: table?.tableNo },
-      TOKEN_KEY,
-      {
-        expiresIn: "1d",
-      }
-    );
-
-    // Generate qr code
-    const dataImage = await QR.toDataURL(encryptedData);
-
-    // Return qr code
+    const dataImage = generateQrCode(tableId);
     return res.status(200).json({ dataImage });
   } catch (err: any) {
     console.log(`Error: ${err}`);
   }
-});
+}
 
-// Scan QR code Endpoint
-qrRouter.post("/qr/scan", async (req: Request, res: Response) => {
+// Post scan qrcode
+export async function postScanQrcode(req: Request, res: Response) {
   try {
     const { token, deviceInformation } = req.body;
     if (!(token && deviceInformation)) {
@@ -121,6 +79,4 @@ qrRouter.post("/qr/scan", async (req: Request, res: Response) => {
   } catch (err: any) {
     console.log(`Error: ${err}`);
   }
-});
-
-export default qrRouter;
+}

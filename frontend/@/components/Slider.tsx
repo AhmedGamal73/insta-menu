@@ -10,7 +10,7 @@ const Slider = ({ data, selectedItem, setSelectedItem }) => {
                 key={i}
                 className={`${
                   category.name === selectedItem
-                    ? " font-bold text-sm transition delay-100 ease-in border-b-2 border-warning"
+                    ? " font-bold text-sm text-secondary transition delay-75 ease-in-out border-b-2 border-warning"
                     : "color-text text-text text-sm"
                 }`}
                 onClick={() => setSelectedItem(category.name)}

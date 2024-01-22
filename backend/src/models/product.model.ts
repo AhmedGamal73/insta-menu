@@ -18,7 +18,7 @@ export interface IProduct extends Document {
   calories: number;
   ingredients?: Iingredients["_id"][];
   rating?: number;
-  status?: boolean;
+  active?: boolean;
   sizes?: [{ type: Schema.Types.ObjectId; ref: "Size"; required: false }][];
   variable?: boolean;
 }
@@ -44,7 +44,7 @@ const productSchema = new Schema({
     },
   ],
   rating: { type: Number, default: 0, required: false },
-  status: { type: Boolean, default: true, required: true },
+  active: { type: Boolean, default: true, required: true },
   sizes: [{ type: Object, ref: "Size", required: false }],
 });
 

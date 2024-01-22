@@ -2,6 +2,7 @@ import "../@/styles/global.css";
 import { DirectionProvider } from "@radix-ui/react-direction";
 import { AppProps } from "next/app";
 import { QueryClient, QueryClientProvider } from "react-query";
+import { BrowserRouter as Router } from "react-router-dom";
 
 const queryClient = new QueryClient();
 

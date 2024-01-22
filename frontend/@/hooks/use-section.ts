@@ -1,7 +1,9 @@
 import axios from "axios";
 import { useQueries, useQuery } from "react-query";
 
-interface Section {}
+interface Section {
+  name: string;
+}
 
 const sectionApi = axios.create({
   baseURL: "http://localhost:3001",
@@ -16,5 +18,7 @@ export const useSection = () => {
     },
   });
 };
+
+// Create new section
 
 export default useSection;
