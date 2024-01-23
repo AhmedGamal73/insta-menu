@@ -18,6 +18,26 @@ productRouter.post("/", postProductController);
 // Get all products
 productRouter.get("/", getProductsController);
 
+// Get Active Products
+productRouter.get("/active", async (req, res) => {
+  try {
+    const products = await Product.find({ active: true });
+    res.json(products);
+  } catch (error) {
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
+// Get Inactive Products
+productRouter.get("/inactive", async (req, res) => {
+  try {
+    const products = await Product.find({ active: false });
+    res.json(products);
+  } catch (error) {
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
 // Get product by id
 productRouter.get("/:id", async (req, res) => {
   try {
@@ -122,5 +142,25 @@ productRouter.put("/:productId", async (req: Request, res: Response) => {
     return res.status(201).json(updatedProduct);
   } catch (err) {
     console.log(err);
+  }
+});
+
+// Update product active status
+productRouter.patch("/:id", async (req, res) => {
+  const { id } = req.params;
+  const { active } = req.body;
+
+  try {
+    const product = await Product.findById(id);
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    product.active = active;
+    await product.save();
+
+    res.json(product);
+  } catch (error) {
+    res.status(500).json({ message: "Server Error" });
   }
 });

@@ -1,12 +1,13 @@
 import Product, { IProduct } from "../models/product.model";
 import Category from "../models/category.model";
+import fs from "fs";
 
 interface PostProductsParams {
   name: string;
   categoryName: string;
   sizes: any[]; // Replace with the actual type of the elements in the sizes array
   variable: boolean;
-  [key: string]: any; // For the rest of the productData
+  imgURL: string;
 }
 
 // Create a product
@@ -15,6 +16,7 @@ export async function postProducts({
   categoryName,
   sizes,
   variable,
+  imgURL,
   ...productData
 }: PostProductsParams): Promise<IProduct> {
   // Validate if product exist in our database
@@ -35,12 +37,13 @@ export async function postProducts({
   }
 
   // Create product image
-  const img = "http://localhost:3001/content/demo.jfif";
   const newProduct = new Product({
     ...productData,
     category: category._id,
     name,
-    imgURL: img,
+    imgURL: {
+      data: fs.readFileSync(imgURL),
+    },
   });
   await newProduct.save();
 

@@ -1,10 +1,28 @@
 import mongoose, { Schema, Document } from "mongoose";
 import { Iingredients } from "./ingredients";
 
-const sizeSchema = new Schema({
+interface option {
+  active: boolean;
+  name: string;
+  price: number;
+  salePrice?: number;
+}
+
+const optionSchema = new Schema({
+  active: { type: Boolean, default: true, required: true },
   name: { type: String, required: true },
   price: { type: Number, required: true },
   salePrice: { type: Number, required: false },
+});
+
+interface Ivariation {
+  name: string;
+  options: option[];
+}
+
+const variationSchema = new Schema({
+  name: { type: String, required: true },
+  options: [optionSchema],
 });
 
 export interface IProduct extends Document {
@@ -19,7 +37,7 @@ export interface IProduct extends Document {
   ingredients?: Iingredients["_id"][];
   rating?: number;
   active?: boolean;
-  sizes?: [{ type: Schema.Types.ObjectId; ref: "Size"; required: false }][];
+  variations?: Ivariation[];
   variable?: boolean;
 }
 
@@ -29,7 +47,7 @@ const productSchema = new Schema({
   salePrice: { type: Number, required: false, default: null },
   description: { type: String, required: false },
   variable: { type: Boolean, required: false, default: false },
-  imgURL: { type: String, required: true },
+  imgURL: { type: String, required: false },
   category: {
     type: Schema.Types.ObjectId,
     ref: "Category",
@@ -45,7 +63,7 @@ const productSchema = new Schema({
   ],
   rating: { type: Number, default: 0, required: false },
   active: { type: Boolean, default: true, required: true },
-  sizes: [{ type: Object, ref: "Size", required: false }],
+  varations: [variationSchema],
 });
 
 export default mongoose.model<IProduct>("Product", productSchema);

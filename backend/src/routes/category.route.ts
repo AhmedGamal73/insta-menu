@@ -76,4 +76,50 @@ categoryRouter.put("/:categoryName", async (req: Request, res: Response) => {
     res.status(500).json({ message: err });
   }
 });
+
+// GET Subcategories
+categoryRouter.get(
+  "/:categoryId/subcategories",
+  async (req: Request, res: Response) => {
+    const { categoryId } = req.params;
+    try {
+      const category = await Category.findById(categoryId);
+      if (!category) {
+        return res.status(404).json({ message: "Category Not Found" });
+      }
+      res.json(category.subcategories);
+    } catch (err) {
+      res.status(500).json({ message: "server Error" });
+    }
+  }
+);
+
+// Add subcategory
+categoryRouter.post(
+  "/:categoryId/subcategories",
+  async (req: Request, res: Response) => {
+    const { categoryId } = req.params;
+    const { name } = req.body;
+    try {
+      const category = await Category.findById(categoryId);
+      if (!category) {
+        return res.status(404).json({ message: "Category Not Found" });
+      }
+
+      if (!name) {
+        return res.status(400).json({ message: "Name is required" });
+      }
+      if (category.subcategories.find((sub) => sub.name === name)) {
+        return res.status(400).json({ message: "Subcategory already exist" });
+      }
+      category.subcategories.push({ name, total: 0 });
+      category.total++;
+      category.save();
+      res.json(category);
+    } catch (err) {
+      res.status(500).json({ message: "server Error" });
+    }
+  }
+);
+
 export default categoryRouter;
