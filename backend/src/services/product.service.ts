@@ -4,8 +4,8 @@ import fs from "fs";
 
 interface PostProductsParams {
   name: string;
-  categoryName: string;
-  sizes: any[]; // Replace with the actual type of the elements in the sizes array
+  categoryId: string;
+  variations: any[];
   variable: boolean;
   imgURL: string;
 }
@@ -13,9 +13,9 @@ interface PostProductsParams {
 // Create a product
 export async function postProducts({
   name,
-  categoryName,
-  sizes,
-  variable,
+  categoryId,
+  variations = [],
+  variable = false,
   imgURL,
   ...productData
 }: PostProductsParams): Promise<IProduct> {
@@ -26,31 +26,29 @@ export async function postProducts({
   }
 
   // Find category
-  const category = await Category.findOne({ name: categoryName });
+  const category = await Category.findById(categoryId);
   if (!category) {
     throw new Error("Category Not Exist");
   }
 
   // Validate if product is variable
-  if (sizes.length > 0 && variable === false) {
+  if (variations.length > 0 && variable === false) {
     throw new Error("Product is not variable");
   }
 
   // Create product image
   const newProduct = new Product({
     ...productData,
-    category: category._id,
+    variable: false,
+    category: categoryId,
     name,
-    imgURL: {
-      data: fs.readFileSync(imgURL),
-    },
   });
   await newProduct.save();
 
   // Populate product with category
   const populatedProduct = await Product.findById(newProduct._id).populate(
     "category",
-    "name _id"
+    "_id"
   );
 
   if (!populatedProduct) {

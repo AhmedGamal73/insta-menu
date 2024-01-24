@@ -33,6 +33,7 @@ export interface IProduct extends Document {
   description: string;
   imgURL?: string;
   category: string;
+  subcategory?: string;
   calories: number;
   ingredients?: Iingredients["_id"][];
   rating?: number;
@@ -53,6 +54,7 @@ const productSchema = new Schema({
     ref: "Category",
     required: true,
   },
+  subcategory: { type: String, required: false },
   calories: { type: Number, required: false },
   ingredients: [
     {
@@ -63,7 +65,7 @@ const productSchema = new Schema({
   ],
   rating: { type: Number, default: 0, required: false },
   active: { type: Boolean, default: true, required: true },
-  varations: [variationSchema],
+  variations: [variationSchema],
 });
 
 export default mongoose.model<IProduct>("Product", productSchema);
