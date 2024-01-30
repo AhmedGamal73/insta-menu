@@ -38,6 +38,7 @@ categoryRouter.get("/", async (req: Request, res: Response) => {
   }
 });
 
+// GET Products by category name
 categoryRouter.get(
   "/:categoryName/products",
   async (req: Request, res: Response) => {
@@ -47,8 +48,11 @@ categoryRouter.get(
       if (!category) {
         return res.status(404).json({ message: "Category Not Found" });
       }
-      const products = await Product.find({ category: category._id });
-      res.json(products);
+      const activeProducts = await Product.find({
+        active: true,
+        category: category._id,
+      });
+      res.json(activeProducts);
     } catch (err) {
       console.log(err);
     }
@@ -78,21 +82,18 @@ categoryRouter.put("/:categoryName", async (req: Request, res: Response) => {
 });
 
 // GET Subcategories
-categoryRouter.get(
-  "/:categoryId/subcategories",
-  async (req: Request, res: Response) => {
-    const { categoryId } = req.params;
-    try {
-      const category = await Category.findById(categoryId);
-      if (!category) {
-        return res.status(404).json({ message: "Category Not Found" });
-      }
-      res.json(category.subcategories);
-    } catch (err) {
-      res.status(500).json({ message: "server Error" });
+categoryRouter.get("/:categoryId/sub", async (req: Request, res: Response) => {
+  const { categoryId } = req.params;
+  try {
+    const category = await Category.findById(categoryId);
+    if (!category) {
+      return res.status(404).json({ message: "Category Not Found" });
     }
+    res.json(category.subcategories);
+  } catch (err) {
+    res.status(500).json({ message: "server Error" });
   }
-);
+});
 
 // Add subcategory
 categoryRouter.post(

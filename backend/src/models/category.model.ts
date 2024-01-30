@@ -1,12 +1,14 @@
 import mongoose, { Schema, Document } from "mongoose";
 
 interface ICategory extends Document {
+  _id?: string;
   name: string;
   total: number;
   subcategories: ISubCategory[];
 }
 
 interface ISubCategory {
+  _id?: string;
   name: string;
   total: number;
 }

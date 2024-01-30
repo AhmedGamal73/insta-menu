@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Modal from "../Modal";
-import Product from "./Product";
+import ProductPage from "./ProductPage";
 import variables from "@/config/variables";
 
 const ProductCard = ({ product, index }) => {
@@ -23,16 +23,21 @@ const ProductCard = ({ product, index }) => {
             <h6>{product.sizes[0].price}</h6>
             <span className="text-xs">{variables.curancy}</span>
           </div>
-        ) : product.price ? (
+        ) : product.price && product.salePrice ? (
+          <div className="flex items-center gap-2">
+            <h6>{product.salePrice}</h6>
+            <span className=" text-xs">{variables.curancy}</span>
+          </div>
+        ) : product.price && !product.salePrice ? (
           <div className="flex items-center gap-2">
             <h6>{product.price}</h6>
-            <span className=" text-xs">{variables.curancy}</span>
+            <span className="text-xs">{variables.curancy}</span>
           </div>
         ) : null}
       </div>
       <div>
         <Modal isOpen={isModalOpen} onClose={() => setModalOpen(false)}>
-          <Product onClose={() => setModalOpen(false)} product={product} />
+          <ProductPage onClose={() => setModalOpen(false)} product={product} />
         </Modal>
       </div>
     </button>

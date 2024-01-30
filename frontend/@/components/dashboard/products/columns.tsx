@@ -1,7 +1,11 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { Product, deleteProduct } from "@/hooks/use-product";
+import {
+  Product,
+  deleteProduct,
+  useUpdateProductActiveStatus,
+} from "@/hooks/use-product";
 import { Pencil, Trash2 } from "lucide-react";
 import { useMutation, useQueryClient } from "react-query";
 import { toast } from "@/components/ui/use-toast";
@@ -16,7 +20,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 
 export const columns: ColumnDef<Product>[] = [
   {
@@ -47,6 +51,14 @@ export const columns: ColumnDef<Product>[] = [
     header: "التصنيف",
   },
   {
+    accessorKey: "subcategory.name",
+    header: "التصنيف الفرعي",
+  },
+  {
+    accessorKey: "calories",
+    header: "السعرات الحرارية",
+  },
+  {
     accessorKey: "price",
     header: "السعر",
     cell: ({ row }) => {
@@ -67,21 +79,26 @@ export const columns: ColumnDef<Product>[] = [
     },
   },
   {
-    accessorKey: "price",
-    header: "السعر",
+    accessorKey: "active",
+    header: "مفعل",
     cell: ({ row }) => {
-      const salePrice = row.original.salePrice;
-      return !salePrice ? (
-        <div className="flex gap-1">
-          <span>{row.getValue("price")}</span>
-          <span>ج.م</span>
-        </div>
-      ) : (
-        <div className="flex flex-col">
-          <span className="line-through text-gray-500">
-            {row.getValue("price")}
-          </span>
-          <span className="">{salePrice}</span>
+      const mutation = useUpdateProductActiveStatus();
+      console.log(row.original.active, row.original._id);
+
+      const handleTogle = async () => {
+        try {
+          mutation.mutate(row.original._id);
+        } catch (err) {
+          console.log(err);
+        }
+      };
+      return (
+        <div className="flex items-center space-x-2">
+          <Switch
+            onCheckedChange={handleTogle}
+            checked={row.original.active}
+            id="airplane-mode"
+          />
         </div>
       );
     },
@@ -123,7 +140,7 @@ export const columns: ColumnDef<Product>[] = [
               </AlertDialogHeader>
               <AlertDialogFooter>
                 <AlertDialogCancel>إلغاء</AlertDialogCancel>
-                <AlertDialogAction onClick={handleDelte}>
+                <AlertDialogAction className="bg-red-500" onClick={handleDelte}>
                   إستمرار
                 </AlertDialogAction>
               </AlertDialogFooter>

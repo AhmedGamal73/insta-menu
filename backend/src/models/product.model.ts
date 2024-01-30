@@ -48,13 +48,16 @@ const productSchema = new Schema({
   salePrice: { type: Number, required: false, default: null },
   description: { type: String, required: false },
   variable: { type: Boolean, required: false, default: false },
-  imgURL: { type: String, required: false },
+  img: { type: Schema.Types.ObjectId, ref: "Img", required: false },
   category: {
     type: Schema.Types.ObjectId,
     ref: "Category",
     required: true,
   },
-  subcategory: { type: String, required: false },
+  subcategory: {
+    id: { type: Schema.Types.ObjectId, required: false },
+    name: { type: String, required: false },
+  },
   calories: { type: Number, required: false },
   ingredients: [
     {

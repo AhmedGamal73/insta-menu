@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
-import { useCategory, useProductByCategory } from "@/hooks/use-category";
+import { useCategory } from "@/hooks/use-category";
 import BackButton from "@/components/menu/BackButton";
 import Slider from "@/components/Slider";
-import ProductsList from "@/components/menu/ProductsList";
+import { ProductsList } from "@/components/menu/ProductsList";
 import { ModalContext } from "@/context";
 import Layout from "./Layout";
 

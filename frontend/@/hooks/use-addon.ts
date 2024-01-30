@@ -2,7 +2,7 @@ import axios from "axios";
 import { QueryClient, useMutation, useQuery } from "react-query";
 
 const categoryApi = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
+  baseURL: process.env.NEXT_APP_API_URL,
 });
 
 export interface Category {

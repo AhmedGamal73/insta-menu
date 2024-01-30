@@ -10,8 +10,6 @@ import {
 // Dynamic route for product
 const productRouter = express.Router();
 
-export default productRouter;
-
 // Create a product
 productRouter.post("/", postProductController);
 
@@ -164,3 +162,5 @@ productRouter.patch("/:id", async (req, res) => {
     res.status(500).json({ message: "Server Error" });
   }
 });
+
+export default productRouter;

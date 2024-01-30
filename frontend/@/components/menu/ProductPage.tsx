@@ -1,26 +1,30 @@
-import { IProduct } from "@/hooks/use-product";
+import { Product } from "@/hooks/use-product";
 import { Minus, Plus, X } from "lucide-react";
 import variables from "@/config/variables";
 import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 
 interface productsProps {
-  product: IProduct;
+  product: Product;
   onClose: () => void;
 }
 
-const Product: React.FC<productsProps> = ({ product, onClose }) => {
-  const defaultPrice = product.variable
-    ? product.sizes[0].price
-    : product.price;
-
+const ProductPage: React.FC<productsProps> = ({ product, onClose }) => {
+  let defaultPrice = 0;
+  if (product.variable && product.variations && product.variations.length > 0) {
+    defaultPrice = product.variations[0].price;
+  } else if (product.price && product.salePrice) {
+    defaultPrice = product.salePrice;
+  } else {
+    defaultPrice = product.price;
+  }
   const [price, setPrice] = useState(defaultPrice);
   const [totalPrice, setTotalPrice] = useState(price);
-  const [selectedSize, setSelectedSize] = useState(product.sizes[0]);
+  const [selectedSize, setSelectedSize] = useState(product.variations[0]);
   const [itemNumber, setItemNumber] = useState(1);
 
   const handleSize = (index: number) => {
-    const newSize = product.sizes[index];
+    const newSize = product.variations[index];
     setSelectedSize(newSize);
     setPrice(newSize.price);
     setTotalPrice(newSize.price * itemNumber);
@@ -56,7 +60,7 @@ const Product: React.FC<productsProps> = ({ product, onClose }) => {
         <div className="flex flex-col justify-center items-center w-full px-2">
           <div className="flex flex-col items-center justify-center gap-2 w-full">
             <div className="flex pt-4 justify-center w-full gap-4 flex-wrap">
-              {product.sizes.map((size, index) => (
+              {product.variations.map((size, index) => (
                 <Button
                   onClick={() => handleSize(index)}
                   variant={
@@ -107,4 +111,4 @@ const Product: React.FC<productsProps> = ({ product, onClose }) => {
   );
 };
 
-export default Product;
+export default ProductPage;
