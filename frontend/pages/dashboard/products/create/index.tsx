@@ -1,6 +1,6 @@
-import { Upload, X } from "lucide-react";
+import { Blocks, Plus, Upload, X } from "lucide-react";
 import Link from "next/link";
-import { z } from "zod";
+import { set, z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useFieldArray, useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
@@ -37,12 +37,20 @@ import AddNewSubcategory from "@/components/dashboard/products/newProduct/AddNew
 import { useCreateProduct } from "@/hooks/use-product";
 import { Label } from "@/components/ui/label";
 import UploadImage from "@/components/dashboard/products/newProduct/UploadImage";
+import IconBox from "@/components/ui/IconBox";
+import { Addon, useAddons } from "@/hooks/use-addon";
+import { CheckboxIcon } from "@radix-ui/react-icons";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Switch } from "@/components/ui/switch";
 
 const CreateProductPage = () => {
   const [img, setImg] = useState<File | null>(null);
   const [imgPreview, setImgPreview] = useState<string | null>(null);
+  const [selectedAddons, setSelectedAddons] = useState<string[]>([]);
 
   const { data: categories } = useCategory();
+  const { data: allAddons } = useAddons();
+
   const { reset } = useForm();
 
   const form = useForm({
@@ -55,15 +63,16 @@ const CreateProductPage = () => {
       categoryId: "",
       subcategoryId: "",
       img: "",
+      addons: [],
+      active: true,
       // calories: 0,
-      // addons: [],
       // ingredients: [],
-      // active: true,
       // variations: [],
       // variable: false,
     },
   });
 
+  // Image upload
   const handleImgUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] ?? null;
     setImg(file);
@@ -82,6 +91,7 @@ const CreateProductPage = () => {
   const selectedCategory = form.watch("categoryId");
   const createNewProduct = useCreateProduct();
 
+  // Submit the form
   const onSubmit = (values: z.infer<typeof ProductFormSchema>) => {
     if (!values.name) {
       console.log("name is required");
@@ -90,10 +100,22 @@ const CreateProductPage = () => {
     reset();
   };
 
-  // Check the save image & preview image
+  // destructe form values
+
   useEffect(() => {
-    console.log(img, imgPreview);
-  }, [img, imgPreview]);
+    const { name, description, price, salePrice, active, addons } =
+      form.watch();
+    // form.setValue("addons", selectedAddons);
+    console.log({
+      name: name,
+      itemAddons: addons,
+      price: price,
+      salePrice: salePrice,
+      active: active,
+      description: description,
+      img: img,
+    });
+  }, [form, selectedAddons]);
 
   return (
     <div dir="rtl" className="w-full flex h-screen">
@@ -157,7 +179,11 @@ const CreateProductPage = () => {
                       render={({ field }) => (
                         <FormItem>
                           <FormControl onChange={handleImgUpload}>
-                            <Label className="w-full flex border-dashed border-2 rounded hover:bg-slate-50 ">
+                            <Label
+                              className={`w-full flex border-dashed border-2 rounded  hover:bg-slate-50 ${
+                                imgPreview && "hover:bg-white"
+                              } `}
+                            >
                               {img && imgPreview ? (
                                 <div className="flex m-4 w-32 h-32 flex-col gap-0 justify-start items-start border rounded-b-sm pointer-events-none">
                                   <img
@@ -166,7 +192,7 @@ const CreateProductPage = () => {
                                     className="w-full h-4/5"
                                   />
                                   <button
-                                    className="h-1/5 w-full text-xs bg-red-500 text-white rounded-b-sm"
+                                    className="h-1/5 w-full text-xs bg-red-500 text-white hover:bg-red-600 rounded-b-sm"
                                     type="button"
                                     onClick={(e) => {
                                       e.stopPropagation();
@@ -195,8 +221,118 @@ const CreateProductPage = () => {
                       )}
                     />
                   </AddProductCard>
-                  <AddProductCard width="w-full" title="خيارات">
-                    <div></div>
+                  <AddProductCard width="w-full" title="خيارات المنتج">
+                    <div className="flex flex-col gap-4">
+                      <IconBox
+                        title="إضافات"
+                        desc="أضف خيارات لهذا المنتج مثل الحجم واللون والمزيد."
+                      >
+                        <Blocks className="w-6 h-6" color="green" />
+                      </IconBox>
+                    </div>
+                    <FormField
+                      control={form.control}
+                      name="addons"
+                      render={({ field }) => (
+                        <FormItem className="mt-2">
+                          <Select
+                            dir="rtl"
+                            onValueChange={(addonId) => {
+                              // check if the selected addon is already selected
+                              const selectedAddon = selectedAddons.find(
+                                (addonID: string) => addonID === addonId
+                              );
+                              if (!selectedAddon) {
+                                setSelectedAddons((prevAddons) => [
+                                  ...prevAddons,
+                                  addonId,
+                                ]);
+                              } else {
+                                setSelectedAddons((prevAddons) =>
+                                  prevAddons.filter(
+                                    (addonID: string) => addonID !== addonId
+                                  )
+                                );
+                              }
+                              field.onChange(addonId);
+                            }}
+                            defaultValue={field.value[0]}
+                          >
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="إختر إضافة" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectGroup>
+                                <AddNewCategory />
+                                {allAddons && allAddons.length > 0
+                                  ? allAddons?.map((addon: Addon) => (
+                                      <FormField
+                                        key={addon._id}
+                                        control={form.control}
+                                        name="addons"
+                                        render={({ field }) => {
+                                          return (
+                                            <FormItem
+                                              key={addon._id}
+                                              className="flex flex-row items-start space-x-3 space-y-0 gap-x-2 px-4"
+                                            >
+                                              <FormControl>
+                                                <Checkbox
+                                                  checked={field.value.includes(
+                                                    addon._id
+                                                  )}
+                                                  onCheckedChange={(
+                                                    checked
+                                                  ) => {
+                                                    if (checked) {
+                                                      setSelectedAddons(
+                                                        (prevAddons) => [
+                                                          ...prevAddons,
+                                                          addon._id,
+                                                        ]
+                                                      );
+                                                      field.onChange([
+                                                        ...field.value,
+                                                        addon._id,
+                                                      ]);
+                                                    } else {
+                                                      setSelectedAddons(
+                                                        (prevAddons) =>
+                                                          prevAddons.filter(
+                                                            (addonID) =>
+                                                              addonID !==
+                                                              addon._id
+                                                          )
+                                                      );
+                                                      field.onChange(
+                                                        field.value.filter(
+                                                          (addonID: string) =>
+                                                            addonID !==
+                                                            addon._id
+                                                        )
+                                                      );
+                                                    }
+                                                  }}
+                                                />
+                                              </FormControl>
+                                              <FormLabel>
+                                                {addon.name}
+                                              </FormLabel>
+                                            </FormItem>
+                                          );
+                                        }}
+                                      />
+                                    ))
+                                  : ""}
+                              </SelectGroup>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
                   </AddProductCard>
                 </div>
                 <div className="w-1/3 flex flex-col gap-4  ">
@@ -257,7 +393,9 @@ const CreateProductPage = () => {
                               <AddNewSubcategory
                                 selectedCategoryId={selectedCategory}
                               />
-                              {categories && categories.length > 0 ? (
+                              {categories &&
+                              categories.length > 0 &&
+                              selectedCategory ? (
                                 <Subcategories
                                   selectedCategoryId={selectedCategory}
                                 />
@@ -314,6 +452,34 @@ const CreateProductPage = () => {
                                 field.onChange(parseFloat(e.target.value));
                                 console.log(e.target.value);
                               }}
+                            />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                  </AddProductCard>
+                  <AddProductCard title="" width="w-full">
+                    <FormField
+                      control={form.control}
+                      name="active"
+                      render={({ field }) => (
+                        <FormItem
+                          dir="rtl"
+                          className="flex flex-row items-center justify-between rounded-lg border p-4"
+                        >
+                          <div className="space-y-0.5">
+                            <FormLabel className="text-base">
+                              تفعيل المنتج
+                            </FormLabel>
+                            <FormDescription>
+                              يمكنك التحكم في ظهور المنتج في المنيو من خلال هذا
+                              الزر
+                            </FormDescription>
+                          </div>
+                          <FormControl>
+                            <Switch
+                              checked={field.value}
+                              onCheckedChange={field.onChange}
                             />
                           </FormControl>
                         </FormItem>

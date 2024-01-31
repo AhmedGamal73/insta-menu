@@ -20,8 +20,9 @@ export const theme = {
       "items-loading": "url('/img/loading.webp')",
     }),
     fontFamily: {
-      "imb-plex": ["ibm-plex", "sans-serif"],
-      "ibm-plex-bold": ["ibm-plex-bold", "sans-serif"],
+      rubik: ["rubik", "sans-serif"],
+      rubikBold: ["rubikBold", "sans-serif"],
+      rubikLight: ["rubikLight", "sans-serif"],
     },
     boxShadow: {
       "3xl": "0 4px 13px 6px rgb(0 0 0 / 0.1), 0 2px 4px -8px rgb(0 0 0 / 0.1)",

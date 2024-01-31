@@ -3,26 +3,37 @@
 @tailwind utilities;
 
 @font-face {
-  font-family: "ibm-plex";
+  font-family: "rubik";
   src: url("/fonts/Rubik-Regular.ttf") format("truetype");
   font-weight: 400;
   font-style: normal;
 }
 
 @font-face {
-  font-family: "ibm-plex-bold";
+  font-family: "rubikBold";
   src: url("/fonts/Rubik-Bold.ttf") format("truetype");
   font-weight: 700;
   font-style: normal;
 }
 
+@font-face {
+  font-family: "rubikLight";
+  src: url("/fonts/Rubik-Light.ttf") format("truetype");
+  font-weight: 300;
+  font-style: normal;
+}
+
 @layer base {
-  .font-ibm-plex {
-    font-family: "ibm-plex", sans-serif;
+  .font-rubik {
+    font-family: "rubik", sans-serif;
   }
 
-  .font-ibm-plex-bold {
-    font-family: "ibm-plex-bold", sans-serif;
+  .font-rubikbold {
+    font-family: "rubikBold", sans-serif;
+  }
+
+  .font-rubikLight {
+    font-family: "rubikLight", sans-serif;
   }
 }
 
@@ -162,8 +173,9 @@ h1,
 h2,
 h3,
 h4,
-h5 {
-  @apply font-ibm-plex-bold;
+h5,
+h6 {
+  @apply font-rubikBold;
 }
 
 p,
@@ -171,8 +183,9 @@ span,
 li,
 div,
 a {
-  @apply font-ibm-plex;
+  @apply font-rubik;
 }
+
 .scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;
