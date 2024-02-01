@@ -1,6 +1,20 @@
+import { useCart } from "@/context/CartContext";
 import { Gift, Home, Pizza, ScrollText, ShoppingBag } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Cart } from "./Cart";
 
 const Navbar = () => {
+  const { cart } = useCart();
+  const [vibrate, setVibrate] = useState(false);
+  const [cartOpen, setCartOpen] = useState(false);
+
+  useEffect(() => {
+    setVibrate(true);
+    setTimeout(() => {
+      setVibrate(false);
+    }, 1000);
+  }, [cart]);
+
   return (
     <div>
       <div className="w-full pb-1 px-3 flex insert-x-0 bottom-2 fixed items-center justify-center">
@@ -9,13 +23,10 @@ const Navbar = () => {
             <Pizza className="w-[22px] h-[22px]" />
             <span className="text-sm"> الطعام</span>
           </div>
-          <div className="flex flex-col items-center gap-1">
-            <ShoppingBag className="text-text w-[22px] h-[22px]" />
-            <span className="text-sm text-text">السلة</span>
-          </div>
+          <Cart />
           <div className="flex flex-col items-center gap-1">
             <ScrollText className="w-[22px] h-[22px] text-text" />
-            <span className="text-sm text-text">الطلب</span>
+            <span className="text-sm text-text">طلباتي</span>
           </div>
           <a className="flex flex-col items-center gap-1 " href="#">
             <Gift className="w-[22px] h-[22px] text-text" />

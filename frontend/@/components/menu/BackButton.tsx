@@ -12,7 +12,7 @@ const BackButton = () => {
   return (
     <Button
       variant="default"
-      className="self-end w-10 h-10 bg bg-white/50 backdrop-blur rounded-lg"
+      className="self-end w-10 h-10 bg-white/50 backdrop-blur rounded-lg"
       size="icon"
       onClick={() => setBack(!back)}
     >

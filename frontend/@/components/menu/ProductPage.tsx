@@ -1,8 +1,19 @@
 import { Product } from "@/hooks/use-product";
 import { Minus, Plus, X } from "lucide-react";
 import variables from "@/config/variables";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Button } from "../ui/button";
+import { CartContext } from "@/context/CartContext";
+import { toast } from "../ui/use-toast";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
 
 interface productsProps {
   product: Product;
@@ -20,14 +31,19 @@ const ProductPage: React.FC<productsProps> = ({ product, onClose }) => {
   }
   const [price, setPrice] = useState(defaultPrice);
   const [totalPrice, setTotalPrice] = useState(price);
-  const [selectedSize, setSelectedSize] = useState(product.variations[0]);
+  // const [selectedVariant, setSelectedVariant] = useState(product.variations[0]);
+  const [selectedVariant, setSelectedVariant] = useState(
+    product.variations[0] || "empty"
+  );
   const [itemNumber, setItemNumber] = useState(1);
 
-  const handleSize = (index: number) => {
-    const newSize = product.variations[index];
-    setSelectedSize(newSize);
-    setPrice(newSize.price);
-    setTotalPrice(newSize.price * itemNumber);
+  const { addItem } = useContext(CartContext);
+
+  const handleVariant = (index: number) => {
+    const newVariant = product.variations[index];
+    setSelectedVariant(newVariant);
+    setPrice(newVariant.price);
+    setTotalPrice(newVariant.price * itemNumber);
   };
 
   const handlePlus = () => {
@@ -42,9 +58,38 @@ const ProductPage: React.FC<productsProps> = ({ product, onClose }) => {
     setTotalPrice(price * newItemNumber);
   };
 
+  // Add to cart
+  const handleAddToCart = () => {
+    // if (selectedVariant) {
+    const item = {
+      itemId: product._id + new Date().getTime(),
+      name: product.name,
+      priceAtTheTime: price,
+      quantity: itemNumber,
+      price: totalPrice,
+      // variations: selectedVariant.name,
+      variations: selectedVariant,
+      addons: [],
+    };
+    addItem(item);
+    setTimeout(() => {
+      toast({
+        description: `تم اضافة ${item.name} الى السلة`,
+        style: {
+          justifyContent: "center",
+          backgroundColor: "rgb(105 105 105 /30%)",
+          backdropFilter: "blur(10px)",
+          borderColor: "transparent",
+          color: "white",
+        },
+      });
+    }, 300);
+    onClose();
+  };
+
   useEffect(() => {
-    console.log("selectedSize", selectedSize);
-  }, [selectedSize]);
+    console.log("selectedSize", selectedVariant);
+  }, [selectedVariant]);
 
   return (
     <div className="flex flex-col gap-8 justify-between relative">
@@ -60,17 +105,18 @@ const ProductPage: React.FC<productsProps> = ({ product, onClose }) => {
         <div className="flex flex-col justify-center items-center w-full px-2">
           <div className="flex flex-col items-center justify-center gap-2 w-full">
             <div className="flex pt-4 justify-center w-full gap-4 flex-wrap">
-              {product.variations.map((size, index) => (
+              {product.variations.map((variant, index) => (
                 <Button
-                  onClick={() => handleSize(index)}
+                  onClick={() => handleVariant(index)}
                   variant={
-                    selectedSize !== undefined &&
-                    selectedSize.name === size.name
+                    selectedVariant !== undefined &&
+                    // selectedVariant.name === variant.name
+                    selectedVariant === variant.name
                       ? "secondary"
                       : "outline"
                   }
                 >
-                  {size.name}
+                  {variant.name}
                 </Button>
               ))}
             </div>
@@ -97,12 +143,15 @@ const ProductPage: React.FC<productsProps> = ({ product, onClose }) => {
                 <span className="text-xs">{variables.curancy}</span>
               </h2>
             </div>
-            <p className="ml-2 pt-8 text-start w-full">{product.description}</p>
+            <p className="ml-2 pt-8 text-center w-full">
+              {product.description}
+            </p>
           </div>
         </div>
       </div>
       <Button
-        className="w-4/5 fixed insert-x-0 bottom-4 left-auto right-auto"
+        onClick={handleAddToCart}
+        className="w-5/6 fixed left-1/2 transform -translate-x-1/2 bottom-4"
         variant="secondary"
       >
         اضف للسلة

@@ -19,6 +19,9 @@ export const theme = {
       "menu-hero": "url('/img/menu-hero.jpg')",
       "items-loading": "url('/img/loading.webp')",
     }),
+    animation: {
+      vibrate: "vibrate 0.2s linear",
+    },
     fontFamily: {
       rubik: ["rubik", "sans-serif"],
       rubikBold: ["rubikBold", "sans-serif"],

@@ -19,17 +19,17 @@ const ProductCard = ({ product, index }) => {
           <p>{product.description}</p>
         </div>
         {product.variable && product.sizes && product.sizes.length > 0 ? (
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1">
             <h6>{product.sizes[0].price}</h6>
             <span className="text-xs">{variables.curancy}</span>
           </div>
         ) : product.price && product.salePrice ? (
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1">
             <h6>{product.salePrice}</h6>
             <span className=" text-xs">{variables.curancy}</span>
           </div>
         ) : product.price && !product.salePrice ? (
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1">
             <h6>{product.price}</h6>
             <span className="text-xs">{variables.curancy}</span>
           </div>
