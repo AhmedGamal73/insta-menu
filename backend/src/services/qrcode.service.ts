@@ -21,9 +21,6 @@ export async function generateQrCode(tableId: string) {
     const qrcode = await Qrcode.findOne({ tableId });
     if (!qrcode) {
       await Qrcode.create({ tableId });
-    } else {
-      await Qrcode.findOneAndUpdate({ tableId }, { $set: { disabled: true } });
-      await Qrcode.create({ tableId });
     }
 
     // Generate encrypted data
@@ -36,10 +33,7 @@ export async function generateQrCode(tableId: string) {
         tableId: table?._id,
         tableNo: table?.tableNo,
       },
-      TOKEN_KEY,
-      {
-        expiresIn: "1d",
-      }
+      TOKEN_KEY
     );
 
     // Generate the QRcode

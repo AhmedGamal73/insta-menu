@@ -11,8 +11,8 @@ import { generateQrCode } from "../services/qrcode.service";
 export async function postQrcode(req: Request, res: Response) {
   try {
     const { tableId } = req.body;
-    const dataImage = generateQrCode(tableId);
-    return res.status(200).json({ dataImage });
+    const dataImage = await generateQrCode(tableId);
+    res.status(200).json({ dataImage: dataImage });
   } catch (err: any) {
     console.log(`Error: ${err}`);
   }
@@ -74,8 +74,13 @@ export async function postScanQrcode(req: Request, res: Response) {
       expiresIn: "2h",
     });
 
+    // Create URL with tableId as query parameter
+    const url = `http://localhost/menu?tableId=${table._id}`;
+    const qrCodeData = await QR.toDataURL(url);
     // Return token
-    return res.status(200).json({ table_Number_is: table.tableNo, authToken });
+    return res
+      .status(200)
+      .json({ table_Number_is: table.tableNo, authToken, qrCodeData });
   } catch (err: any) {
     console.log(`Error: ${err}`);
   }

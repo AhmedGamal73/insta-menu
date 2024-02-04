@@ -11,10 +11,11 @@ import tableRouter from "./routes/table.route";
 import sectionRouter from "./routes/section.route";
 import productRouter from "./routes/product.route";
 import categoryRouter from "./routes/category.route";
-import addonsRouter from "./routes/addon";
+import addonsRouter from "./routes/addon.route";
 import waiterRouter from "./routes/waiter";
-import addonRouter from "./routes/addon";
 import Img from "./models/Img.model";
+import customerRouter from "./routes/customer.route";
+import qrRouter from "./routes/qrcode.route";
 
 const { API_PORT } = process.env; // Destructure the 'API_PORT' property from 'process.env' object
 const port = (process.env.API_PORT as String) || API_PORT; // Declare and assign a value to the 'port' variable
@@ -32,7 +33,8 @@ app.use("/product", productRouter);
 app.use("/category", categoryRouter);
 app.use("/addon", addonsRouter);
 app.use("/waiter", waiterRouter);
-app.use("/addon", addonRouter);
+app.use("/customer", customerRouter);
+app.use("/qr", qrRouter);
 
 // Multer
 const storage = multer.diskStorage({
