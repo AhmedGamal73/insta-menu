@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const server = axios.create({
-  baseURL: "http://localhost:3001",
+  baseURL: process.env.NEXT_API_BASE_URL,
 });
 
 // GET Images

@@ -1,8 +1,8 @@
 import axios from "axios";
-import { QueryClient, useMutation, useQuery } from "react-query";
+import { QueryClient, useQuery } from "react-query";
 
 const addonApi = axios.create({
-  baseURL: "http://localhost:3001",
+  baseURL: process.env.NEXT_API_BASE_URL,
 });
 
 export interface Addon {
@@ -34,6 +34,6 @@ export const getAddons = async () => {
 };
 
 // POST Category
-// export const createCategory = async (newAddon: Addon) => {
-//   return await addonApi.post("/addon", newCategory);
-// };
+export const createCategory = async (newAddon: Addon) => {
+  return await addonApi.post("/addon", newAddon);
+};

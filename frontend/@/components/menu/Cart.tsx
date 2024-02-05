@@ -1,5 +1,6 @@
 import * as React from "react";
 import { TransitionGroup, CSSTransition } from "react-transition-group";
+import Cookies from "js-cookie";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -13,6 +14,19 @@ import {
 } from "@/components/ui/drawer";
 import { ShoppingBag, X } from "lucide-react";
 import { useCart } from "@/context/CartContext";
+import { CustomerInfoModal } from "./CustomerInfo";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { toast } from "../ui/use-toast";
 
 export interface Item {
   id: string;
@@ -25,9 +39,40 @@ export interface Item {
 }
 
 export function Cart() {
+  const [newCustomer, setNewCustomer] = React.useState(false);
   const { cart, removeItem, total } = useCart();
   const overallTotal = total + Math.round(total * 0.14);
 
+  const checkUserInfo = () => {
+    const userInfo = Cookies.get("userInfo");
+    return userInfo ? JSON.parse(userInfo) : null;
+  };
+
+  const handleSubmit = () => {
+    console.log("Order Submitted");
+  };
+
+  const handleFormSubmit = () => {};
+
+  const handleRemoveItem = (index: number) => {
+    removeItem(index);
+    toast({
+      variant: "destructive",
+      description: `تم حذف ${cart[index].name} من السلة`,
+      style: {
+        justifyContent: "center",
+      },
+    });
+  };
+
+  React.useEffect(() => {
+    const userInfo = checkUserInfo();
+    if (userInfo) {
+      console.log("userInfo", userInfo);
+    } else {
+      setNewCustomer(true);
+    }
+  });
   return (
     <Drawer>
       <DrawerTrigger asChild>
@@ -63,7 +108,7 @@ export function Cart() {
                       >
                         <div className="flex items-center gp-0 justify-start">
                           <X
-                            onClick={() => removeItem(index)}
+                            onClick={() => handleRemoveItem(index)}
                             className="me-2 text-red-500 w-4 h-4"
                           />
                           <h6 className="">{item.name}</h6>
@@ -97,7 +142,52 @@ export function Cart() {
             </div>
           </div>
           <DrawerFooter>
-            <Button>تأكيد</Button>
+            {cart.length === 0 ? (
+              <Button disabled>تأكيد الطلب</Button>
+            ) : newCustomer ? (
+              <CustomerInfoModal onFormSubmit={handleFormSubmit} />
+            ) : (
+              <Button onClick={handleSubmit}>تأكيد الطلب</Button>
+            )}
+            {/* <Dialog>
+              <DialogTrigger asChild>
+                <Button variant="outline">تأكيد الطلب</Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                  <DialogTitle>Edit profile</DialogTitle>
+                  <DialogDescription>
+                    Make changes to your profile here. Click save when you're
+                    done.
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="grid gap-4 py-4">
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="name" className="text-right">
+                      Name
+                    </Label>
+                    <Input
+                      id="name"
+                      value="Pedro Duarte"
+                      className="col-span-3"
+                    />
+                  </div>
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="username" className="text-right">
+                      Username
+                    </Label>
+                    <Input
+                      id="username"
+                      value="@peduarte"
+                      className="col-span-3"
+                    />
+                  </div>
+                </div>
+                <DialogFooter>
+                  <Button type="submit">Save changes</Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog> */}
           </DrawerFooter>
         </div>
       </DrawerContent>

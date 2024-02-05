@@ -5,45 +5,38 @@ import { useToast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import axios from "axios";
 
 export default function UserDetails({ user }) {
   const { toast } = useToast();
   const [data, setData] = useState<string>("");
 
-  const id = useRouter().query.id;
-  console.log(id);
-  const generateQR = async (userId: string) => {
-    try {
-      const res = await fetch("http://localhost:3001/api/qr/create", {
+  const tableId = useRouter().query.id;
+  const generateQR = async (tableId: string) => {
+    let code64 = localStorage.getItem("qrCodeImage");
+    if (code64 && !code64 === null) {
+      const parsedCode64 = JSON.parse(code64);
+      setData(parsedCode64.dataImage);
+    } else {
+      const res = await fetch("http://localhost:3001/qr/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ userId }),
+        body: JSON.stringify({ tableId }),
       });
 
-      if (!res.ok) {
-        const err = await res.text();
-        throw new Error(err);
-      }
-
-      const code64 = await res.json();
-
-      setData(code64.dataImage);
-
-      // Store the image data in local storage
-      localStorage.setItem("qrCodeImage", code64.dataImage);
-    } catch (err) {
-      console.log(err);
+      const result = await res.json();
+      localStorage.setItem("qrCodeImage", JSON.stringify(result));
+      setData(result.dataImage);
     }
   };
 
   useEffect(() => {
-    if (typeof id === "string") {
-      generateQR(id);
+    if (typeof tableId === "string") {
+      generateQR(tableId);
+      console.log(data);
     }
-  }, [id]);
+  }, [tableId]);
   return (
     <div className="p-4">
       <div className="flex flex-col gap-y-2">
@@ -51,8 +44,9 @@ export default function UserDetails({ user }) {
         <Button
           type="button"
           onClick={() => {
-            if (typeof id === "string") {
-              generateQR(id);
+            console.log("clicked");
+            if (typeof tableId === "string") {
+              generateQR(tableId);
             } else {
               console.error("Expected id to be a string, but got an array");
             }

@@ -9,7 +9,7 @@ export type ITable = {
 };
 
 const tableApi = axios.create({
-  baseURL: "http://localhost:3001",
+  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
 });
 
 // Get tables data

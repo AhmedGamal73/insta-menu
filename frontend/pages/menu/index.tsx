@@ -19,6 +19,15 @@ const Menu = () => {
       console.log("modalContext", modalContext.isModalOpen);
     }
   }, [modalContext?.isModalOpen]);
+  useEffect(() => {
+    // Get tableId from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const tableId = urlParams.get("tableId");
+
+    if (tableId) {
+      console.log("tableId", tableId);
+    }
+  }, []);
 
   return (
     <CartProvider>

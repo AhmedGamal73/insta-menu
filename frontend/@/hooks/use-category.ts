@@ -1,8 +1,8 @@
 import axios from "axios";
-import { QueryClient, useMutation, useQuery } from "react-query";
+import { QueryClient, useQuery } from "react-query";
 
 const categoryApi = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
+  baseURL: process.env.NEXT_API_BASE_URL,
 });
 
 export interface Category {
@@ -24,7 +24,7 @@ export const useCategory = () => {
     queryKey: ["categories"],
     queryFn: async () => {
       try {
-        const { data } = await categoryApi.get("/category");
+        const { data } = await getCategory();
         return data;
       } catch (error) {
         console.log(error);
@@ -40,9 +40,7 @@ export const useActiveProductByCategory = (categoryName: string) => {
     queryKey: ["productByCategory", categoryName],
     queryFn: async () => {
       try {
-        const { data } = await categoryApi.get(
-          `/category/${categoryName}/products`
-        );
+        const { data } = await getProductByCategory(categoryName);
         return data;
       } catch (error) {
         console.log(`Thier is an error: ${error}`);
@@ -79,6 +77,11 @@ export const postSubcategories = async (
   );
 };
 
+// Get Subcategories
+export const getCategory = async () => {
+  return await categoryApi.get(`/category`);
+};
+
 // POST Category
 export const createCategory = async (newCategory: Category) => {
   return await categoryApi.post("/category", newCategory);
@@ -87,4 +90,9 @@ export const createCategory = async (newCategory: Category) => {
 // Get Subcategories
 export const getSubcategories = async (categoryId: string) => {
   return await categoryApi.get(`/category/${categoryId}/sub`);
+};
+
+// Get GetProductByCategory
+export const getProductByCategory = async (categoryId: string) => {
+  return await categoryApi.get(`/category/${categoryId}/products`);
 };
