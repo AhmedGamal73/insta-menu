@@ -1,19 +1,17 @@
 import { useCart } from "@/context/CartContext";
-import { Gift, Home, Pizza, ScrollText, ShoppingBag } from "lucide-react";
+import { Gift, Pizza, ScrollText } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Cart } from "./Cart";
 
 const Navbar = () => {
-  const { cart } = useCart();
-  const [vibrate, setVibrate] = useState(false);
-  const [cartOpen, setCartOpen] = useState(false);
+  // const [cart, setCart] = useState(null);
 
-  useEffect(() => {
-    setVibrate(true);
-    setTimeout(() => {
-      setVibrate(false);
-    }, 1000);
-  }, [cart]);
+  // useEffect(() => {
+  //   if (typeof window !== "undefined") {
+  //     const { cart } = useCart();
+  //     setCart(cart);
+  //   }
+  // }, []);
 
   return (
     <div>

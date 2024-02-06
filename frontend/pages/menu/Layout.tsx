@@ -8,7 +8,7 @@ function Layout({ children }: LayoutProps) {
   return (
     <div dir="rtl" className="h-full">
       <div className="">
-        <Navbar />
+        {/* <Navbar /> */}
         {children}
         <Toaster />
       </div>

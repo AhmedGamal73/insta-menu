@@ -2,7 +2,7 @@ import axios from "axios";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 
 const productApi = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
+  baseURL: "http://localhost:3001",
 });
 
 export type Product = {

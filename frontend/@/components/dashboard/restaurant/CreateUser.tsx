@@ -1,12 +1,22 @@
 "use client";
+
 import React, { useState } from "react";
+import { useMutation, useQueryClient } from "react-query";
+import { Plus } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import { useToast } from "../../ui/use-toast";
-import { useMutation, useQueryClient } from "react-query";
 import { addTable } from "@/hooks/use-table";
 import useSection from "@/hooks/use-section";
-import { Dialog, DialogTrigger } from "@radix-ui/react-dialog";
-import { Plus } from "lucide-react";
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import SectoinForm from "./SectionForm";
 
 export const CreateUser: React.FC = () => {
   const [tableNo, setTableNo] = useState<Number>(0);
@@ -36,14 +46,8 @@ export const CreateUser: React.FC = () => {
     },
   });
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    addTableMutation.mutate({ tableNo, chairsNo, tableStatus, section });
-    console.log(tableNo, chairsNo, tableStatus, section);
-  };
-
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog>
       <DialogTrigger dir="rtl" asChild>
         <Button variant="destructive">
           <Plus className="me-2 w-4 h-4" />

@@ -31,6 +31,7 @@ const FormSchema = z.object({
 });
 
 interface IWaiter {
+  _id: string;
   name: string;
   phone: string;
   age: number;
