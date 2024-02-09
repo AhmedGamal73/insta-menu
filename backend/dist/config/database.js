@@ -5,12 +5,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.connect = exports.MONGO_URL = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
-require("dotenv").config({ path: "../.env" });
+require("dotenv").config({ path: "../../.env" });
 exports.MONGO_URL = process.env.MONGO_URL;
 const connect = () => {
-    const options = {};
+    const optioimportns = {};
     mongoose_1.default
-        .connect(exports.MONGO_URL, options)
+        .connect(exports.MONGO_URL, optioimportns)
         .then(() => {
         console.log("Connected to database");
     })

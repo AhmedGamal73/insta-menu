@@ -5,10 +5,13 @@ interface IImg extends Document {
 }
 
 const imgSchema = new mongoose.Schema({
-  imgName: {
+  imgUrl: {
     type: String,
     required: true,
   },
+  createdAt: {
+    type: Date, default: Date.now
+  }
 });
 
 export default mongoose.model<IImg>("Img", imgSchema);
