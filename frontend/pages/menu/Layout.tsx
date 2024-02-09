@@ -4,6 +4,7 @@ import { Toaster } from "@/components/ui/toaster";
 interface LayoutProps {
   children: React.ReactNode;
 }
+
 function Layout({ children }: LayoutProps) {
   return (
     <div dir="rtl" className="h-full">

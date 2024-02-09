@@ -101,7 +101,6 @@ const CreateProductPage = () => {
   };
 
   // destructe form values
-
   useEffect(() => {
     const { name, description, price, salePrice, active, addons } =
       form.watch();
@@ -180,9 +179,8 @@ const CreateProductPage = () => {
                         <FormItem>
                           <FormControl onChange={handleImgUpload}>
                             <Label
-                              className={`w-full flex border-dashed border-2 rounded  hover:bg-slate-50 ${
-                                imgPreview && "hover:bg-white"
-                              } `}
+                              className={`w-full flex border-dashed border-2 rounded  hover:bg-slate-50 ${imgPreview && "hover:bg-white"
+                                } `}
                             >
                               {img && imgPreview ? (
                                 <div className="flex m-4 w-32 h-32 flex-col gap-0 justify-start items-start border rounded-b-sm pointer-events-none">
@@ -198,7 +196,6 @@ const CreateProductPage = () => {
                                       e.stopPropagation();
                                       setImg(null);
                                       setImgPreview(null);
-                                      console.log(imgPreview, img);
                                     }}
                                   >
                                     {" "}
@@ -268,63 +265,63 @@ const CreateProductPage = () => {
                                 <AddNewCategory />
                                 {allAddons && allAddons.length > 0
                                   ? allAddons?.map((addon: Addon) => (
-                                      <FormField
-                                        key={addon._id}
-                                        control={form.control}
-                                        name="addons"
-                                        render={({ field }) => {
-                                          return (
-                                            <FormItem
-                                              key={addon._id}
-                                              className="flex flex-row items-start space-x-3 space-y-0 gap-x-2 px-4"
-                                            >
-                                              <FormControl>
-                                                <Checkbox
-                                                  checked={field.value.includes(
-                                                    addon._id
-                                                  )}
-                                                  onCheckedChange={(
-                                                    checked
-                                                  ) => {
-                                                    if (checked) {
-                                                      setSelectedAddons(
-                                                        (prevAddons) => [
-                                                          ...prevAddons,
-                                                          addon._id,
-                                                        ]
-                                                      );
-                                                      field.onChange([
-                                                        ...field.value,
+                                    <FormField
+                                      key={addon._id}
+                                      control={form.control}
+                                      name="addons"
+                                      render={({ field }) => {
+                                        return (
+                                          <FormItem
+                                            key={addon._id}
+                                            className="flex flex-row items-start space-x-3 space-y-0 gap-x-2 px-4"
+                                          >
+                                            <FormControl>
+                                              <Checkbox
+                                                checked={field.value.includes(
+                                                  addon._id
+                                                )}
+                                                onCheckedChange={(
+                                                  checked
+                                                ) => {
+                                                  if (checked) {
+                                                    setSelectedAddons(
+                                                      (prevAddons) => [
+                                                        ...prevAddons,
                                                         addon._id,
-                                                      ]);
-                                                    } else {
-                                                      setSelectedAddons(
-                                                        (prevAddons) =>
-                                                          prevAddons.filter(
-                                                            (addonID) =>
-                                                              addonID !==
-                                                              addon._id
-                                                          )
-                                                      );
-                                                      field.onChange(
-                                                        field.value.filter(
-                                                          (addonID: string) =>
+                                                      ]
+                                                    );
+                                                    field.onChange([
+                                                      ...field.value,
+                                                      addon._id,
+                                                    ]);
+                                                  } else {
+                                                    setSelectedAddons(
+                                                      (prevAddons) =>
+                                                        prevAddons.filter(
+                                                          (addonID) =>
                                                             addonID !==
                                                             addon._id
                                                         )
-                                                      );
-                                                    }
-                                                  }}
-                                                />
-                                              </FormControl>
-                                              <FormLabel>
-                                                {addon.name}
-                                              </FormLabel>
-                                            </FormItem>
-                                          );
-                                        }}
-                                      />
-                                    ))
+                                                    );
+                                                    field.onChange(
+                                                      field.value.filter(
+                                                        (addonID: string) =>
+                                                          addonID !==
+                                                          addon._id
+                                                      )
+                                                    );
+                                                  }
+                                                }}
+                                              />
+                                            </FormControl>
+                                            <FormLabel>
+                                              {addon.name}
+                                            </FormLabel>
+                                          </FormItem>
+                                        );
+                                      }}
+                                    />
+                                  ))
                                   : ""}
                               </SelectGroup>
                             </SelectContent>
@@ -358,13 +355,13 @@ const CreateProductPage = () => {
                                 <AddNewCategory />
                                 {categories && categories.length > 0
                                   ? categories?.map((category: Category) => (
-                                      <SelectItem
-                                        key={category._id}
-                                        value={category._id}
-                                      >
-                                        {category.name}
-                                      </SelectItem>
-                                    ))
+                                    <SelectItem
+                                      key={category._id}
+                                      value={category._id}
+                                    >
+                                      {category.name}
+                                    </SelectItem>
+                                  ))
                                   : ""}
                               </SelectGroup>
                             </SelectContent>
@@ -394,8 +391,8 @@ const CreateProductPage = () => {
                                 selectedCategoryId={selectedCategory}
                               />
                               {categories &&
-                              categories.length > 0 &&
-                              selectedCategory ? (
+                                categories.length > 0 &&
+                                selectedCategory ? (
                                 <Subcategories
                                   selectedCategoryId={selectedCategory}
                                 />

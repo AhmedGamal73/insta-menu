@@ -2,7 +2,7 @@ import axios from "axios";
 import { QueryClient, useQuery } from "react-query";
 
 const categoryApi = axios.create({
-  baseURL: "http://localhost:3001",
+  baseURL: process.env.NEXT_PUBLIC_MONGODB_URI,
 });
 
 export interface Category {

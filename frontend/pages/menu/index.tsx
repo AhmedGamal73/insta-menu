@@ -8,6 +8,8 @@ import { ModalContext } from "@/context";
 import Layout from "./Layout";
 import { CartProvider } from "@/context/CartContext";
 import { Toaster } from "@/components/ui/toaster";
+import { Cart } from "@/components/menu/Cart";
+import Navbar from "@/components/menu/Navbar";
 
 const Menu = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>("");
@@ -43,6 +45,7 @@ const Menu = () => {
               setSelectedItem={setSelectedCategory}
             />
 
+            <Navbar />
             <ProductsList selectedCategory={selectedCategory} />
           </div>
         </div>

@@ -2,7 +2,7 @@ import axios from "axios";
 import { QueryClient, useQuery } from "react-query";
 
 const addonApi = axios.create({
-  baseURL: process.env.NEXT_API_BASE_URL,
+  baseURL: process.env.NEXT_PUBLIC_MONGODB_URI,
 });
 
 export interface Addon {
@@ -11,7 +11,6 @@ export interface Addon {
   price: number;
 }
 
-const queryClient = new QueryClient();
 // Fetch all Addons
 export const useAddons = () => {
   return useQuery({
