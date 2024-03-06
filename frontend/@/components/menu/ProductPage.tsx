@@ -77,8 +77,7 @@ const ProductPage: React.FC<productsProps> = ({ product, onClose }) => {
         description: `تم اضافة ${item.name} الى السلة`,
         style: {
           justifyContent: "center",
-          backgroundColor: "rgb(105 105 105 /30%)",
-          backdropFilter: "blur(10px)",
+          backgroundColor: "hsl(var(--primary)",
           borderColor: "transparent",
           color: "white",
         },
@@ -101,7 +100,7 @@ const ProductPage: React.FC<productsProps> = ({ product, onClose }) => {
         <h1 className="text-warning">{price}</h1>
       </div>
       <div className="flex flex-col justify-center items-center">
-        <img src="/img/products/turkish-coffe.webp" className="w-2/3" />
+        <img src={product.imgURL} className="w-2/3" />
         <div className="flex flex-col justify-center items-center w-full px-2">
           <div className="flex flex-col items-center justify-center gap-2 w-full">
             <div className="flex pt-4 justify-center w-full gap-4 flex-wrap">
@@ -143,9 +142,13 @@ const ProductPage: React.FC<productsProps> = ({ product, onClose }) => {
                 <span className="text-xs">{variables.curancy}</span>
               </h2>
             </div>
-            <p className="ml-2 pt-8 text-center w-full">
+            <p className="ml-2 pt-8 text-start ali w-full">
               {product.description}
             </p>
+
+            <div>
+              <h6>{product.addonCategoryId}</h6>
+            </div>
           </div>
         </div>
       </div>

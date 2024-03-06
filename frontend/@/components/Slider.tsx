@@ -10,13 +10,13 @@ const Slider = ({ data, selectedItem, setSelectedItem }) => {
                 key={i}
                 className={`${
                   category.name === selectedItem
-                    ? " font-bold text-sm text-secondary transition delay-75 ease-in-out border-b-2 border-warning"
-                    : "color-text text-text text-sm"
+                    ? " font-bold pt-1 text-xs rounded-lg bg-primary text-white transition ease-in-out border-b-2 border-warning"
+                    : "color-text text-text bg-bgc rounded-lg px-2 text-xs"
                 }`}
                 onClick={() => setSelectedItem(category.name)}
               >
                 <li
-                  className={`w-full pb-2 pt-6 border-bborder-b-white hover:border-b-red-500  flex justify-between items-center px-2 whitespace-nowrap`}
+                  className={`w-full py-2 border-bborder-b-white hover:border-b-red-500  flex justify-between items-center px-2 whitespace-nowrap`}
                 >
                   {category.name}
                 </li>

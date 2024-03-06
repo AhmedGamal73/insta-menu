@@ -27,6 +27,36 @@ export const useAddons = () => {
   });
 };
 
+// GET Addons by category
+export const useGetAddonsByCategory = (categoryId: string) => {
+  return useQuery({
+    queryKey: ["AddonsByCategory", categoryId],
+    queryFn: async () => {
+      try {
+        const { data } = await getAddonsByCategory(categoryId);
+        return data;
+      } catch (err) {
+        console.log(err);
+      }
+    },
+  });
+};
+
+// GET AddonsCategories
+export const useGetAddonsCategories = () => {
+  return useQuery({
+    queryKey: ["AddonCategory"],
+    queryFn: async () => {
+      try {
+        const { data } = await getAddonsCategories();
+        return data;
+      } catch (err) {
+        console.log(err);
+      }
+    },
+  });
+};
+
 // GET Addons
 export const getAddons = async () => {
   return await addonApi.get("/addon");
@@ -35,4 +65,14 @@ export const getAddons = async () => {
 // POST Category
 export const createCategory = async (newAddon: Addon) => {
   return await addonApi.post("/addon", newAddon);
+};
+
+// GET Addons by category
+export const getAddonsByCategory = async (categoryId: string) => {
+  return await addonApi.get(`/addon/${categoryId}`);
+};
+
+// GET AddonsCategories
+export const getAddonsCategories = async () => {
+  return await addonApi.get("/addoncategory");
 };

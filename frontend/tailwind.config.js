@@ -31,6 +31,8 @@ export const theme = {
       "3xl": "0 4px 13px 6px rgb(0 0 0 / 0.1), 0 2px 4px -8px rgb(0 0 0 / 0.1)",
     },
     colors: {
+      bgc: "hsl(var(--bgc))",
+
       warning: "var(--warning)",
       "warning-foreground": "var(--warning-foreground)",
 

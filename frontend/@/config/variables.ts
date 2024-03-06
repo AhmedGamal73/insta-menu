@@ -6,16 +6,30 @@ interface tabs {
   path: string;
 }
 
+interface IDashboardMenuItems {
+  id: number;
+  name: string;
+  href: string;
+}
+
 interface IVariables {
   curancy: string;
   dashboardTabs: {
     restaurant: tabs[];
     products: tabs[];
   };
+  dashboardMenuItems: IDashboardMenuItems[];
 }
 
 const variables: IVariables = {
   curancy: "ج.م",
+  dashboardMenuItems: [
+    { id: 0, name: "الرئيسية", href: "/" },
+    { id: 1, name: "المنتجات", href: "/products" },
+    { id: 2, name: "المطعم", href: "/restaurant" },
+    { id: 3, name: "النادل", href: "/waiter" },
+    { id: 4, name: "الطاولة", href: "/tables" },
+  ],
   dashboardTabs: {
     restaurant: [
       {

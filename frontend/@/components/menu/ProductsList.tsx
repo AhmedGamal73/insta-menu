@@ -11,7 +11,7 @@ export const ProductsList = ({ selectedCategory }) => {
   } = useActiveProductByCategory(selectedCategory);
 
   return (
-    <div className="flex flex-col gap-6 mb-4">
+    <div className="flex flex-col gap-6 pb-24">
       {selectedCategory && products && products.length > 0
         ? products.map((product: Product, index: Key) => {
             return <ProductCard index={index} product={product} />;

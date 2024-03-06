@@ -8,15 +8,16 @@ const productApi = axios.create({
 export type Product = {
   _id?: string;
   name: string;
-  price: null;
-  salePrice: null;
-  description: string;
-  imgURL?: string;
-  categoryId: string;
+  price?: number;
+  salePrice?: number;
+  description?: string;
+  imgURL: string;
+  categoryId?: string;
   subcategoryId?: string;
   variable?: boolean;
   variations?: [{ name: string; quantity: number; price: number }];
   active?: boolean;
+  addons?: string[];
 };
 
 // GET Products

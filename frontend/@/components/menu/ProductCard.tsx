@@ -12,8 +12,8 @@ const ProductCard = ({ product, index }) => {
       onClick={() => setModalOpen(true)}
       className="pb-4 flex justify-between items-center border-b border-gray-200 px-4"
     >
-      <img src="/product.webp" className="pe-3 w-[90px]" alt="" />
-      <div className="flex items-center w-full gap-4">
+      <img src={product.imgURL} className="pe-3 object-cover w-[90px]" alt="" />
+      <div className="flex items-center justify-between w-full gap-4">
         <div className="flex flex-col gap-2 text-start">
           <h5 className="text-secondary">{product.name}</h5>
           <p>{product.description}</p>
