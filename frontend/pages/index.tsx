@@ -1,11 +1,11 @@
 import { Button } from "@/components/ui/button";
+import { CartProvider } from "@/context/CartContext";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 export default function App(): any {
   const router = useRouter();
-  const [map, setMap] = useState<string>("");
 
   useEffect(() => {
     if (window.innerWidth > 768) {

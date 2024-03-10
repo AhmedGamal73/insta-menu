@@ -40,6 +40,8 @@ export interface IProduct extends Document {
   active?: boolean;
   variations?: Ivariation[];
   variable?: boolean;
+  addonCategory?: string;
+  addons?: [];
 }
 
 const productSchema = new Schema({
@@ -48,7 +50,7 @@ const productSchema = new Schema({
   salePrice: { type: Number, required: false, default: null },
   description: { type: String, required: false },
   variable: { type: Boolean, required: false, default: false },
-  img: { type: Schema.Types.ObjectId, ref: "Img", required: false },
+  imgURL: { type: String, required: false },
   category: {
     type: Schema.Types.ObjectId,
     ref: "Category",
@@ -69,6 +71,18 @@ const productSchema = new Schema({
   rating: { type: Number, default: 0, required: false },
   active: { type: Boolean, default: true, required: true },
   variations: [variationSchema],
+  addonCategory: {
+    id: {
+      type: Schema.Types.ObjectId,
+      ref: "AddonCategory",
+      requered: false,
+    },
+    name: {
+      type: String,
+      required: false,
+    },
+  },
+  addons: [{ type: Schema.Types.ObjectId, required: false }],
 });
 
 export default mongoose.model<IProduct>("Product", productSchema);

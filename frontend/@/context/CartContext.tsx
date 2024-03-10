@@ -1,4 +1,5 @@
 import { Item } from "@/components/menu/Cart";
+import Cookies from "js-cookie";
 import { useContext, createContext, useState, useEffect } from "react";
 
 export const CartContext = createContext(null);
@@ -6,10 +7,13 @@ export const CartContext = createContext(null);
 export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState([]);
   const [total, setTotal] = useState(0);
+  const [vat, setVat] = useState(0);
 
   const addItem = (item) => {
     setCart([...cart, item]);
-    setTotal(total + item.price);
+    const tot = total + item.price;
+    setTotal(tot);
+    setVat(tot * 0.14);
   };
 
   const removeItem = (index: number) => {
@@ -18,7 +22,9 @@ export const CartProvider = ({ children }) => {
       const newCart = [...cart];
       newCart.splice(index, 1);
       setCart(newCart);
-      setTotal(total - item.price);
+      const tot = total - item.price;
+      setTotal(tot);
+      setVat(tot * 0.14);
     }
   };
 
@@ -28,16 +34,22 @@ export const CartProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    console.log({ cart: cart, total: total });
-  }, [cart]);
+    Cookies.set("cart", JSON.stringify(cart));
+    Cookies.set("total", JSON.stringify(total));
+    Cookies.set("vat", JSON.stringify(vat));
+  }, [cart, total]);
+
   return (
     <CartContext.Provider
       value={{
         cart,
+        total,
         addItem,
         removeItem,
         clearCart,
-        total,
+        setCart,
+        setVat,
+        setTotal,
       }}
     >
       {children}

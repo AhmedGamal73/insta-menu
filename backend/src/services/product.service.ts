@@ -1,6 +1,7 @@
 import Product, { IProduct } from "../models/product.model";
 import Category from "../models/category.model";
-import fs from "fs";
+import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import multer from "multer";
 
 interface PostProductsParams {
   name: string;
@@ -40,8 +41,6 @@ export async function postProducts({
     (sub) => sub._id?.toString() === subcategoryId.toString()
   );
   if (!subcategory) {
-    console.log("Subcategory ID:", subcategoryId);
-    console.log("Subcategories:", category.subcategories);
     throw new Error("Subcategory Not Exist");
   }
 
@@ -66,17 +65,6 @@ export async function postProducts({
   });
   await newProduct.save();
 
-  // Populate product with category
-  // const populatedProduct = await Product.findById(newProduct._id).populate(
-  //   "category",
-  //   "_id name"
-  // );
-
-  // if (!populatedProduct) {
-  //   throw new Error("Product not found");
-  // }
-
-  // Increment category total
   ++category.total;
   await category.save();
 

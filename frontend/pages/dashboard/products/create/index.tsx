@@ -19,6 +19,7 @@ interface CreatePostFormProps {
 export default function CreatePostForm(user: CreatePostFormProps) {
   const [categoryId, setCategoryId] = useState<string | null>(null);
   const [subcategoryId, setSubcategoryId] = useState<string | null>(null);
+  const [addonCategoryId, setAddonCategoryId] = useState<string>(null);
   const [addons, setAddons] = useState<string[]>([]);
 
   const [statusMessage, setStatusMessage] = useState("");
@@ -49,30 +50,40 @@ export default function CreatePostForm(user: CreatePostFormProps) {
   const handleSubcategorySelect = (subcategoryId: string) => {
     setSubcategoryId(subcategoryId);
   };
-  const handleSelectedAddons = (selectedAddons: string[]) => {
+  // handle selected addons
+  const handleSelectedAddons = (
+    selectedAddons: string[],
+    selectedAddonCategory: string
+  ) => {
     setAddons(selectedAddons);
+    setAddonCategoryId(selectedAddonCategory);
   };
+
+  const myArr = ["item1", "item2", "item3"];
 
   const onSubmit = async (e) => {
     e.preventDefault();
 
-    if (!file) {
-      toast({
-        title: "الرجاء إختيار صورة",
-      });
-      alert("الرجاء إختيار صورة");
-      return;
-    }
+    // if (!file) {
+    //   toast({
+    //     title: "الرجاء إختيار صورة",
+    //   });
+    //   alert("الرجاء إختيار صورة");
+    //   return;
+    // }
+
     const formData = new FormData();
     formData.append("img", file);
     formData.append("name", e.target.name.value);
     formData.append("categoryId", categoryId);
     formData.append("subcategoryId", subcategoryId);
+    formData.append("addonCategory", addonCategoryId);
     formData.append("addons", addons.join(","));
     formData.append("price", e.target.price.value);
     formData.append("description", e.target.description.value);
     formData.append("calories", e.target.calories.value);
     formData.append("salePrice", e.target.salePrice.value);
+
     await axios.post(`http://localhost:3001/product`, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
@@ -85,7 +96,7 @@ export default function CreatePostForm(user: CreatePostFormProps) {
 
   useEffect(() => {
     setSubcategoryId("");
-    console.log({ addons: addons });
+    console.log({ addonCategoryId: addonCategoryId });
   }, [categoryId]);
 
   return (

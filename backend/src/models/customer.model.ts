@@ -4,7 +4,7 @@ import mongoose, { Schema, Document } from "mongoose";
 export interface ICustomer extends Document {
   name: string;
   phone: string;
-  type: string;
+  password: string;
   address?: string;
   cart: string;
   orders: string[];
@@ -23,15 +23,14 @@ const customerSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
-    type: {
-      type: String,
-      required: true,
-      trim: true,
-    },
     address: {
       type: String,
       required: false,
       trim: true,
+    },
+    password: {
+      type: String,
+      required: true,
     },
     cart: {
       type: Schema.ObjectId,

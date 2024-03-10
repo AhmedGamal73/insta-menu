@@ -37,8 +37,9 @@ export function SelectAddon({ onSelectedAddonsChange }) {
   };
 
   React.useEffect(() => {
-    onSelectedAddonsChange(selectedAddons);
-  }, [selectedAddons]);
+    onSelectedAddonsChange(selectedAddons, selectedCategory);
+    console.log(selectedCategory);
+  }, [selectedAddons, selectedCategory]);
   return (
     <Select
       onValueChange={(e) => {

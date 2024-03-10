@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 
 import { useCategory } from "@/hooks/use-category";
-import BackButton from "@/components/menu/BackButton";
 import Slider from "@/components/Slider";
 import { ProductsList } from "@/components/menu/ProductsList";
 import { ModalContext } from "@/context";
@@ -31,25 +30,21 @@ const Menu = () => {
   }, []);
 
   return (
-    <CartProvider>
-      <Layout>
-        <div className="flex flex-col w-1/1" dir="rtl">
-          <div className="flex flex-col p-4 h-52 bg-menu-hero bg-center bg-cover bg-no-repeat">
-            {<BackButton />}
-          </div>
-          <div className="flex mt-[-2rem] bg-white flex-col gap-8 pt-6 rounded-[20px]">
-            <Slider
-              data={categoryData}
-              selectedItem={selectedCategory}
-              setSelectedItem={setSelectedCategory}
-            />
-            <Navbar />
-            <ProductsList selectedCategory={selectedCategory} />
-          </div>
+    <Layout>
+      <div className="flex flex-col w-1/1" dir="rtl">
+        <div className="flex flex-col p-4 h-52 bg-menu-hero bg-center bg-cover bg-no-repeat"></div>
+        <div className="flex mt-[-2rem] bg-white flex-col gap-4 pt-6 rounded-[20px]">
+          <Slider
+            data={categoryData}
+            selectedItem={selectedCategory}
+            setSelectedItem={setSelectedCategory}
+          />
+          <Navbar />
+          <ProductsList selectedCategory={selectedCategory} />
         </div>
-        <Toaster />
-      </Layout>
-    </CartProvider>
+      </div>
+      <Toaster />
+    </Layout>
   );
 };
 

@@ -14,7 +14,7 @@ const ICartItem = new Schema({
   productId: { type: Schema.Types.ObjectId, ref: "Product", required: true },
   quantity: { type: Number, required: true, default: 1 },
   addons: [{ type: Schema.Types.ObjectId, ref: "Addon" }],
-  notes: { type: String, required: false },
+  note: { type: String, required: false },
   price: { type: Number, required: true },
   variant: { type: String, required: false },
   priceAtTheTime: { type: Number, required: true },

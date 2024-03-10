@@ -17,6 +17,7 @@ export type Product = {
   variable?: boolean;
   variations?: [{ name: string; quantity: number; price: number }];
   active?: boolean;
+  addonCategory?: { id: string; name: string };
   addons?: string[];
 };
 

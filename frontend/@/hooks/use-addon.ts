@@ -57,9 +57,28 @@ export const useGetAddonsCategories = () => {
   });
 };
 
+export const useGetProductAddons = (productId: string) => {
+  return useQuery({
+    queryKey: ["ProductAddons", productId],
+    queryFn: async () => {
+      try {
+        const { data } = await getProductAddons(productId);
+        return data;
+      } catch (err) {
+        console.log(err);
+      }
+    },
+  });
+};
+
 // GET Addons
 export const getAddons = async () => {
   return await addonApi.get("/addon");
+};
+
+// GET Addon names
+export const getProductAddons = async (productId: string) => {
+  return await addonApi.get(`/addon/product/${productId}`);
 };
 
 // POST Category
