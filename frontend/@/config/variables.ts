@@ -25,10 +25,10 @@ const variables: IVariables = {
   curancy: "ج.م",
   dashboardMenuItems: [
     { id: 0, name: "الرئيسية", href: "/" },
-    { id: 1, name: "المنتجات", href: "/products" },
-    { id: 2, name: "المطعم", href: "/restaurant" },
-    { id: 3, name: "النادل", href: "/waiter" },
-    { id: 4, name: "الطاولة", href: "/tables" },
+    { id: 1, name: "المنتجات", href: "/dashboard/products" },
+    { id: 2, name: "المطعم", href: "/dashbaord/restaurant" },
+    { id: 3, name: "النادل", href: "/dashboard/waiter" },
+    { id: 4, name: "الطاولة", href: "/dashboard/tables" },
   ],
   dashboardTabs: {
     restaurant: [

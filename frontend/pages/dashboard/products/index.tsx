@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import Layout from "../layout";
+import Layout from "../../../@/components/dashboard/layout";
 import Addons from "@/components/dashboard/products/Addons";
 import Categories from "@/components/dashboard/products/Categories";
 import Products from "@/components/dashboard/products/Products";

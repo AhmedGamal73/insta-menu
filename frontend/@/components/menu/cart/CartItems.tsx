@@ -1,6 +1,6 @@
 import { CartProvider, useCart } from "@/context/CartContext";
 import { X } from "lucide-react";
-import { toast } from "../ui/use-toast";
+import { toast } from "../../ui/use-toast";
 import { useEffect } from "react";
 import Cookies from "js-cookie";
 
@@ -17,7 +17,15 @@ export interface Item {
 }
 
 const CartItems = () => {
-  const { cart, setCart, setTotal, setVat, removeItem } = useCart();
+  const {
+    cart,
+    setCart,
+    setSubtotal,
+    setVat,
+    removeItem,
+    setQuantity,
+    quantity,
+  } = useCart();
 
   const handleRemoveItem = (index: number) => {
     removeItem(index);
@@ -39,12 +47,17 @@ const CartItems = () => {
     const savedTotal = Cookies.get("total");
     if (savedTotal) {
       const parsedTotal = JSON.parse(savedTotal);
-      setTotal(parsedTotal);
+      setSubtotal(parsedTotal);
     }
     const savedVat = Cookies.get("vat");
     if (savedVat) {
       const parsedVat = JSON.parse(savedVat);
       setVat(parsedVat);
+    }
+    const savedQuantity = Cookies.get("quantity");
+    if (savedQuantity) {
+      const parsedQuantity = JSON.parse(savedQuantity);
+      setQuantity(parsedQuantity);
     }
   }, []);
 
@@ -56,14 +69,16 @@ const CartItems = () => {
       <div className="w-full z-10 py-2 sticky top-0 bg-gradient-to-t from-white/60 to-white"></div>
       <div className="scrollbar-hide">
         <TransitionGroup component={null}>
-          {cart && cart.length == 0 ? (
-            <h6 className="text-center">السلة فارغة</h6>
-          ) : cart.length > 0 ? (
+          {quantity === 0 ? (
+            <div className="w-full text-center">
+              <span>السلة فارغة</span>
+            </div>
+          ) : quantity > 0 ? (
             cart.map((item: Item, index: number) => (
               <CSSTransition key={index} timeout={300} classNames="item">
                 <div
                   key={index}
-                  className={`flex justify-between items-center border-slate-200 py-3 px-2 ${
+                  className={`flex justify-between items-center border-slate-200 py-3 px-4 ${
                     index === cart.length - 1 ? "" : "border-b"
                   }`}
                 >

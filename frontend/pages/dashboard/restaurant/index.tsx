@@ -3,7 +3,7 @@ import variables from "@/config/variables";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
-import Layout from "../layout";
+import Layout from "../../../@/components/dashboard/layout";
 import TablesPage from "./tables";
 import SectionsPage from "./sections";
 import WaitersPage from "./waiters";

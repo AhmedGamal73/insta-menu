@@ -1,4 +1,4 @@
-import Layout from "./layout";
+import Layout from "../../@/components/dashboard/layout";
 
 const Dashboard = () => {
   return (

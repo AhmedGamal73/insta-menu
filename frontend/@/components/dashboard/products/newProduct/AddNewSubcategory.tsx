@@ -38,13 +38,13 @@ const AddNewSubcategory = ({ selectedCategoryId }: AddNewSubcategoryProps) => {
     <div>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <Button variant="link">
-            <Plus className="me-2 w-4 h-4" /> إضافة تصنيف فرعي جديد
+          <Button variant="outline" className="text-base p-2 border rounded-lg">
+            <Plus className="w-4 h-4" />
           </Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle>أضف فئة مخصصة مخصصة</DialogTitle>
+            <DialogTitle>أضف تصنيف فرعي جديد</DialogTitle>
           </DialogHeader>
           <CategoryForm selectedCategoryId={selectedCategoryId} />
         </DialogContent>

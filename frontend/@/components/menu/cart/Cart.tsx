@@ -15,8 +15,8 @@ import {
 } from "@/components/ui/drawer";
 import { ShoppingBag, X } from "lucide-react";
 import { useCart } from "@/context/CartContext";
-import { CustomerInfoModal } from "./CustomerInfo";
-import { toast } from "../ui/use-toast";
+import { CustomerInfoModal } from "../CustomerInfo";
+import { toast } from "../../ui/use-toast";
 import Link from "next/link";
 import CartItems from "./CartItems";
 
@@ -32,8 +32,17 @@ export interface Item {
 
 export function Cart() {
   const [newCustomer, setNewCustomer] = React.useState(true);
-  const { cart, removeItem, total, setCart, setTotal, setVat } = useCart();
-  const overallTotal = total + Math.round(total * 0.14);
+  const {
+    cart,
+    removeItem,
+    subtotal,
+    setCart,
+    setSubtotal,
+    setVat,
+    vat,
+    quantity,
+  } = useCart();
+  const total = subtotal + Math.round(subtotal * 0.14);
 
   const checkCustomerToken = () => {
     const customerToken = Cookies.get("customerToken");
@@ -58,7 +67,6 @@ export function Cart() {
     if (token === null) {
       setNewCustomer(true);
     } else {
-      console.log("customerToken", token);
       setNewCustomer(false);
     }
 
@@ -67,10 +75,10 @@ export function Cart() {
       const parsedCart = JSON.parse(savedCart);
       setCart(parsedCart);
     }
-    const savedTotal = Cookies.get("total");
-    if (savedTotal) {
-      const parsedTotal = JSON.parse(savedTotal);
-      setTotal(parsedTotal);
+    const savedSubtotal = Cookies.get("subtotal");
+    if (savedSubtotal) {
+      const parsedSubtotal = JSON.parse(savedSubtotal);
+      setSubtotal(parsedSubtotal);
     }
     const savedVat = Cookies.get("vat");
     if (savedVat) {
@@ -100,23 +108,23 @@ export function Cart() {
             <div className="w-full px-2 pt-6 gap-4 flex flex-col">
               <div className="flex justify-between items-center">
                 <h6>المجموع</h6>
-                <h6>{total} ج.م</h6>
+                <h6>{subtotal} ج.م</h6>
               </div>
               <div className="flex justify-between items-center">
                 <h6>ضريبة القيمة المضافة</h6>
-                <h6>{Math.round(total * 0.14)} ج.م</h6>
+                <h6>{Math.round(subtotal * 0.14)} ج.م</h6>
               </div>
               <div className="flex justify-between items-center border-t-2 pt-2">
                 <h6>الإجمالي </h6>
-                <h6>{overallTotal} ج.م</h6>
+                <h6>{total} ج.م</h6>
               </div>
             </div>
           </div>
           <DrawerFooter>
-            {cart.length === 0 ? (
+            {quantity === 0 ? (
               <Button disabled>الدفع</Button>
             ) : newCustomer == false ? (
-              <Button asChild onClick={() => console.log(cart)}>
+              <Button asChild>
                 <Link href="/menu/checkout">الدفع</Link>
               </Button>
             ) : (

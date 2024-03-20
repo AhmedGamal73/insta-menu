@@ -73,7 +73,6 @@ const ProductPage: React.FC<productsProps> = ({ product, onClose }) => {
     };
 
     addItem(item);
-    console.log(item);
     setTimeout(() => {
       toast({
         description: `تم اضافة ${item.name} الى السلة`,
@@ -96,10 +95,6 @@ const ProductPage: React.FC<productsProps> = ({ product, onClose }) => {
       setSelectedAddons(selectedAddons.filter((addon) => addon !== value));
     }
   };
-
-  useEffect(() => {
-    console.log("selectedAddons", selectedAddons);
-  }, [selectedAddons]);
 
   return (
     <div className="flex flex-col gap-8 justify-between relative pb-[4rem]">

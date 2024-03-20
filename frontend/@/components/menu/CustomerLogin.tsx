@@ -24,7 +24,7 @@ import { Cookie } from "lucide-react";
 
 const wait = () => new Promise((resolve) => setTimeout(resolve, 1000));
 
-const CustomerLogin = ({ onSubmitHandler }) => {
+const CustomerLogin = ({ onSubmitHandler, wideButton }) => {
   // to disable the button after submit
   const [disabled, setDisabled] = useState(false);
   // to close the modal after success auth
@@ -86,13 +86,11 @@ const CustomerLogin = ({ onSubmitHandler }) => {
   const mutation = useMutationCustomer();
 
   function onSubmit(customer: CustomerLogin) {
-    console.log(customer);
     mutation.mutate(customer);
     setDisabled(true);
   }
 
   useEffect(() => {
-    console.log({ authSuccess });
     if (authSuccess) {
       wait().then(() => {
         onSubmitHandler(false);
@@ -104,7 +102,7 @@ const CustomerLogin = ({ onSubmitHandler }) => {
       <form
         dir="rtl"
         onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-2"
+        className={"space-y-2 px-4"}
       >
         <FormField
           control={form.control}
@@ -134,7 +132,11 @@ const CustomerLogin = ({ onSubmitHandler }) => {
           )}
         />
 
-        <Button disabled={disabled} type="submit">
+        <Button
+          className={wideButton ? "w-full" : ""}
+          disabled={disabled}
+          type="submit"
+        >
           {disabled ? (
             <>
               جاري تسجيل الدخول

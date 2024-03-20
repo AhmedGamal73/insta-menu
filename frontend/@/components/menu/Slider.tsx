@@ -2,7 +2,7 @@ import { Category } from "@/hooks/use-category";
 
 const Slider = ({ data, selectedItem, setSelectedItem }) => {
   return (
-    <div className="w-full sticky top-0 py-2 bg-white shadow-sm">
+    <div className="w-full sticky top-0 py-2 bg-white shadow-sm z-20">
       <ul className="ps-4 w-full flex gap-2 overflow-x-scroll scrollbar-hide">
         <button>
           <li

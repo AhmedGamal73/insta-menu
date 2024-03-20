@@ -33,14 +33,14 @@ const AddNewCategory = () => {
   return (
     <div>
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger asChild>
-          <Button variant="link" className="text-base text-bold text-green-500">
-            <Plus className="me-2 w-4 h-4" /> إضافة تصنيف جديد
+        <DialogTrigger className="w-auto" asChild>
+          <Button variant="outline" className="text-base p-2 border rounded-lg">
+            <Plus className="w-4 h-4" />
           </Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle>أضف فئة مخصصة</DialogTitle>
+            <DialogTitle>أضف تصنيف جديد</DialogTitle>
           </DialogHeader>
           <CategoryForm />
         </DialogContent>

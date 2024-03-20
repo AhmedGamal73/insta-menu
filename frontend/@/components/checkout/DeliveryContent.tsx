@@ -17,7 +17,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { CustomerLogin, postCustomerLogin } from "@/hooks/use-customer";
 import { useMutation } from "react-query";
-import { toast } from "../../ui/use-toast";
+import { toast } from "../ui/use-toast";
 import React, { useEffect, useState } from "react";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import { Cookie } from "lucide-react";

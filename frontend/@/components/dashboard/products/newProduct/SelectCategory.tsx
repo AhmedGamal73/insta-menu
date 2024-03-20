@@ -1,4 +1,7 @@
 import * as React from "react";
+import { PlusIcon } from "lucide-react";
+import { useRef, useState } from "react";
+import { useCategory, useSubcategories } from "@/hooks/use-category";
 
 import {
   Select,
@@ -7,12 +10,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useCategory, useSubcategories } from "@/hooks/use-category";
-import { useRef, useState } from "react";
+import CreateCategories from "@/components/dashboard/products/CreateCategories";
+import { Button } from "@/components/ui/button";
+import AddNewCategory from "./AddNewCategory";
+import AddNewSubcategory from "./AddNewSubcategory";
 
 export function SelectCategory({ onCategorySelect, onSubcategorySelect }) {
   const [selectedCategoryId, setSelectedCategory] = useState("");
-  const [selectedSubcategoryId, setSelectedSubcategoryId] = useState("");
   const selectedSubcategoryIdRef = useRef("");
 
   const { data: categories } = useCategory();
@@ -29,23 +33,26 @@ export function SelectCategory({ onCategorySelect, onSubcategorySelect }) {
   };
 
   return (
-    <div className="flex flex-col gap-4">
-      <Select onValueChange={(value) => handleCategoryChange(value)}>
-        <SelectTrigger className="w-[280px]">
-          <SelectValue placeholder="إختر التصنيف" />
-        </SelectTrigger>
-        <SelectContent>
-          {categories &&
-            categories.map((category) => (
-              <SelectItem value={category._id}>{category.name}</SelectItem>
-            ))}
-        </SelectContent>
-      </Select>
-      {selectedCategoryId === "" ? (
-        ""
-      ) : (
+    <div className="w-full flex flex-col gap-4">
+      <div className="w-full flex gap-2">
+        <Select onValueChange={(value) => handleCategoryChange(value)}>
+          <SelectTrigger className="w-11/12">
+            <SelectValue placeholder="إختر التصنيف" />
+          </SelectTrigger>
+          <SelectContent>
+            {categories &&
+              categories.map((category) => (
+                <SelectItem value={category._id}>{category.name}</SelectItem>
+              ))}
+          </SelectContent>
+        </Select>
+
+        <AddNewCategory />
+      </div>
+
+      <div className="w-full flex gap-2">
         <Select onValueChange={(value) => handleSubcategoryChange(value)}>
-          <SelectTrigger className="w-[280px]">
+          <SelectTrigger className="w-full">
             <SelectValue
               placeholder={
                 subcategories && subcategories.length > 0
@@ -55,6 +62,7 @@ export function SelectCategory({ onCategorySelect, onSubcategorySelect }) {
             />
           </SelectTrigger>
           <SelectContent>
+            <CreateCategories />
             {subcategories && subcategories.length > 0
               ? subcategories.map((subcategory) => (
                   <SelectItem value={subcategory._id}>
@@ -64,7 +72,9 @@ export function SelectCategory({ onCategorySelect, onSubcategorySelect }) {
               : " لا يوجد تصنيف فرعي"}
           </SelectContent>
         </Select>
-      )}
+
+        <AddNewSubcategory selectedCategoryId={selectedCategoryId} />
+      </div>
     </div>
   );
 }

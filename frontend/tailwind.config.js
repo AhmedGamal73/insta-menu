@@ -18,6 +18,7 @@ export const theme = {
     backgroundImage: (theme) => ({
       "menu-hero": "url('/img/menu-hero.jpg')",
       "items-loading": "url('/img/loading.webp')",
+      success: "url('/img/success.png')",
     }),
     animation: {
       vibrate: "vibrate 0.2s linear",

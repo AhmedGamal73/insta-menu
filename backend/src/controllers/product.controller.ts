@@ -23,8 +23,8 @@ export async function postProductController(req: Request, res: Response) {
       addons,
     } = req.body;
 
-    // Make addons in array
-    const addonsArr = addons.split(",");
+    // add addons in array
+    const addonsArr = addons ? addons.split(",") : [];
 
     // Get AddonCategory name
     let addonCategoryName = "";

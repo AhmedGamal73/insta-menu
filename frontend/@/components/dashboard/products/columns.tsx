@@ -43,7 +43,9 @@ export const columns: ColumnDef<Product>[] = [
     cell: ({ row }) => {
       const desc = row.getValue("description") as string;
       const limit = 35;
-      return <p>{desc.length > limit ? desc.slice(0, limit) + "..." : desc}</p>;
+      return (
+        <p>{desc?.length > limit ? desc.slice(0, limit) + "..." : desc}</p>
+      );
     },
   },
   {

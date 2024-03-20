@@ -5,9 +5,6 @@ import mongoose from "mongoose";
 import express, { Request, Response } from "express";
 import { MONGO_URL } from "./config/database";
 import cors from "cors";
-import multer from "multer";
-import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
-import sharp from "sharp";
 
 import tableRouter from "./routes/table.route";
 import sectionRouter from "./routes/section.route";
@@ -18,9 +15,11 @@ import waiterRouter from "./routes/waiter";
 import Img from "./models/Img.model";
 import customerRouter from "./routes/customer.route";
 import qrRouter from "./routes/qrcode.route";
-import { Addon, AddonCategory } from "./models/addon.model";
-import Product from "./models/product.model";
+import { AddonCategory } from "./models/addon.model";
 import userRouter from "./routes/user.route";
+import orderRouter from "./routes/order.route";
+import cartRouter from "./routes/cart.route";
+import addressRouter from "./routes/address.route";
 
 const { API_PORT } = process.env;
 const port = (process.env.API_PORT as String) || API_PORT;
@@ -32,6 +31,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/section", sectionRouter);
+app.use("/order", orderRouter);
 app.use("/user", userRouter);
 app.use("/table", tableRouter);
 app.use("/product", productRouter);
@@ -40,6 +40,8 @@ app.use("/addon", addonsRouter);
 app.use("/waiter", waiterRouter);
 app.use("/customer", customerRouter);
 app.use("/qr", qrRouter);
+app.use("/address", addressRouter);
+app.use("/cart", cartRouter);
 
 // POST Addon
 app.post("/addoncategory", async (req: Request, res: Response) => {

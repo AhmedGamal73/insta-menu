@@ -1,20 +1,4 @@
-import {
-  Menubar,
-  MenubarCheckboxItem,
-  MenubarContent,
-  MenubarItem,
-  MenubarMenu,
-  MenubarRadioGroup,
-  MenubarRadioItem,
-  MenubarSeparator,
-  MenubarShortcut,
-  MenubarSub,
-  MenubarSubContent,
-  MenubarSubTrigger,
-  MenubarTrigger,
-} from "@/components/ui/menubar";
 import variables from "@/config/variables";
-import { Home, Salad } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -33,7 +17,7 @@ export function Sidebar({ className }) {
             >
               <Link
                 onClick={() => setActive(0)}
-                href=""
+                href={item.href}
                 className="w-full flex items-center gap-1 hover:bg-red"
               >
                 {/* <Home w-2 h-2 / */}

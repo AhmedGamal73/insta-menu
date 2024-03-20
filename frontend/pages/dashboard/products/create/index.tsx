@@ -5,26 +5,52 @@ import axios from "axios";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { twMerge } from "tailwind-merge";
-import { SelectCategory } from "./SelectCategory";
-import { SelectAddon } from "./SelectAddon";
+import { SelectCategory } from "../../../../@/components/dashboard/products/newProduct/SelectCategory";
+import { SelectAddon } from "../../../../@/components/dashboard/products/newProduct/SelectAddon";
+import SelectVariation from "../../../../@/components/dashboard/products/newProduct/SelectVariation";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
+import Layout from "@/components/dashboard/layout";
+import Box from "@/components/ui/Box";
+import BackButton from "@/components/ui/BackButton";
+import { z } from "zod";
 
 interface CreatePostFormProps {
   name?: string | null;
   image?: string | null;
 }
 
+const validationSchema = z
+  .object({
+    name: z.string().nonempty("الرجاء إدخال اسم المنتج"),
+    categoryId: z.string(),
+    subcategoryId: z.string(),
+    addonCategory: z.string(),
+    addons: z.array(z.string()),
+    price: z
+      .number()
+      .refine((val) => val > 0, { message: "الرجاء إدخال سعر صحيح" }),
+    description: z.string(),
+    calories: z.number(),
+    salePrice: z
+      .number()
+      .refine((val) => val > 0, { message: "الرجاء إدخال سعر خصم صحيح" }),
+  })
+  .refine((data) => data.salePrice <= data.price, {
+    message: "سعر الخصم يجب أن يكون أقل من السعر الإفتراضي",
+  });
+
 export default function CreatePostForm(user: CreatePostFormProps) {
   const [categoryId, setCategoryId] = useState<string | null>(null);
   const [subcategoryId, setSubcategoryId] = useState<string | null>(null);
   const [addonCategoryId, setAddonCategoryId] = useState<string>(null);
   const [addons, setAddons] = useState<string[]>([]);
+  const [errorMessage, setErrorMessage] = useState<string>("");
+  const [price, setPrice] = useState<number>(0);
+  const [salePrice, setSalePrice] = useState<number>(0);
 
-  const [statusMessage, setStatusMessage] = useState("");
   const [file, setFile] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | undefined>(undefined);
 
   const { toast } = useToast();
 
@@ -59,18 +85,13 @@ export default function CreatePostForm(user: CreatePostFormProps) {
     setAddonCategoryId(selectedAddonCategory);
   };
 
-  const myArr = ["item1", "item2", "item3"];
-
-  const onSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // if (!file) {
-    //   toast({
-    //     title: "الرجاء إختيار صورة",
-    //   });
-    //   alert("الرجاء إختيار صورة");
-    //   return;
-    // }
+    if (!file) {
+      setErrorMessage("الرجاء إختيار صورة للمنتج");
+      return;
+    }
 
     const formData = new FormData();
     formData.append("img", file);
@@ -79,19 +100,51 @@ export default function CreatePostForm(user: CreatePostFormProps) {
     formData.append("subcategoryId", subcategoryId);
     formData.append("addonCategory", addonCategoryId);
     formData.append("addons", addons.join(","));
-    formData.append("price", e.target.price.value);
+    +formData.append("price", e.target.price.value);
     formData.append("description", e.target.description.value);
     formData.append("calories", e.target.calories.value);
     formData.append("salePrice", e.target.salePrice.value);
 
-    await axios.post(`http://localhost:3001/product`, formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
+    const price = Number(e.target.price.value); // Convert price to number
+    const calories = Number(e.target.calories.value); // Convert calories to number
+    const salePrice = Number(e.target.salePrice.value); // Convert salePrice to number
+    try {
+      validationSchema.parse({
+        name: e.target.name.value,
+        categoryId: categoryId,
+        subcategoryId: subcategoryId,
+        addonCategory: addonCategoryId,
+        addons: addons,
+        price: price,
+        description: e.target.description.value,
+        calories: calories,
+        salePrice: salePrice,
+      });
 
-    setStatusMessage("creating");
-    setStatusMessage("created");
+      await axios.post(`http://localhost:3001/product`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      toast({
+        title: "تم إضافة المنتج بنجاح",
+        style: {
+          backgroundColor: "green",
+          color: "white",
+          textAlign: "right",
+          border: "none",
+        },
+      });
+    } catch (error) {
+      setErrorMessage(error.errors[0].message);
+      toast({
+        dir: "rtl",
+        variant: "destructive",
+        title: errorMessage.toString(),
+      });
+      return;
+    }
   };
 
   useEffect(() => {
@@ -100,94 +153,172 @@ export default function CreatePostForm(user: CreatePostFormProps) {
   }, [categoryId]);
 
   return (
-    <div className="w-full h-screen flex justify-center items-center p-4">
+    <Layout desc="قم بإنشاء منتج جديد" title="منتج جديد">
       <form
-        className="w-2/3 border border-neutral-500 rounded-lg px-6 py-4"
-        onSubmit={onSubmit}
+        className="w-full flex justify-center items-center bg-slate-50"
+        onSubmit={handleSubmit}
         dir="rtl"
       >
-        {statusMessage && (
-          <p className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 mb-4 rounded relative">
-            {statusMessage}
-          </p>
-        )}
+        <div className="w-10/12 flex flex-col gap-8 px-6 py-4">
+          <div className="w-full bg-white flex justify-between px-4 py-3 border border-b rounded-lg shadow-sm">
+            <div className="flex gap-2 ">
+              <Button type="submit">حفظ المنتج</Button>
+              <Button variant="outline">حفظ وأضف منتج جديد</Button>
+            </div>
+            <BackButton />
+          </div>
+          <div className="w-full flex gap-4">
+            <div className="w-2/3 flex flex-col gap-4">
+              <Box title="تفاصيل عامة" className="w-full" dataClassName="gap-4">
+                <div className="flex gap-4 items-start pb-4 w-full">
+                  <div className="flex flex-col gap-8 w-full">
+                    <div className="w-full flex gap-4">
+                      <label className="w-1/2 text-sm text-text flex flex-col gap-2">
+                        اسم المنتج
+                        <Input
+                          type="text"
+                          name="name"
+                          placeholder="ادخل اسم المنتج"
+                        />
+                      </label>
 
-        <div className="flex gap-4 items-start pb-4 w-full">
-          <div className="flex flex-col gap-2 w-full">
-            {previewUrl && file && (
-              <div className="mt-4">
-                <img
-                  className="w-[200px] h-[200px]"
-                  src={previewUrl}
-                  alt="Selected file h-24 w-24"
-                />
-              </div>
-            )}
+                      <label className="w-1/2 text-sm text-text flex flex-col gap-2">
+                        السعرات الحرارية
+                        <Input
+                          type="number"
+                          name="calories"
+                          placeholder="ادخل السعرات الحرارية"
+                        />
+                      </label>
+                    </div>
 
-            <Input type="text" name="name" placeholder="ادخل اسم المنتج" />
-            <Textarea name="description" placeholder="ادخل وصف المنتج" />
-            <Input type="number" name="price" placeholder="السعر الإفتراضي" />
-            <Input type="number" name="salePrice" placeholder="سعر الخصم" />
-            <Input
-              type="number"
-              name="calories"
-              placeholder="ادخل السعرات الحرارية"
-            />
-            <SelectCategory
-              onCategorySelect={handleCategorySelect}
-              onSubcategorySelect={handleSubcategorySelect}
-            />
+                    <label className="w-full text-sm text-textflex flex-col gap-2">
+                      وصف المنتج
+                      <Textarea
+                        name="description"
+                        placeholder="ادخل وصف المنتج"
+                      />
+                    </label>
+                  </div>
+                </div>
+              </Box>
 
-            <SelectAddon onSelectedAddonsChange={handleSelectedAddons} />
+              <Box className="w-full" title="إضافات المنتج">
+                <SelectAddon onSelectedAddonsChange={handleSelectedAddons} />
+              </Box>
 
-            {file && (
-              <Button
-                onClick={() => {
-                  setFile(null);
-                  setPreviewUrl(null);
-                  setStatusMessage("deleted");
-                  setCategoryId("");
-                  setSubcategoryId("");
-                }}
-                variant="destructive"
+              <Box className="w-full" title="خيارات المنتج">
+                <SelectVariation />
+              </Box>
+            </div>
+            <div className="w-1/3 flex flex-col gap-4">
+              <Box
+                dataClassName="flex-col"
+                title="صورة المنتج"
+                className="w-full flex flex-col justify-center items-center"
               >
-                delete
-              </Button>
-            )}
+                <div>
+                  {file && previewUrl !== undefined ? (
+                    <div className="w-full flex justify-center items-center">
+                      <div className="w-3/4 h-3/4">
+                        <img
+                          className="w-full rounded-t-lg"
+                          src={previewUrl}
+                          alt="Selected file h-24 w-24"
+                        />
+                        <Button
+                          className="w-full rounded-t-none"
+                          onClick={() => {
+                            setFile(null);
+                            setPreviewUrl(null);
+                            setCategoryId("");
+                            setSubcategoryId("");
+                          }}
+                          variant="destructive"
+                        >
+                          مسح الصورة
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <label className="w-full flex flex-col justify-center items-center cursor-pointer p-4">
+                      <div
+                        className="w-[200px] h-[200px] flex justify-center items-center rounded-lg border-dashed border hover:cursor-pointer transform-gpu active:scale-75 transition-all text-neutral-500"
+                        aria-label="Attach media"
+                        role="img"
+                      >
+                        <span>ارفق الصورة هنا</span>
+                      </div>
 
-            <label className="flex cursor-pointer ">
-              <svg
-                className="w-5 h-5 hover:cursor-pointer transform-gpu active:scale-75 transition-all text-neutral-500"
-                aria-label="Attach media"
-                role="img"
-                viewBox="0 0 20 20"
+                      <input
+                        className="bg-transparent flex-1 border-none outline-none hidden"
+                        name="image"
+                        type="file"
+                        onChange={handleFileChange}
+                        accept="image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm"
+                      />
+                    </label>
+                  )}
+                </div>
+              </Box>
+
+              <Box
+                dataClassName="flex-col"
+                title="تصنيف المنتج"
+                className="w-full flex flex-col justify-center items-center"
               >
-                <path
-                  d="M13.9455 9.0196L8.49626 14.4688C7.16326 15.8091 5.38347 15.692 4.23357 14.5347C3.07634 13.3922 2.9738 11.6197 4.30681 10.2794L11.7995 2.78669C12.5392 2.04694 13.6745 1.85651 14.4289 2.60358C15.1833 3.3653 14.9855 4.4859 14.2458 5.22565L6.83367 12.6524C6.57732 12.9088 6.28435 12.8355 6.10124 12.6671C5.94011 12.4986 5.87419 12.1983 6.12322 11.942L11.2868 6.78571C11.6091 6.45612 11.6164 5.97272 11.3088 5.65778C10.9938 5.35749 10.5031 5.35749 10.1808 5.67975L4.99529 10.8653C4.13835 11.7296 4.1823 13.0626 4.95134 13.8316C5.77898 14.6592 7.03874 14.6446 7.903 13.7803L15.3664 6.32428C16.8678 4.81549 16.8312 2.83063 15.4909 1.4903C14.1799 0.179264 12.1584 0.106021 10.6496 1.60749L3.10564 9.16608C1.16472 11.1143 1.27458 13.9268 3.06169 15.7139C4.8488 17.4937 7.6613 17.6109 9.60955 15.6773L15.1027 10.1841C15.4103 9.87653 15.4103 9.30524 15.0881 9.00495C14.7878 8.68268 14.2677 8.70465 13.9455 9.0196Z"
-                  className="fill-current"
-                ></path>
-              </svg>
+                <div className="w-full flex gap-4">
+                  <label className="w-full text-sm text-text flex flex-col gap-2">
+                    <SelectCategory
+                      onCategorySelect={handleCategorySelect}
+                      onSubcategorySelect={handleSubcategorySelect}
+                    />
+                  </label>
+                </div>
+              </Box>
+              <Box
+                dataClassName="flex-col"
+                title="تصنيف المنتج"
+                className="w-full flex flex-col justify-center items-center"
+              >
+                <div className="w-full flex flex-col gap-4">
+                  <label className="w-full text-sm text-text flex flex-col gap-2">
+                    <div className="flex items-center gap-2">
+                      السعر الإفتراضي للمنتج{" "}
+                      <span className="text-xs text-red-500">*</span>
+                    </div>
+                    <Input
+                      type="number"
+                      name="price"
+                      placeholder="السعر الإفتراضي"
+                      onChange={(e) => {
+                        setPrice(e.target.valueAsNumber);
+                      }}
+                    />
+                  </label>
 
-              <input
-                className="bg-transparent flex-1 border-none outline-none hidden bg-red-500"
-                name="image"
-                type="file"
-                onChange={handleFileChange}
-                accept="image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm"
-              />
-            </label>
+                  <label className="w-full flex flex-col text-text gap-2 text-sm">
+                    سعر الخصم
+                    <Input
+                      className={
+                        salePrice > 0 && salePrice <= price
+                          ? "border-red-500"
+                          : ""
+                      }
+                      type="number"
+                      name="salePrice"
+                      onChange={(e) => {
+                        setSalePrice(e.target.valueAsNumber);
+                      }}
+                      placeholder="سعر الخصم"
+                    />
+                  </label>
+                </div>
+              </Box>
+            </div>
           </div>
         </div>
-
-        <div className="flex justify-between items-center mt-5">
-          <button
-            type="submit"
-            className={twMerge("border rounded-xl px-4 py-2 disabled")}
-          >
-            Post
-          </button>
-        </div>
       </form>
-    </div>
+    </Layout>
   );
 }

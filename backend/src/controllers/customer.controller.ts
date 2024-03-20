@@ -75,7 +75,7 @@ export async function postCustomerLogin(req: Request, res: Response) {
     const token = jwt.sign(
       { _id: customer._id, phoneNumber: customer.phone },
       secretKey,
-      { expiresIn: "1h" }
+      { expiresIn: "1w" }
     );
 
     res.cookie("jwtToken", token, {
