@@ -13,6 +13,7 @@ import {
 } from "@/hooks/use-addon";
 import { Button } from "@/components/ui/button";
 import { PlusIcon } from "@radix-ui/react-icons";
+import AddNewAddon from "./AddNewAddon";
 
 export function SelectAddon({ onSelectedAddonsChange }) {
   const [selectedCategory, setSelectedCategory] = React.useState(null);
@@ -53,9 +54,8 @@ export function SelectAddon({ onSelectedAddonsChange }) {
           <SelectTrigger className="w-full">
             <SelectValue placeholder="إختر تصنيف الإضافة" />
           </SelectTrigger>
-          <Button>
-            <PlusIcon className="w-4 h-4" />
-          </Button>
+
+          <AddNewAddon />
         </div>
 
         <SelectContent>

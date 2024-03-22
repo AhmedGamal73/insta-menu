@@ -14,6 +14,7 @@ import Layout from "@/components/dashboard/layout";
 import Box from "@/components/ui/Box";
 import BackButton from "@/components/ui/BackButton";
 import { z } from "zod";
+import { VariationProvider } from "@/context/VariationContext";
 
 interface CreatePostFormProps {
   name?: string | null;
@@ -154,171 +155,177 @@ export default function CreatePostForm(user: CreatePostFormProps) {
 
   return (
     <Layout desc="قم بإنشاء منتج جديد" title="منتج جديد">
-      <form
-        className="w-full flex justify-center items-center bg-slate-50"
-        onSubmit={handleSubmit}
-        dir="rtl"
-      >
-        <div className="w-10/12 flex flex-col gap-8 px-6 py-4">
-          <div className="w-full bg-white flex justify-between px-4 py-3 border border-b rounded-lg shadow-sm">
-            <div className="flex gap-2 ">
-              <Button type="submit">حفظ المنتج</Button>
-              <Button variant="outline">حفظ وأضف منتج جديد</Button>
+      <VariationProvider>
+        <form
+          className="w-full flex justify-center items-center bg-slate-50"
+          onSubmit={handleSubmit}
+          dir="rtl"
+        >
+          <div className="w-10/12 flex flex-col gap-8 px-6 py-4">
+            <div className="w-full bg-white flex justify-between px-4 py-3 border border-b rounded-lg shadow-sm">
+              <div className="flex gap-2 ">
+                <Button type="submit">حفظ المنتج</Button>
+                <Button variant="outline">حفظ وأضف منتج جديد</Button>
+              </div>
+              <BackButton />
             </div>
-            <BackButton />
-          </div>
-          <div className="w-full flex gap-4">
-            <div className="w-2/3 flex flex-col gap-4">
-              <Box title="تفاصيل عامة" className="w-full" dataClassName="gap-4">
-                <div className="flex gap-4 items-start pb-4 w-full">
-                  <div className="flex flex-col gap-8 w-full">
-                    <div className="w-full flex gap-4">
-                      <label className="w-1/2 text-sm text-text flex flex-col gap-2">
-                        اسم المنتج
-                        <Input
-                          type="text"
-                          name="name"
-                          placeholder="ادخل اسم المنتج"
-                        />
-                      </label>
+            <div className="w-full flex gap-4">
+              <div className="w-2/3 flex flex-col gap-4">
+                <Box
+                  title="تفاصيل عامة"
+                  className="w-full"
+                  dataClassName="gap-4"
+                >
+                  <div className="flex gap-4 items-start pb-4 w-full">
+                    <div className="flex flex-col gap-8 w-full">
+                      <div className="w-full flex gap-4">
+                        <label className="w-1/2 text-sm text-text flex flex-col gap-2">
+                          اسم المنتج
+                          <Input
+                            type="text"
+                            name="name"
+                            placeholder="ادخل اسم المنتج"
+                          />
+                        </label>
 
-                      <label className="w-1/2 text-sm text-text flex flex-col gap-2">
-                        السعرات الحرارية
-                        <Input
-                          type="number"
-                          name="calories"
-                          placeholder="ادخل السعرات الحرارية"
+                        <label className="w-1/2 text-sm text-text flex flex-col gap-2">
+                          السعرات الحرارية
+                          <Input
+                            type="number"
+                            name="calories"
+                            placeholder="ادخل السعرات الحرارية"
+                          />
+                        </label>
+                      </div>
+
+                      <label className="w-full text-sm text-textflex flex-col gap-2">
+                        وصف المنتج
+                        <Textarea
+                          name="description"
+                          placeholder="ادخل وصف المنتج"
                         />
                       </label>
                     </div>
+                  </div>
+                </Box>
 
-                    <label className="w-full text-sm text-textflex flex-col gap-2">
-                      وصف المنتج
-                      <Textarea
-                        name="description"
-                        placeholder="ادخل وصف المنتج"
+                <Box className="w-full" title="إضافات المنتج">
+                  <SelectAddon onSelectedAddonsChange={handleSelectedAddons} />
+                </Box>
+
+                <Box className="w-full" title="خيارات المنتج">
+                  <SelectVariation />
+                </Box>
+              </div>
+              <div className="w-1/3 flex flex-col gap-4">
+                <Box
+                  dataClassName="flex-col"
+                  title="صورة المنتج"
+                  className="w-full flex flex-col justify-center items-center"
+                >
+                  <div>
+                    {file && previewUrl !== undefined ? (
+                      <div className="w-full flex justify-center items-center">
+                        <div className="w-3/4 h-3/4">
+                          <img
+                            className="w-full rounded-t-lg"
+                            src={previewUrl}
+                            alt="Selected file h-24 w-24"
+                          />
+                          <Button
+                            className="w-full rounded-t-none"
+                            onClick={() => {
+                              setFile(null);
+                              setPreviewUrl(null);
+                              setCategoryId("");
+                              setSubcategoryId("");
+                            }}
+                            variant="destructive"
+                          >
+                            مسح الصورة
+                          </Button>
+                        </div>
+                      </div>
+                    ) : (
+                      <label className="w-full flex flex-col justify-center items-center cursor-pointer p-4">
+                        <div
+                          className="w-[200px] h-[200px] flex justify-center items-center rounded-lg border-dashed border hover:cursor-pointer transform-gpu active:scale-75 transition-all text-neutral-500"
+                          aria-label="Attach media"
+                          role="img"
+                        >
+                          <span>ارفق الصورة هنا</span>
+                        </div>
+
+                        <input
+                          className="bg-transparent flex-1 border-none outline-none hidden"
+                          name="image"
+                          type="file"
+                          onChange={handleFileChange}
+                          accept="image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm"
+                        />
+                      </label>
+                    )}
+                  </div>
+                </Box>
+
+                <Box
+                  dataClassName="flex-col"
+                  title="تصنيف المنتج"
+                  className="w-full flex flex-col justify-center items-center"
+                >
+                  <div className="w-full flex gap-4">
+                    <label className="w-full text-sm text-text flex flex-col gap-2">
+                      <SelectCategory
+                        onCategorySelect={handleCategorySelect}
+                        onSubcategorySelect={handleSubcategorySelect}
                       />
                     </label>
                   </div>
-                </div>
-              </Box>
-
-              <Box className="w-full" title="إضافات المنتج">
-                <SelectAddon onSelectedAddonsChange={handleSelectedAddons} />
-              </Box>
-
-              <Box className="w-full" title="خيارات المنتج">
-                <SelectVariation />
-              </Box>
-            </div>
-            <div className="w-1/3 flex flex-col gap-4">
-              <Box
-                dataClassName="flex-col"
-                title="صورة المنتج"
-                className="w-full flex flex-col justify-center items-center"
-              >
-                <div>
-                  {file && previewUrl !== undefined ? (
-                    <div className="w-full flex justify-center items-center">
-                      <div className="w-3/4 h-3/4">
-                        <img
-                          className="w-full rounded-t-lg"
-                          src={previewUrl}
-                          alt="Selected file h-24 w-24"
-                        />
-                        <Button
-                          className="w-full rounded-t-none"
-                          onClick={() => {
-                            setFile(null);
-                            setPreviewUrl(null);
-                            setCategoryId("");
-                            setSubcategoryId("");
-                          }}
-                          variant="destructive"
-                        >
-                          مسح الصورة
-                        </Button>
+                </Box>
+                <Box
+                  dataClassName="flex-col"
+                  title="تصنيف المنتج"
+                  className="w-full flex flex-col justify-center items-center"
+                >
+                  <div className="w-full flex flex-col gap-4">
+                    <label className="w-full text-sm text-text flex flex-col gap-2">
+                      <div className="flex items-center gap-2">
+                        السعر الإفتراضي للمنتج{" "}
+                        <span className="text-xs text-red-500">*</span>
                       </div>
-                    </div>
-                  ) : (
-                    <label className="w-full flex flex-col justify-center items-center cursor-pointer p-4">
-                      <div
-                        className="w-[200px] h-[200px] flex justify-center items-center rounded-lg border-dashed border hover:cursor-pointer transform-gpu active:scale-75 transition-all text-neutral-500"
-                        aria-label="Attach media"
-                        role="img"
-                      >
-                        <span>ارفق الصورة هنا</span>
-                      </div>
-
-                      <input
-                        className="bg-transparent flex-1 border-none outline-none hidden"
-                        name="image"
-                        type="file"
-                        onChange={handleFileChange}
-                        accept="image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm"
+                      <Input
+                        type="number"
+                        name="price"
+                        placeholder="السعر الإفتراضي"
+                        onChange={(e) => {
+                          setPrice(e.target.valueAsNumber);
+                        }}
                       />
                     </label>
-                  )}
-                </div>
-              </Box>
 
-              <Box
-                dataClassName="flex-col"
-                title="تصنيف المنتج"
-                className="w-full flex flex-col justify-center items-center"
-              >
-                <div className="w-full flex gap-4">
-                  <label className="w-full text-sm text-text flex flex-col gap-2">
-                    <SelectCategory
-                      onCategorySelect={handleCategorySelect}
-                      onSubcategorySelect={handleSubcategorySelect}
-                    />
-                  </label>
-                </div>
-              </Box>
-              <Box
-                dataClassName="flex-col"
-                title="تصنيف المنتج"
-                className="w-full flex flex-col justify-center items-center"
-              >
-                <div className="w-full flex flex-col gap-4">
-                  <label className="w-full text-sm text-text flex flex-col gap-2">
-                    <div className="flex items-center gap-2">
-                      السعر الإفتراضي للمنتج{" "}
-                      <span className="text-xs text-red-500">*</span>
-                    </div>
-                    <Input
-                      type="number"
-                      name="price"
-                      placeholder="السعر الإفتراضي"
-                      onChange={(e) => {
-                        setPrice(e.target.valueAsNumber);
-                      }}
-                    />
-                  </label>
-
-                  <label className="w-full flex flex-col text-text gap-2 text-sm">
-                    سعر الخصم
-                    <Input
-                      className={
-                        salePrice > 0 && salePrice <= price
-                          ? "border-red-500"
-                          : ""
-                      }
-                      type="number"
-                      name="salePrice"
-                      onChange={(e) => {
-                        setSalePrice(e.target.valueAsNumber);
-                      }}
-                      placeholder="سعر الخصم"
-                    />
-                  </label>
-                </div>
-              </Box>
+                    <label className="w-full flex flex-col text-text gap-2 text-sm">
+                      سعر الخصم
+                      <Input
+                        className={
+                          salePrice > 0 && salePrice <= price
+                            ? "border-red-500"
+                            : ""
+                        }
+                        type="number"
+                        name="salePrice"
+                        onChange={(e) => {
+                          setSalePrice(e.target.valueAsNumber);
+                        }}
+                        placeholder="سعر الخصم"
+                      />
+                    </label>
+                  </div>
+                </Box>
+              </div>
             </div>
           </div>
-        </div>
-      </form>
+        </form>
+      </VariationProvider>
     </Layout>
   );
 }

@@ -1,5 +1,6 @@
 import { BellPlus, HelpCircle } from "lucide-react";
 import MyAvatar from "@/components/dashboard/navbar/MyAvatar";
+import CreateButton from "@/components/dashboard/navbar/CreateButton";
 
 interface navbarProps {
   className: string;
@@ -18,6 +19,7 @@ function Navbar({ className, title, desc }: navbarProps) {
         <HelpCircle className="w-4 h-4" />
         <BellPlus className="w-4 h-4" />
         <MyAvatar />
+        <CreateButton />
       </div>
     </div>
   );
