@@ -6,19 +6,19 @@ interface Section {
 }
 
 const sectionApi = axios.create({
-  baseURL: process.env.NEXT_API_BASE_URL,
+  baseURL: process.env.NEXT_PUBLIC_MONGODB_URI,
 });
 
-export const useSection = () => {
+export const useGetSections = () => {
   return useQuery({
     queryKey: ["sections"],
     queryFn: async () => {
-      const { data: sections } = await sectionApi.get("/section");
-      return sections;
+      const { data } = await sectionApi.get("/section");
+      return data;
     },
   });
 };
 
 // Create new section
 
-export default useSection;
+export default useGetSections;

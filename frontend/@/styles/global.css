@@ -251,3 +251,7 @@ a {
   transform: translateX(100px);
   transition: opacity 300ms, transform 300ms;
 }
+
+span {
+  font-size: 14px;
+}

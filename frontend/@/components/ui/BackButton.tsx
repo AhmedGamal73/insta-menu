@@ -1,10 +1,12 @@
 import { ChevronLeftIcon } from "@radix-ui/react-icons";
+import { useRouter } from "next/router";
 
-const BackButton = () => {
+const BackButton = ({ href }) => {
+  const router = useRouter();
   return (
-    <div className="p-3  border rounded-lg">
+    <a className="p-3  border rounded-lg" href={href}>
       <ChevronLeftIcon />
-    </div>
+    </a>
   );
 };
 

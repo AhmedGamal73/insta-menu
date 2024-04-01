@@ -89,3 +89,14 @@ export async function postCustomerLogin(req: Request, res: Response) {
     return res.status(500).send("Server error");
   }
 }
+
+// GET Customer
+export async function getCustomerController(req: Request, res: Response) {
+  const { customerId } = req.params;
+  try {
+    const customer = await Customer.findById(customerId);
+    return res.json(customer);
+  } catch (err) {
+    return res.status(500).json({ message: err });
+  }
+}

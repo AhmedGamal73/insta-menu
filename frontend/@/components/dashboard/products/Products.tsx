@@ -39,7 +39,7 @@ export function Products() {
               </AlertDescription>
             </Alert>
           ) : (
-            <DataTable columns={columns} data={allProducts} />
+            <DataTable title="طلب" columns={columns} data={allProducts} />
           )}
         </div>
       </TabsContent>
@@ -57,7 +57,7 @@ export function Products() {
               </AlertDescription>
             </Alert>
           ) : (
-            <DataTable columns={columns} data={activeProducts} />
+            <DataTable title="طلب" columns={columns} data={activeProducts} />
           )}
         </div>
       </TabsContent>
@@ -75,7 +75,11 @@ export function Products() {
               </AlertDescription>
             </Alert>
           ) : (
-            <DataTable columns={columns} data={inActiveProducts} />
+            <DataTable
+              title="المنتجات"
+              columns={columns}
+              data={inActiveProducts}
+            />
           )}
         </div>
       </TabsContent>

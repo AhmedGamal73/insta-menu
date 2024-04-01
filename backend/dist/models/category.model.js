@@ -32,6 +32,7 @@ const categorySchema = new mongoose_1.Schema({
     name: { type: String, required: true },
     total: { type: Number, default: 0 },
     subcategories: [subCategorySchema],
+    restaurantId: { type: mongoose_1.Schema.Types.ObjectId, ref: "Restaurant" },
 });
 exports.default = mongoose_1.default.model("Category", categorySchema);
 //# sourceMappingURL=category.model.js.map

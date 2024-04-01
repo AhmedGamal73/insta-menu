@@ -31,13 +31,9 @@ async function postTable(params) {
     const newTable = new table_model_1.default(params);
     await newTable.save();
     // Update section
-    section.tables?.push(newTable._id);
+    section.tables?.push({ id: newTable._id, number: tableNo });
     await section.save();
-    // Create token
-    const token = jsonwebtoken_1.default.sign({ table_id: newTable._id, tableNo }, process.env.TOKEN_KEY, {
-        expiresIn: "2h",
-    });
-    return { newTable };
+    return newTable;
 }
 exports.postTable = postTable;
 // Get All Tables

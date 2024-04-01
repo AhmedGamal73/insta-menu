@@ -48,6 +48,20 @@ export const useGetCustomer = (customer: CustomerLogin) => {
   });
 };
 
+export const useGetCustomerById = (id: string) => {
+  return useQuery({
+    queryKey: ["customer", id],
+    queryFn: async () => {
+      try {
+        const { data } = await getCustomer(id);
+        return data;
+      } catch (err) {
+        console.log(err);
+      }
+    },
+  });
+};
+
 // POST Customer Signin
 export const postCustomerSignin = async (customer: CustomerSignup) => {
   return await customerAPI.post("/customer/signup", customer);
@@ -56,4 +70,9 @@ export const postCustomerSignin = async (customer: CustomerSignup) => {
 // Post Customer
 export const postCustomerLogin = async (customer: CustomerLogin) => {
   return await customerAPI.post("/customer/login", customer);
+};
+
+// GET Customer
+export const getCustomer = async (id: string) => {
+  return await customerAPI.get(`/customer/${id}`);
 };

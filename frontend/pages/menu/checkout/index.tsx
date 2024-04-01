@@ -64,7 +64,7 @@ const CheckoutPage = () => {
   } = useCart();
 
   // Extra Fees
-  const loungeTax = subtotal * 0.1;
+  const loungeTax = Math.round(subtotal * 0.1);
   const discount = subtotal * promoCode;
   const vat = Math.round(subtotal * 0.14);
   const total =
@@ -77,8 +77,8 @@ const CheckoutPage = () => {
   // zod schema
   const orderFormSchema = z
     .object({
-      orderName: z.string(),
-      tableNo: z.number(),
+      orderName: z.string().min(3).max(20),
+      tableNo: z.number().optional(),
       phoneNumber: z.string().refine(
         (value) => {
           const phoneNumberRegex = /^01\d{9}$/;
@@ -142,10 +142,10 @@ const CheckoutPage = () => {
     setPhoneNumber(checkoutData.phoneNumber);
     order = {
       customerToken: customerToken,
-      orderName: checkoutData.ordername,
-      tableNo: tableNo ? tableNo : 0,
+      orderName: checkoutData.orderName,
+      tableNo: typeof tableNo === "number" ? tableNo : 0,
       phoneNumber: checkoutData.phoneNumber,
-      location: {
+      address: {
         cityName: checkoutData.city,
         districtId: checkoutData.district,
         street: checkoutData.street,

@@ -2,7 +2,7 @@ import axios from "axios";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 
 const productApi = axios.create({
-  baseURL: "http://localhost:3001",
+  baseURL: process.env.NEXT_PUBLIC_MONGODB_URI,
 });
 
 export type Product = {
@@ -15,7 +15,10 @@ export type Product = {
   categoryId?: string;
   subcategoryId?: string;
   variable?: boolean;
-  variations?: [{ name: string; quantity: number; price: number }];
+  variations?: {
+    title: string;
+    options: [{ name: string; price: number; salePrice: number }];
+  };
   active?: boolean;
   addonCategory?: { id: string; name: string };
   addons?: string[];
@@ -56,6 +59,24 @@ export const useActiveProducts = () => {
     queryFn: async () => {
       try {
         const { data } = await productApi.get("/product/active");
+        return data;
+      } catch (error) {
+        console.log(error);
+        throw error;
+      }
+    },
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+  });
+};
+
+// GET Product By Id
+export const useGetProductById = (id: string) => {
+  return useQuery({
+    queryKey: ["product", id],
+    queryFn: async () => {
+      try {
+        const { data } = await getProductById(id);
         return data;
       } catch (error) {
         console.log(error);
@@ -113,5 +134,10 @@ export const deleteProduct = async (id: string) => {
 // POST Product
 const postProduct = async (product: Product) => {
   return await productApi.post("/product", product);
+};
+
+// GET Product By Id
+const getProductById = async (id: string) => {
+  return await productApi.post(`/product/${id}`);
 };
 export default useProduct;

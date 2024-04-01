@@ -1,12 +1,13 @@
 import { useState } from "react";
 
 import Layout from "../../../@/components/dashboard/layout";
-import Addons from "@/components/dashboard/products/Addons";
-import Categories from "@/components/dashboard/products/Categories";
+import Addons from "@/components/dashboard/products/addon/Addons";
+import Categories from "@/components/dashboard/products/category/Categories";
 import Products from "@/components/dashboard/products/Products";
-import CreateProducts from "@/components/dashboard/products/CreateProducts";
-import CreateCategories from "@/components/dashboard/products/CreateCategories";
+import CreateItem from "@/components/dashboard/products/CreateItem";
+import CategoriesPage from "./categories";
 import variables from "@/config/variables";
+import AddonsPage from "./addons";
 
 function ProductsPage() {
   const [activeTab, setActiveTab] = useState<number>(0);
@@ -34,9 +35,11 @@ function ProductsPage() {
           })}
         </div>
         {tabs[activeTab]?.component === "products" ? (
-          <CreateProducts />
+          <CreateItem item="منتج" dropDown={true} />
         ) : tabs[activeTab]?.component === "categories" ? (
-          <CreateCategories />
+          <CategoriesPage />
+        ) : tabs[activeTab]?.component === "addons" ? (
+          <AddonsPage />
         ) : (
           ""
         )}

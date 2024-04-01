@@ -12,7 +12,8 @@ export const CartProvider = ({ children }) => {
 
   const addItem = (item: Item) => {
     setCart([...cart, item]);
-    const total = subtotal + item.price;
+
+    const total = subtotal + item.total;
     setSubtotal(total);
     setVat(Math.round(total * 0.14));
     setQuantity(quantity + item.quantity);
@@ -24,7 +25,7 @@ export const CartProvider = ({ children }) => {
       const newCart = [...cart];
       newCart.splice(index, 1);
       setCart(newCart);
-      const total = subtotal - item.price;
+      const total = subtotal - item.total;
       setSubtotal(total);
       setVat(Math.round(total * 0.14));
       setQuantity(quantity - item.quantity);

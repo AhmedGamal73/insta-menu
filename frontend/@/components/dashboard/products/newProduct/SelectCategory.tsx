@@ -1,5 +1,4 @@
 import * as React from "react";
-import { PlusIcon } from "lucide-react";
 import { useRef, useState } from "react";
 import { useCategory, useSubcategories } from "@/hooks/use-category";
 
@@ -10,8 +9,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import CreateCategories from "@/components/dashboard/products/CreateCategories";
-import { Button } from "@/components/ui/button";
 import AddNewCategory from "./AddNewCategory";
 import AddNewSubcategory from "./AddNewSubcategory";
 
@@ -62,14 +59,15 @@ export function SelectCategory({ onCategorySelect, onSubcategorySelect }) {
             />
           </SelectTrigger>
           <SelectContent>
-            <CreateCategories />
-            {subcategories && subcategories.length > 0
-              ? subcategories.map((subcategory) => (
-                  <SelectItem value={subcategory._id}>
-                    {subcategory.name}
-                  </SelectItem>
-                ))
-              : " لا يوجد تصنيف فرعي"}
+            {subcategories && subcategories.length > 0 ? (
+              subcategories.map((subcategory) => (
+                <SelectItem value={subcategory._id}>
+                  {subcategory.name}
+                </SelectItem>
+              ))
+            ) : (
+              <span className="text-xs text-center"> لا يوجد تصنيف فرعي</span>
+            )}
           </SelectContent>
         </Select>
 

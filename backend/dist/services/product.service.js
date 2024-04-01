@@ -23,8 +23,6 @@ async function postProducts({ name, categoryId, subcategoryId, variations = [], 
     }
     const subcategory = category.subcategories.find((sub) => sub._id?.toString() === subcategoryId.toString());
     if (!subcategory) {
-        console.log("Subcategory ID:", subcategoryId);
-        console.log("Subcategories:", category.subcategories);
         throw new Error("Subcategory Not Exist");
     }
     // Validate if product is variable
@@ -46,15 +44,6 @@ async function postProducts({ name, categoryId, subcategoryId, variations = [], 
         name,
     });
     await newProduct.save();
-    // Populate product with category
-    // const populatedProduct = await Product.findById(newProduct._id).populate(
-    //   "category",
-    //   "_id name"
-    // );
-    // if (!populatedProduct) {
-    //   throw new Error("Product not found");
-    // }
-    // Increment category total
     ++category.total;
     await category.save();
     return newProduct;

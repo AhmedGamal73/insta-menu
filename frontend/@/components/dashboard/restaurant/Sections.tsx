@@ -22,7 +22,7 @@ const Sections = () => {
             </AlertDescription>
           </Alert>
         ) : (
-          <DataTable columns={columns} data={data} />
+          <DataTable title="السكشن" columns={columns} data={data} />
         )}
       </div>
     </>

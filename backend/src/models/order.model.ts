@@ -24,12 +24,14 @@ interface IOrder extends Document {
 const orderSchema = new Schema({
   orderNo: { type: String, required: false },
   customerId: { type: Schema.Types.ObjectId, ref: "Customer", required: true },
-  orderName: { type: String, required: false },
+  orderName: { type: String, required: true },
   orderType: {
     type: String,
     required: true,
     enum: ["Indoor", "Delivery", "Takeaway"],
   },
+  cashier: { type: Schema.Types.ObjectId, ref: "Cashier", required: false },
+  waiter: { type: Schema.Types.ObjectId, ref: "Waiter", required: false },
   phoneNumber: { type: String, required: true },
   cart: [{ type: Schema.Types.ObjectId, ref: "Cart", required: true }],
   quantity: { type: Number, required: false },
@@ -47,6 +49,12 @@ const orderSchema = new Schema({
   rating: { type: Number, required: false },
   feedback: { type: String, required: false },
   promoCode: { type: String, required: false },
+  restaurantId: {
+    type: Schema.Types.ObjectId,
+    ref: "Restaurant",
+    required: true,
+  },
+  waiterApproval: { type: Boolean, default: false },
   // otp: { type: Number, required: false },
   orderStatus: {
     type: String,

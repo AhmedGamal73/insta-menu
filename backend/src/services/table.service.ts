@@ -12,6 +12,7 @@ interface postTableProps {
 // Create Table
 export async function postTable(params: postTableProps) {
   const { tableNo, sectionId } = params;
+
   // Inputs validation
   if (!tableNo || typeof tableNo !== "number") {
     throw new Error("Invalid Table Number");
@@ -36,19 +37,10 @@ export async function postTable(params: postTableProps) {
   await newTable.save();
 
   // Update section
-  section.tables?.push(newTable._id);
+  section.tables?.push({ id: newTable._id, number: tableNo });
   await section.save();
 
-  // Create token
-  const token = jwt.sign(
-    { table_id: newTable._id, tableNo },
-    process.env.TOKEN_KEY as string,
-    {
-      expiresIn: "2h",
-    }
-  );
-
-  return { newTable };
+  return newTable;
 }
 
 // Get All Tables

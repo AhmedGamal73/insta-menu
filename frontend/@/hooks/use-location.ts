@@ -18,7 +18,7 @@ export interface City {
   districts?: District[];
 }
 
-export interface Location {
+export interface Address {
   _id?: string;
   cityName: string;
   districtId: string;
@@ -59,16 +59,37 @@ export const useDistrict = (cityName: string) => {
   });
 };
 
+export const useAddressById = (id: string) => {
+  return useQuery({
+    queryKey: ["address", id],
+    queryFn: async () => {
+      try {
+        const { data } = await getAddressById(id);
+        return data;
+      } catch (error) {
+        console.log(error);
+        throw error;
+      }
+    },
+    enabled: !!id,
+  });
+};
+
 // POST City
 export const postCity = async (city: City) => {
-  return await locationAPI.post("/location/city", city);
+  return await locationAPI.post("/address/city", city);
 };
 // GET Cities
 export const getCities = async () => {
-  return await locationAPI.get("/location/city");
+  return await locationAPI.get("/address/city");
 };
 
 // GET District
 export const getDistrict = async (cityName: string) => {
-  return await locationAPI.get(`/location/district/${cityName}`);
+  return await locationAPI.get(`/address/district/${cityName}`);
+};
+
+// GET Address by ID
+export const getAddressById = async (id: string) => {
+  return await locationAPI.get(`/address/${id}`);
 };

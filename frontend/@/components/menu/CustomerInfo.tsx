@@ -45,7 +45,7 @@ export function CustomerInfoModal({ onFormSubmit }) {
             <CustomerSignup onSubmitHandler={setActiveTab} />
           </TabsContent>
           <TabsContent value="login">
-            <CustomerLogin onSubmitHandler={setOpen} />
+            <CustomerLogin wideButton={false} onSubmitHandler={setOpen} />
           </TabsContent>
         </Tabs>
       </DialogContent>

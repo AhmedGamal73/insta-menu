@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import axiox from "axios";
+import jwt from "jsonwebtoken";
 
 import Order from "../models/order.model";
 import Cart from "../models/cart.model";
@@ -7,20 +8,16 @@ import {
   validateAddress,
   validateCustomerToken,
 } from "../services/order.service";
+import mongoose from "mongoose";
+import { Customer } from "../models/customer.model";
 
-let order: object,
-  OTP: string = "111111";
-
-const accountSid = "ACca410cb91999ee4c77bdf7beeeccfee5";
-const authToken = "938a0c5f8ea0ee0f1510559f5654e764";
-const verifySid = "VA3cbbea3d69bd97b01ee99f0532062316";
-const client = require("twilio")(accountSid, authToken);
+let order: any = {};
 
 export async function postOrderController(req: Request, res: Response) {
   try {
     const {
       customerToken,
-      location,
+      address,
       cart,
       orderName,
       phoneNumber,
@@ -36,20 +33,21 @@ export async function postOrderController(req: Request, res: Response) {
       promoCode,
     } = req.body;
 
+    if (!orderName || orderName == "") {
+      return res.status(400).json("Order name is required");
+    }
+
     // verify customer token
     const customerId = await validateCustomerToken(customerToken);
     // verify address
-    const addressId = await validateAddress(orderType, location);
-    // create cart
-    const newCart = await Cart.create({
-      customerId,
-      cart: cart,
-    });
+    const addressId = await validateAddress(orderType, address);
+
+    const newCart = await Cart.create({ items: cart });
     await newCart.save();
 
     order = {
       customerId,
-      orderName,
+      orderName: orderName,
       orderType,
       phoneNumber,
       subtotal,
@@ -102,11 +100,18 @@ export async function verifyOtpController(req: Request, res: Response) {
 
   try {
     if (otp === customerOtp) {
-      return res.status(200).json({ order });
+      const newOrder = await Order.create(order);
+      await newOrder.save();
+
+      const customer = await Customer.findById(newOrder.customerId);
+      customer?.orders.push(newOrder._id);
+      await customer?.save();
+      return res.status(200).json({ newOrder, customer });
     } else {
       return res.status(400).json({ success: false, message: "Invalid OTP" });
     }
   } catch (error) {
+    console.log(error);
     return res
       .status(500)
       .json({ success: false, message: "An error occurred" });
@@ -116,16 +121,91 @@ export async function verifyOtpController(req: Request, res: Response) {
 // GET Orders
 export async function getOrdersController(req: Request, res: Response) {
   try {
-    const orders = await Order.find();
+    const orders = await Order.find().sort({ createdAt: -1 });
     return res.status(201).json(orders);
-  } catch (err) {}
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ error: "An error occurred" });
+  }
 }
 
 // GET Order by ID
 export async function getOrderByIdController(req: Request, res: Response) {
   try {
     const { id } = req.params;
+    // Check if id is a valid ObjectId
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ error: "Invalid ID" });
+    }
     const order = await Order.findById(id);
     return res.status(201).json(order);
-  } catch (err) {}
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ error: "An error occurred" });
+  }
+}
+
+// GET Delivery Orders
+export async function getDeliveryOrdersController(req: Request, res: Response) {
+  try {
+    const orders = await Order.find({ orderType: "Delivery" }).sort({
+      createdAt: -1,
+    });
+    return res.status(201).json(orders);
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ error: "An error occurred" });
+  }
+}
+
+// GET Takeaway Orders
+export async function getTakeawayOrdersController(req: Request, res: Response) {
+  try {
+    const orders = await Order.find({ orderType: "Takeaway" }).sort({
+      createdAt: -1,
+    });
+    return res.status(201).json(orders);
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ error: "An error occurred" });
+  }
+}
+
+// GET Indoor Orders
+export async function getIndoorOrdersController(req: Request, res: Response) {
+  try {
+    const orders = await Order.find({
+      orderType: "Indoor",
+      waiterApproval: true,
+    }).sort({
+      createdAt: -1,
+    });
+    return res.status(201).json(orders);
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ error: "An error occurred" });
+  }
+}
+
+export async function putOrderApprovedController(req: Request, res: Response) {
+  // get the order id from the request parameters
+  const orderId = req.params.id;
+  try {
+    Order.findByIdAndUpdate(
+      orderId,
+      {
+        waiterApproved: true, // set waiterApproved to true
+      },
+      (err: any, order: any) => {
+        if (err) {
+          res.status(500).send(err);
+        } else {
+          res.status(200).send(order);
+        }
+      }
+    );
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ error: "An error occurred" });
+  }
 }

@@ -135,11 +135,15 @@ function VariationForm({ currentVariant, setCurrentVariant, setOpen }) {
       setTitleExists(true);
     }
     if (currentVariant) {
-      updateVariant(currentVariant.title, data);
+      updateVariant(currentVariant.title, data as variant);
       setOpen(false);
       setCurrentVariant(null);
     } else {
-      setVariations((prev) => [...prev, data]);
+      if (!data.title) {
+        console.log("no title");
+        return;
+      }
+      setVariations((prev: any) => [...prev, data]);
       setOpen(false);
     }
   };
@@ -219,6 +223,7 @@ function VariationForm({ currentVariant, setCurrentVariant, setOpen }) {
                       </FormItem>
                     )}
                   />
+
                   <FormField
                     control={form.control}
                     name={`options.${index}.price`}

@@ -11,15 +11,14 @@ import sectionRouter from "./routes/section.route";
 import productRouter from "./routes/product.route";
 import categoryRouter from "./routes/category.route";
 import addonsRouter from "./routes/addon.route";
-import waiterRouter from "./routes/waiter";
-import Img from "./models/Img.model";
-import customerRouter from "./routes/customer.route";
-import qrRouter from "./routes/qrcode.route";
-import { AddonCategory } from "./models/addon.model";
 import userRouter from "./routes/user.route";
 import orderRouter from "./routes/order.route";
 import cartRouter from "./routes/cart.route";
 import addressRouter from "./routes/address.route";
+import qrRouter from "./routes/qrcode.route";
+import customerRouter from "./routes/customer.route";
+
+import { AddonCategory } from "./models/addon.model";
 
 const { API_PORT } = process.env;
 const port = (process.env.API_PORT as String) || API_PORT;
@@ -32,12 +31,11 @@ app.use(express.json());
 
 app.use("/section", sectionRouter);
 app.use("/order", orderRouter);
-app.use("/user", userRouter);
 app.use("/table", tableRouter);
 app.use("/product", productRouter);
 app.use("/category", categoryRouter);
 app.use("/addon", addonsRouter);
-app.use("/waiter", waiterRouter);
+app.use("/user", userRouter);
 app.use("/customer", customerRouter);
 app.use("/qr", qrRouter);
 app.use("/address", addressRouter);
@@ -90,15 +88,6 @@ app.put("/addoncategory/:id", async (req: Request, res: Response) => {
     console.log(err);
     return res.status(500).send("Server error");
   }
-});
-
-app.use("/uploads", express.static("uploads"));
-
-// GET Images
-app.get("/imgs", (req, res) => {
-  Img.find().then((images) => {
-    res.status(200).json({ images });
-  });
 });
 
 mongoose.connect(MONGO_URL);

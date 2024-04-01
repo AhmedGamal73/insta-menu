@@ -11,13 +11,13 @@ interface LayoutProps {
 function Layout({ children, title, desc }: LayoutProps) {
   return (
     <div
-      className="flex min-h-screen justify-center items-center min-h-screen bg-gray-200"
+      className="flex min-h-screen justify-center items-center bg-gray-200"
       dir="rtl"
     >
-      <Sidebar className="flex flex-col items-start gap-2 w-1/6 bg-gray-200 h-screen" />
-      <div className="flex flex-col flex-1 bg-white rounded-r-xl">
+      <Sidebar />
+      <div className="min-h-screen flex flex-col flex-1 bg-white rounded-r-xl">
         <Navbar title={title} desc={desc} className="w-1/1 border-b-2 p-5" />
-        <div className="flex-1">{children}</div>
+        <div className="flex-1 min-h-screen">{children}</div>
       </div>
       <Toaster />
     </div>

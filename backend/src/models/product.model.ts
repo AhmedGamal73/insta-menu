@@ -8,26 +8,15 @@ interface option {
   salePrice?: number;
 }
 
-const optionSchema = new Schema({
-  active: { type: Boolean, default: true, required: true },
-  name: { type: String, required: true },
-  price: { type: Number, required: true },
-  salePrice: { type: Number, required: false },
-});
-
-interface Ivariation {
-  name: string;
+interface IVariation {
+  title: string;
   options: option[];
 }
-
-const variationSchema = new Schema({
-  name: { type: String, required: true },
-  options: [optionSchema],
-});
 
 export interface IProduct extends Document {
   _id: string;
   name: string;
+  restaurantId: string;
   price?: number;
   salePrice?: number;
   description: string;
@@ -38,7 +27,7 @@ export interface IProduct extends Document {
   ingredients?: Iingredients["_id"][];
   rating?: number;
   active?: boolean;
-  variations?: Ivariation[];
+  variations?: IVariation;
   variable?: boolean;
   addonCategory?: string;
   addons?: [];
@@ -46,6 +35,7 @@ export interface IProduct extends Document {
 
 const productSchema = new Schema({
   name: { type: String, required: true },
+  restaurantId: { type: Schema.Types.ObjectId, ref: "Restaurant" },
   price: { type: Number, required: false, default: null },
   salePrice: { type: Number, required: false, default: null },
   description: { type: String, required: false },
@@ -54,7 +44,7 @@ const productSchema = new Schema({
   category: {
     type: Schema.Types.ObjectId,
     ref: "Category",
-    required: true,
+    required: false,
   },
   subcategory: {
     id: { type: Schema.Types.ObjectId, required: false },
@@ -70,7 +60,16 @@ const productSchema = new Schema({
   ],
   rating: { type: Number, default: 0, required: false },
   active: { type: Boolean, default: true, required: true },
-  variations: [variationSchema],
+  variations: {
+    title: { type: String, required: false },
+    options: [
+      {
+        name: { type: String, required: false },
+        price: { type: Number, required: false },
+        salePrice: { type: Number, required: false },
+      },
+    ],
+  },
   addonCategory: {
     id: {
       type: Schema.Types.ObjectId,

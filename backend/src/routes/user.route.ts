@@ -1,17 +1,25 @@
-import express, { Request, Response } from "express";
+import { Router } from "express";
 
 import {
-  postUser,
-  getUser,
-  deleteUser,
-  updateUser,
+  postUserController,
+  getUserController,
+  getUsersController,
+  getWaitersController,
+  getAdminsController,
+  getCashiersController,
+  getWaitersByShiftController,
 } from "../controllers/user.controller";
 
-const userRouter = express.Router();
+const userRouter = Router();
 
-userRouter.post("/", postUser);
-userRouter.get("/", getUser);
-userRouter.delete("/", deleteUser);
-userRouter.put("/", updateUser);
+userRouter.post("/", postUserController);
+
+userRouter.get("/", getUsersController);
+userRouter.get("/waiters", getWaitersController);
+userRouter.get("/cashier", getCashiersController);
+userRouter.get("/amdins", getAdminsController);
+userRouter.get("/:id", getUserController);
+
+userRouter.get("/waiters/:shiftType", getWaitersByShiftController);
 
 export default userRouter;

@@ -87,7 +87,9 @@ export async function getDistrictsController(req: Request, res: Response) {
 export async function getAddressByIdController(req: Request, res: Response) {
   try {
     const { id } = req.params;
-    const address = await Address.findById(id);
+    const address = await Address.findById(id)
+      .populate("cityId")
+      .populate("districtId");
     return res.status(200).json(address);
   } catch (err) {
     console.log(err);

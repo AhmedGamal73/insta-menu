@@ -37,15 +37,14 @@ const customerSchema = new mongoose_1.default.Schema({
         required: true,
         trim: true,
     },
-    type: {
-        type: String,
-        required: true,
-        trim: true,
-    },
     address: {
         type: String,
         required: false,
         trim: true,
+    },
+    password: {
+        type: String,
+        required: true,
     },
     cart: {
         type: mongoose_1.Schema.ObjectId,

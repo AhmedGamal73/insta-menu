@@ -24,27 +24,18 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
-const optionSchema = new mongoose_1.Schema({
-    active: { type: Boolean, default: true, required: true },
-    name: { type: String, required: true },
-    price: { type: Number, required: true },
-    salePrice: { type: Number, required: false },
-});
-const variationSchema = new mongoose_1.Schema({
-    name: { type: String, required: true },
-    options: [optionSchema],
-});
 const productSchema = new mongoose_1.Schema({
     name: { type: String, required: true },
+    restaurantId: { type: mongoose_1.Schema.Types.ObjectId, ref: "Restaurant" },
     price: { type: Number, required: false, default: null },
     salePrice: { type: Number, required: false, default: null },
     description: { type: String, required: false },
     variable: { type: Boolean, required: false, default: false },
-    img: { type: mongoose_1.Schema.Types.ObjectId, ref: "Img", required: false },
+    imgURL: { type: String, required: false },
     category: {
         type: mongoose_1.Schema.Types.ObjectId,
         ref: "Category",
-        required: true,
+        required: false,
     },
     subcategory: {
         id: { type: mongoose_1.Schema.Types.ObjectId, required: false },
@@ -60,7 +51,28 @@ const productSchema = new mongoose_1.Schema({
     ],
     rating: { type: Number, default: 0, required: false },
     active: { type: Boolean, default: true, required: true },
-    variations: [variationSchema],
+    variations: {
+        title: { type: String, required: false },
+        options: [
+            {
+                name: { type: String, required: false },
+                price: { type: Number, required: false },
+                salePrice: { type: Number, required: false },
+            },
+        ],
+    },
+    addonCategory: {
+        id: {
+            type: mongoose_1.Schema.Types.ObjectId,
+            ref: "AddonCategory",
+            requered: false,
+        },
+        name: {
+            type: String,
+            required: false,
+        },
+    },
+    addons: [{ type: mongoose_1.Schema.Types.ObjectId, required: false }],
 });
 exports.default = mongoose_1.default.model("Product", productSchema);
 //# sourceMappingURL=product.model.js.map

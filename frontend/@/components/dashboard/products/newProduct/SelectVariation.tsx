@@ -3,13 +3,13 @@ import AddNewVariant from "./AddNewVariant";
 import { useContext, useEffect, useState } from "react";
 import { VariationContext } from "@/context/VariationContext";
 
-const SelectedVariation = () => {
+const SelectedVariation = ({ setVariations }) => {
   const { variations, removeVariation } = useContext(VariationContext);
   const [currentVariant, setCurrentVariant] = useState(null);
 
   useEffect(() => {
-    console.log(variations);
-  }, []);
+    setVariations(variations);
+  }, [variations]);
   return (
     <div className="wrapper w-full flex flex-col gap-2">
       <div className="options w-full flex flex-col gap-2">

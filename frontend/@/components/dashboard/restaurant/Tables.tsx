@@ -22,7 +22,7 @@ const Tables = () => {
             </AlertDescription>
           </Alert>
         ) : (
-          <DataTable columns={columns} data={data} />
+          <DataTable title="الطاولات" columns={columns} data={data} />
         )}
       </div>
     </>

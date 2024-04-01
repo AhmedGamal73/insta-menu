@@ -20,14 +20,21 @@ import { toast } from "../../ui/use-toast";
 import Link from "next/link";
 import CartItems from "./CartItems";
 
-export interface Item {
-  id: string;
+interface Addon {
+  _id: string;
   name: string;
-  priceAtTheTime: number;
-  quantity: number;
   price: number;
-  variations: string;
-  addons: string[];
+}
+
+export interface Item {
+  productId: string;
+  name: string;
+  quantity: number;
+  priceAtTheTime: number;
+  price: number;
+  total: number;
+  variations: object;
+  addons: Addon[];
 }
 
 export function Cart() {
@@ -44,11 +51,6 @@ export function Cart() {
   } = useCart();
   const total = subtotal + Math.round(subtotal * 0.14);
 
-  const checkCustomerToken = () => {
-    const customerToken = Cookies.get("customerToken");
-    return customerToken ? jwt.decode(customerToken) : null;
-  };
-
   const handleFormSubmit = () => {};
 
   const handleRemoveItem = (index: number) => {
@@ -62,14 +64,17 @@ export function Cart() {
     });
   };
 
+  const customerToken = Cookies.get("customerToken");
+  const token = customerToken ? jwt.decode(customerToken) : null;
   React.useEffect(() => {
-    const token = checkCustomerToken();
     if (token === null) {
       setNewCustomer(true);
     } else {
       setNewCustomer(false);
     }
+  }, [token]);
 
+  React.useEffect(() => {
     const savedCart = Cookies.get("cart");
     if (savedCart) {
       const parsedCart = JSON.parse(savedCart);

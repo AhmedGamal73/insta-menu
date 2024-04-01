@@ -21,21 +21,26 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Switch } from "@/components/ui/switch";
+import { useEffect } from "react";
 
 export const columns: ColumnDef<Product>[] = [
   {
     accessorKey: "name",
     header: "منتج",
-    cell: ({ row }) => (
-      <div className="flex gap-2 justify-start items-center">
-        <img
-          src="https://picsum.photos/200"
-          alt={row.getValue("name")}
-          className="h-10 w-10 rounded-sm"
-        />
-        <span>{row.getValue("name")}</span>
-      </div>
-    ),
+    cell: ({ row }) => {
+      const imgUrl = row.original.imgURL as string;
+      console.log(imgUrl);
+      return (
+        <div className="flex gap-2 justify-start items-center">
+          <img
+            src={imgUrl}
+            alt={row.getValue("name")}
+            className="h-10 w-10 rounded-sm"
+          />
+          <span>{row.getValue("name")}</span>
+        </div>
+      );
+    },
   },
   {
     accessorKey: "description",
@@ -85,8 +90,6 @@ export const columns: ColumnDef<Product>[] = [
     header: "مفعل",
     cell: ({ row }) => {
       const mutation = useUpdateProductActiveStatus();
-      console.log(row.original.active, row.original._id);
-
       const handleTogle = async () => {
         try {
           mutation.mutate(row.original._id);
@@ -106,7 +109,7 @@ export const columns: ColumnDef<Product>[] = [
     },
   },
   {
-    accessorKey: "actions",
+    accessorKey: "delete",
     header: "",
     cell: ({ row }) => {
       const queryClient = useQueryClient();
@@ -157,11 +160,7 @@ export const columns: ColumnDef<Product>[] = [
     accessorKey: "actions",
     header: "",
     cell: ({ row }) => {
-      return (
-        <button className="text-gray-500 font-thin">
-          <Pencil className="h-4 w-4 text-green-500" />
-        </button>
-      );
+      return <button className="text-gray-500 font-thin">...</button>;
     },
   },
 ];

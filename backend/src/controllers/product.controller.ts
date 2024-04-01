@@ -21,7 +21,15 @@ export async function postProductController(req: Request, res: Response) {
       subcategoryId,
       addonCategory,
       addons,
+      variations,
     } = req.body;
+
+    let variable = false;
+    // add Variation
+    if (variations) {
+      variable = true;
+    }
+    const parsedVariations = JSON.parse(variations);
 
     // add addons in array
     const addonsArr = addons ? addons.split(",") : [];
@@ -33,7 +41,7 @@ export async function postProductController(req: Request, res: Response) {
       addonCategoryName = addonCategoryExist.name;
     }
 
-    // validate
+    // validate img
     if (!req.file) {
       return res.status(400).send("Image is required");
     }
@@ -64,7 +72,7 @@ export async function postProductController(req: Request, res: Response) {
 
     const imageUrl = `https://${process.env.AWS_BUCKET_NAME}.s3.amazonaws.com/${imgName}`;
 
-    const newProduct = await Product.create({
+    const product = await Product.create({
       name: name,
       price: price,
       salePrice: salePrice,
@@ -75,17 +83,17 @@ export async function postProductController(req: Request, res: Response) {
       rating: 0,
       active: true,
       subcategory: subcategoryId,
-      variable: false,
       imgURL: imageUrl,
       addonCategory: {
         id: addonCategory,
         name: addonCategoryName,
       },
       addons: addonsArr,
+      variable: variable,
+      variations: parsedVariations,
     });
 
-    console.log(addonCategoryName, addonsArr);
-    res.status(200).send(newProduct);
+    res.status(200).send(product);
   } catch (err) {
     console.log(err);
     return res.status(500).send("Server error");
@@ -126,15 +134,13 @@ export async function getInactiveProductsController(
 
 // GET Product by id
 export async function getProductByIdController(req: Request, res: Response) {
+  const { id } = req.params;
   try {
-    const product = await Product.findById(req.params.id).populate(
-      "category",
-      "name _id"
-    );
+    const product = await Product.findById(id);
     if (!product) {
       return res.status(404).send("Product not found");
     }
-    return res.json(product);
+    return res.status(200).json(product);
   } catch (err) {
     console.error(err);
     return res.status(500).send("Server error");

@@ -23,10 +23,18 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.AddonCategory = exports.Addon = void 0;
 const mongoose_1 = __importStar(require("mongoose"));
+const categorySchema = new mongoose_1.Schema({
+    name: { type: String, required: true },
+});
 const addonSchema = new mongoose_1.Schema({
     name: { type: String, required: true },
     price: { type: Number, required: true },
+    categoryId: { type: mongoose_1.Schema.Types.ObjectId, ref: "Category" },
 });
-exports.default = mongoose_1.default.model("Addon", addonSchema);
+const Addon = mongoose_1.default.model("Addon", addonSchema);
+exports.Addon = Addon;
+const AddonCategory = mongoose_1.default.model("AddonCategory", categorySchema);
+exports.AddonCategory = AddonCategory;
 //# sourceMappingURL=addon.model.js.map

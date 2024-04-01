@@ -93,6 +93,9 @@ export const theme = {
       "accordion-down": "accordion-down 0.2s ease-out",
       "accordion-up": "accordion-up 0.2s ease-out",
     },
+    transition: ["checked"],
+    transform: ["checked"],
+    scale: ["checked"],
   },
 };
 export const plugins = [require("tailwindcss-animate")];

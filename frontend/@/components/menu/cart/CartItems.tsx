@@ -3,18 +3,9 @@ import { X } from "lucide-react";
 import { toast } from "../../ui/use-toast";
 import { useEffect } from "react";
 import Cookies from "js-cookie";
+import { Item } from "@/components/menu/cart/Cart";
 
 import { TransitionGroup, CSSTransition } from "react-transition-group";
-
-export interface Item {
-  id: string;
-  name: string;
-  priceAtTheTime: number;
-  quantity: number;
-  price: number;
-  variations: string;
-  addons: string[];
-}
 
 const CartItems = () => {
   const {
@@ -82,18 +73,42 @@ const CartItems = () => {
                     index === cart.length - 1 ? "" : "border-b"
                   }`}
                 >
-                  <div className="flex items-center justify-start">
-                    {/* <Pen className="me-1 text-green-500 w-4 h-4" /> */}
+                  <div className="w-1/12">
                     <X
                       onClick={() => handleRemoveItem(index)}
                       className="me-2 text-red-500 w-4 h-4"
                     />
-                    <h6 className="">{item.name}</h6>
                   </div>
-                  <div className="flex items-center gap-2 justify-start">
-                    <p className="text-[12px]">العدد: {item.quantity}</p>
+                  <div className="w-7/12 flex justify-start flex-col items-center gap-2">
+                    <div className="w-full flex justify-center gap-1">
+                      <div className="flex items-center justify-start gap-1">
+                        <span className=" text-black ps-1 text-sm">
+                          {"x" + item.quantity}
+                        </span>
+                        <h6 className="">{item.name}</h6>
+                      </div>
+                      <p className="flex items-center">
+                        {item.priceAtTheTime ? item.priceAtTheTime : item.price}{" "}
+                        <span className="text-[12px]">ج.م</span>
+                      </p>
+                    </div>
+                    {item.addons.length > 0
+                      ? item.addons.map((addon) => (
+                          <div className="w-full flex justify-center gap-1 flex-wrap">
+                            <div className="flex flex-col gap-1 text-xs">
+                              <div className="border rounded-full flex justify-center items-center p-1">
+                                +<span>{addon.name}</span>
+                                <span>{addon.price}</span>
+                              </div>
+                            </div>
+                          </div>
+                        ))
+                      : null}
+                  </div>
+
+                  <div className="w-4/12 justify-end flex gap-1">
                     <p className="">
-                      السعر: {item.priceAtTheTime}{" "}
+                      إجمالي: {item.total}{" "}
                       <span className="text-[12px]">ج.م</span>
                     </p>
                   </div>

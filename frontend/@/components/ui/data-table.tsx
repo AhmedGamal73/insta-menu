@@ -6,6 +6,8 @@ import {
   getCoreRowModel,
   getPaginationRowModel,
   useReactTable,
+  SortingState,
+  getSortedRowModel,
 } from "@tanstack/react-table";
 
 import {
@@ -17,21 +19,34 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/router";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  title: string;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  title,
 }: DataTableProps<TData, TValue>) {
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const router = useRouter();
+
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    onSortingChange: setSorting,
+    getSortedRowModel: getSortedRowModel(),
+    state: {
+      sorting,
+    },
   });
 
   return (
@@ -60,7 +75,10 @@ export function DataTable<TData, TValue>({
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
-                  key={row.id}
+                  // className="cursor-pointer"
+                  // onClick={() => {
+                  //   router.push(`/dashboard/orders/${row.original._id}`);
+                  // }}
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
@@ -86,8 +104,12 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <div className="flex justify-between">
-        <div className="flex gap-4 py-4">
+      <div className="w-full flex justify-between items-center px-4">
+        <div className="flex-1 w-1/3 justify-start text-sm text-muted-foreground">
+          تم تحديد {table.getFilteredSelectedRowModel().rows.length} طلب من{" "}
+          {table.getFilteredRowModel().rows.length} {title}.
+        </div>
+        <div className="flex justify-center w-1/3 gap-4 py-4">
           <Button
             variant="outline"
             size="sm"
@@ -105,6 +127,7 @@ export function DataTable<TData, TValue>({
             التالي
           </Button>
         </div>
+        <div className="w-1/3"></div>
       </div>
     </div>
   );
