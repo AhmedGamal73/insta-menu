@@ -22,6 +22,7 @@ export type Product = {
   active?: boolean;
   addonCategory?: { id: string; name: string };
   addons?: string[];
+  restaurantId: string;
 };
 
 // GET Products

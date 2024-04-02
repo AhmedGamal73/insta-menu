@@ -15,12 +15,15 @@ const addon_model_1 = require("../models/addon.model");
 async function postProductController(req, res) {
     try {
         const { name, description, calories, price, salePrice, categoryId, subcategoryId, addonCategory, addons, variations, } = req.body;
-        let variable = false;
+        let variable;
         // add Variation
-        if (variations) {
+        if (variations.length > 0) {
             variable = true;
         }
-        const parsedVariations = JSON.parse(variations);
+        else {
+            variable = false;
+        }
+        // const parsedVariations = JSON.parse(variations);
         // add addons in array
         const addonsArr = addons ? addons.split(",") : [];
         // Get AddonCategory name
@@ -70,8 +73,8 @@ async function postProductController(req, res) {
                 name: addonCategoryName,
             },
             addons: addonsArr,
-            variable: variable,
-            variations: parsedVariations,
+            variable: false,
+            variations: [],
         });
         res.status(200).send(product);
     }

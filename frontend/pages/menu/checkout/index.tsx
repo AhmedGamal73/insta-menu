@@ -51,7 +51,7 @@ const CheckoutPage = () => {
   const { data: districts } = useDistrict(selectedCity);
 
   const customerToken = Cookies.get("customerToken");
-  const tableNo = Cookies.get("tableNo");
+  let tableNo: any;
 
   const {
     quantity,
@@ -167,8 +167,10 @@ const CheckoutPage = () => {
   };
 
   useEffect(() => {
+    if (typeof window !== "undefined") {
+      tableNo = localStorage.getItem("tableNo");
+    }
     tableNo && orderType === "Indoor";
-    console.log(tableNo);
     const savedCart = Cookies.get("cart");
     if (savedCart) {
       const parsedCart = JSON.parse(savedCart);

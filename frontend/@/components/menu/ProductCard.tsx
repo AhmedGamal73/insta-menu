@@ -43,6 +43,7 @@ const ProductCard = ({ product, index, totalProductLength }) => {
         </div>
         {product.variable &&
         product.variations.options &&
+        product.variations.length > 0 &&
         product.variations.options[0].salePrice > 0 ? (
           <div className="flex items-center gap-1">
             <span className="text-xs font-rubikBold pe-2">
@@ -63,6 +64,7 @@ const ProductCard = ({ product, index, totalProductLength }) => {
           </div>
         ) : product.variable &&
           product.variations.options &&
+          product.variations.length > 0 &&
           product.variations.options[0].salePrice === 0 ? (
           <div className="flex items-center gap-1">
             <span className="text-xs font-rubikBold pe-2">

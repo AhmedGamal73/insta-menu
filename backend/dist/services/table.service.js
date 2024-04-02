@@ -3,8 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getSpecificTable = exports.loginTable = exports.getTables = exports.postTable = void 0;
-const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+exports.getSpecificTable = exports.getTables = exports.postTable = void 0;
 const table_model_1 = __importDefault(require("../models/table.model"));
 const section_model_1 = __importDefault(require("../models/section.model"));
 // Create Table
@@ -38,33 +37,11 @@ async function postTable(params) {
 exports.postTable = postTable;
 // Get All Tables
 async function getTables() {
-    const tables = await table_model_1.default.find({});
+    const tables = await table_model_1.default.find({}).populate("sectionId", "name -_id");
     return tables;
 }
 exports.getTables = getTables;
-// Login With Table
-async function loginTable(tableNo) {
-    // Validate table input
-    if (!tableNo) {
-        throw new Error("All input is required");
-    }
-    // Validate if table exist in our database
-    const table = await table_model_1.default.findOne({ tableNo });
-    if (table) {
-        // Create token
-        const token = jsonwebtoken_1.default.sign({ table_id: table._id, tableNo }, process.env.TOKEN_KEY, {
-            expiresIn: "2h",
-        });
-        // save table token
-        table.token = token;
-        return token;
-    }
-    else {
-        throw new Error("Invalid Table Number");
-    }
-}
-exports.loginTable = loginTable;
-// Get Specific Table
+// GET Table
 async function getSpecificTable(tableNo) {
     if (!tableNo) {
         throw new Error("Invalide Error: Table number required");

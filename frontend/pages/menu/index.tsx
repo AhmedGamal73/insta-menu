@@ -5,14 +5,22 @@ import Slider from "@/components/menu/Slider";
 import { ProductsList } from "@/components/menu/ProductsList";
 import { ModalContext } from "@/context";
 import Layout from "./Layout";
-import { CartProvider } from "@/context/CartContext";
-import { Toaster } from "@/components/ui/toaster";
-import Navbar from "@/components/Navbar";
-import Header from "@/components/Header";
+import { useRouter } from "next/router";
+import { table } from "console";
 
 const Menu = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const { data: categoryData } = useCategory();
+
+  const router = useRouter();
+  const { tableNo } = router.query;
+
+  useEffect(() => {
+    if (tableNo) {
+      localStorage.setItem("tableNo", tableNo as string);
+      console.log("tableNo", tableNo);
+    }
+  });
 
   const modalContext = useContext(ModalContext);
   useEffect(() => {

@@ -28,11 +28,11 @@ const tableSchema = new mongoose_1.Schema({
     tableNo: { type: Number, required: true },
     tableStatus: { type: Boolean, required: false, default: true },
     chairsNo: { type: Number, required: true },
-    token: { type: String },
     sectionId: {
         type: mongoose_1.Types.ObjectId,
         ref: "Section",
     },
+    qrCode: { type: String },
 });
 exports.default = mongoose_1.default.model("Table", tableSchema);
 //# sourceMappingURL=table.model.js.map

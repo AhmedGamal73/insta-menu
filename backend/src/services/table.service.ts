@@ -1,6 +1,4 @@
-import jwt from "jsonwebtoken";
-
-import Table, { ITable } from "../models/table.model";
+import Table from "../models/table.model";
 import Section from "../models/section.model";
 
 interface postTableProps {
@@ -45,38 +43,11 @@ export async function postTable(params: postTableProps) {
 
 // Get All Tables
 export async function getTables() {
-  const tables = await Table.find({});
+  const tables = await Table.find({}).populate("sectionId", "name -_id");
   return tables;
 }
 
-// Login With Table
-export async function loginTable(tableNo: number) {
-  // Validate table input
-  if (!tableNo) {
-    throw new Error("All input is required");
-  }
-
-  // Validate if table exist in our database
-  const table = await Table.findOne<ITable>({ tableNo });
-  if (table) {
-    // Create token
-    const token = jwt.sign(
-      { table_id: table._id, tableNo },
-      process.env.TOKEN_KEY as string,
-      {
-        expiresIn: "2h",
-      }
-    );
-
-    // save table token
-    table.token = token;
-    return token;
-  } else {
-    throw new Error("Invalid Table Number");
-  }
-}
-
-// Get Specific Table
+// GET Table
 export async function getSpecificTable(tableNo: number) {
   if (!tableNo) {
     throw new Error("Invalide Error: Table number required");

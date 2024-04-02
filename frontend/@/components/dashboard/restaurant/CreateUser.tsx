@@ -6,7 +6,7 @@ import { Plus } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { useToast } from "../../ui/use-toast";
-import { addTable } from "@/hooks/use-table";
+import { postTable } from "@/hooks/use-table";
 import useSection from "@/hooks/use-section";
 import {
   Dialog,
@@ -28,7 +28,7 @@ export const CreateUser: React.FC = () => {
   const queryClient = useQueryClient();
   const { data: tables } = useSection();
 
-  const addTableMutation = useMutation(addTable, {
+  const addTableMutation = useMutation(postTable, {
     onSuccess(data, variables, context) {
       queryClient.invalidateQueries("tables");
       setTableNo(0);

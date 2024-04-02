@@ -24,12 +24,14 @@ export async function postProductController(req: Request, res: Response) {
       variations,
     } = req.body;
 
-    let variable = false;
+    let variable: boolean;
     // add Variation
-    if (variations) {
+    if (variations.length > 0) {
       variable = true;
+    } else {
+      variable = false;
     }
-    const parsedVariations = JSON.parse(variations);
+    // const parsedVariations = JSON.parse(variations);
 
     // add addons in array
     const addonsArr = addons ? addons.split(",") : [];
@@ -89,8 +91,8 @@ export async function postProductController(req: Request, res: Response) {
         name: addonCategoryName,
       },
       addons: addonsArr,
-      variable: variable,
-      variations: parsedVariations,
+      variable: false,
+      variations: [],
     });
 
     res.status(200).send(product);

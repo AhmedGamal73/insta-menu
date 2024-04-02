@@ -49,11 +49,6 @@ const orderSchema = new Schema({
   rating: { type: Number, required: false },
   feedback: { type: String, required: false },
   promoCode: { type: String, required: false },
-  restaurantId: {
-    type: Schema.Types.ObjectId,
-    ref: "Restaurant",
-    required: true,
-  },
   waiterApproval: { type: Boolean, default: false },
   // otp: { type: Number, required: false },
   orderStatus: {

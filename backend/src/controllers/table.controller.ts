@@ -1,20 +1,29 @@
 import { Request, Response } from "express";
-import jwt from "jsonwebtoken";
+import * as QRCode from "qrcode";
+const env = require("dotenv").config();
 
+import Section from "../models/section.model";
 import {
   postTable,
   getTables,
-  loginTable,
   getSpecificTable,
 } from "../services/table.service";
-import Table, { ITable } from "../models/table.model";
+import Table from "../models/table.model";
 
+// POST Table
 export async function postTableController(req: Request, res: Response) {
   if (req.body === null) {
     return res.status(400).json({ error: "Request body cannot be null" });
   }
   try {
     const table = await postTable(req.body);
+
+    const qrCode = await QRCode.toDataURL(
+      `http://${process.env.MENU_URL}/menu?tableNo=${table.tableNo}`
+    );
+
+    table.qrCode = qrCode;
+    await table.save();
 
     // return new table
     return res.status(201).json({ table: table });
@@ -24,7 +33,7 @@ export async function postTableController(req: Request, res: Response) {
   }
 }
 
-// Get Tables Controller
+// GET Tables
 export async function getTablesController(req: Request, res: Response) {
   try {
     const tables = await getTables();
@@ -35,26 +44,8 @@ export async function getTablesController(req: Request, res: Response) {
   }
 }
 
-// Login Table
-export async function loginTableController(
-  req: Request,
-  res: Response
-): Promise<string> {
-  try {
-    // Get table input
-    const { tableNo }: ITable = req.body;
-    const token = await loginTable(tableNo);
-    res.status(200).json({ token });
-    return token;
-  } catch (err) {
-    console.log(err);
-    res.status(500).send("Server Error");
-  }
-  return "";
-}
-
-// Get Specific Table
-export async function getSpecificTableController(req: Request, res: Response) {
+// GET Table
+export async function getTableController(req: Request, res: Response) {
   try {
     const { tableNo } = req.body;
     const table = await getSpecificTable(tableNo);
@@ -62,5 +53,52 @@ export async function getSpecificTableController(req: Request, res: Response) {
   } catch (err) {
     console.log(err);
     return res.status(500).send("Server Error");
+  }
+}
+
+// Delete Table
+export async function deleteTableController(req: Request, res: Response) {
+  try {
+    const { tableNo } = req.body;
+    const table = await Table.findOneAndDelete({ tableNo: tableNo });
+
+    if (!table) {
+      return res.status(404).json({ message: "Table not found" });
+    }
+
+    return res.json({ message: "Table deleted successfully" });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Server error" });
+  }
+}
+
+// PUT Table
+export async function putTableController(req: Request, res: Response) {
+  try {
+    // Find the section by name
+    const section = await Section.findOne({ name: req.body.section });
+
+    const { section: _, ...rest } = req.body;
+    // Update the table
+    const table = await Table.findOneAndUpdate(
+      { tableNo: req.params.tableNo },
+      { ...rest, section: section?._id },
+      { new: true }
+    ).populate("section", "name -_id");
+
+    // Update the section
+    if (section) {
+      section.tables?.push(table?._id);
+      await section.save();
+    }
+
+    if (!table) {
+      return res.status(404).json({ message: "Table not found" });
+    }
+    return res.json(table);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Server error" });
   }
 }

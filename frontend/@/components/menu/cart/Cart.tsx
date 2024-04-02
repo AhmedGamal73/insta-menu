@@ -27,7 +27,7 @@ interface Addon {
 }
 
 export interface Item {
-  productId: string;
+  product: string;
   name: string;
   quantity: number;
   priceAtTheTime: number;

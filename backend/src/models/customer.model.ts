@@ -44,6 +44,13 @@ const customerSchema = new mongoose.Schema(
         required: false,
       },
     ],
+    favorites: [
+      {
+        type: Schema.ObjectId,
+        ref: "Product",
+        required: false,
+      },
+    ],
   },
   {
     timestamps: true,

@@ -58,6 +58,13 @@ const customerSchema = new mongoose_1.default.Schema({
             required: false,
         },
     ],
+    favorites: [
+        {
+            type: mongoose_1.Schema.ObjectId,
+            ref: "Product",
+            required: false,
+        },
+    ],
 }, {
     timestamps: true,
 });

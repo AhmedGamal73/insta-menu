@@ -1,8 +1,11 @@
 import axios from "axios";
 import {
   Dice1,
+  HeadphonesIcon,
   HomeIcon,
+  PieChart,
   ScrollText,
+  Settings,
   Store,
   User,
   Utensils,
@@ -25,6 +28,7 @@ interface IDashboardMenuItems {
   name: string;
   href: string;
   icon: any;
+  active: boolean;
 }
 
 interface IVariables {
@@ -50,6 +54,7 @@ interface IVariables {
     products: tabs[];
     orders: tabs[];
     users: tabs[];
+    tables: tabs[];
   };
   dashboardMenuItems: IDashboardMenuItems[];
 }
@@ -72,38 +77,78 @@ const variables: IVariables = {
       Takeaway: "استلام",
     },
   },
+
   dashboardMenuItems: [
-    { id: 0, name: "الرئيسية", href: "/", icon: HomeIcon },
-    { id: 1, name: "المنتجات", href: "/dashboard/products", icon: Utensils },
-    { id: 2, name: "المطعم", href: "/dashbaord/restaurant", icon: Store },
-    { id: 3, name: "المستخدمين", href: "/dashboard/users", icon: User },
-    { id: 4, name: "الطاولة", href: "/dashboard/tables", icon: Dice1 },
-    { id: 5, name: "الطلبات", href: "/dashboard/orders", icon: ScrollText },
+    { id: 0, name: "الرئيسية", href: "/", icon: HomeIcon, active: true },
+    {
+      id: 1,
+      name: "المنتجات",
+      href: "/dashboard/products",
+      icon: Utensils,
+      active: true,
+    },
+    {
+      id: 2,
+      name: "الطاولات",
+      href: "/dashboard/tables",
+      icon: Dice1,
+      active: true,
+    },
+    {
+      id: 3,
+      name: "الطلبات",
+      href: "/dashboard/orders",
+      icon: ScrollText,
+      active: true,
+    },
+    {
+      id: 4,
+      name: "المطاعم",
+      href: "/dashboard/restaurant",
+      icon: Store,
+      active: true,
+    },
+    {
+      id: 5,
+      name: "المستخدمين",
+      href: "/dashboard/users",
+      icon: User,
+      active: true,
+    },
+    {
+      id: 6,
+      name: "الإعدادات",
+      href: "/dashboard/settings",
+      icon: Settings,
+      active: false,
+    },
+    {
+      id: 7,
+      name: "الدعم",
+      href: "/dashboard/support",
+      icon: HeadphonesIcon,
+      active: false,
+    },
+    {
+      id: 8,
+      name: "تحليل",
+      href: "/dashboard/analytics",
+      icon: PieChart,
+      active: false,
+    },
   ],
+
   dashboardTabs: {
     restaurant: [
       {
         id: 0,
-        name: "الطاولات",
+        name: "المطاعم",
         desc: "قسم الطاولات يمكنك من خلاله إضافة وتعديل وحدف الطاولات وتعديل الطاولات المحجزوة، وإنشاء كيو آر كود للطاولات والمزيد",
-        component: "tables",
-        path: "/tables",
-      },
-      {
-        id: 1,
-        name: "الأقسام",
-        desc: "نحن فخورون بتقديم تجربة طعام لا تُنسى تمتزج فيها المأكولات الشهية بالضيافة",
-        component: "sections",
-        path: "/sections",
-      },
-      {
-        id: 2,
-        name: "النادل",
-        desc: "النادل الممتاز هو الروح الحية لتجربة تناول الطعام في أي مطعم. إليك وصف للنادل الممتاز",
-        component: "waiter",
-        path: "/waiters",
+        component: "restaurants",
+        path: "/restaurants",
       },
     ],
+
     products: [
       {
         id: 0,
@@ -127,6 +172,7 @@ const variables: IVariables = {
         path: "/addons",
       },
     ],
+
     orders: [
       {
         id: 0,
@@ -136,6 +182,7 @@ const variables: IVariables = {
         path: "/orders",
       },
     ],
+
     users: [
       {
         id: 0,
@@ -150,6 +197,23 @@ const variables: IVariables = {
         desc: "قسم المستخدمين يمكنك من خلاله إضافة وتعديل وحدف المستخدمين والمزيد",
         component: "cashier",
         path: "/users/cashier",
+      },
+    ],
+
+    tables: [
+      {
+        id: 0,
+        name: "الطاولات",
+        desc: "قسم الطاولات يمكنك من خلاله إضافة وتعديل وحدف الطاولات وتعديل الطاولات المحجزوة، وإنشاء كيو آر كود للطاولات والمزيد",
+        component: "tables",
+        path: "/tables",
+      },
+      {
+        id: 1,
+        name: "الأقسام",
+        desc: "نحن فخورون بتقديم تجربة طعام لا تُنسى تمتزج فيها المأكولات الشهية بالضيافة",
+        component: "sections",
+        path: "/sections",
       },
     ],
   },

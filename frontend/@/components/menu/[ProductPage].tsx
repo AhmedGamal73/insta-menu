@@ -7,7 +7,6 @@ import { CartContext } from "@/context/CartContext";
 import { toast } from "../ui/use-toast";
 import { useGetProductAddons } from "@/hooks/use-addon";
 import { Textarea } from "../ui/textarea";
-import { set } from "zod";
 
 interface productsProps {
   product: Product;
@@ -25,7 +24,10 @@ const ProductPage: React.FC<productsProps> = ({ product, onClose }) => {
       : null
   );
   const [salePrice, setSalePrice] = useState(
-    product.variable && product.variations.options
+    product.variable &&
+      product.variations.options &&
+      product.variations.options.length > 0 &&
+      product.variations.options[0].salePrice
       ? selectedVariant.salePrice
       : product.variable && product.salePrice
       ? product.salePrice
@@ -33,7 +35,9 @@ const ProductPage: React.FC<productsProps> = ({ product, onClose }) => {
   );
   const [itemNumber, setItemNumber] = useState(1);
   const [price, setPrice] = useState(
-    product.variable && product.variations.options
+    product.variable &&
+      product.variations.options &&
+      product.variations.options.length > 0
       ? selectedVariant.price
       : product.price
   );
@@ -72,6 +76,7 @@ const ProductPage: React.FC<productsProps> = ({ product, onClose }) => {
         ? salePrice * itemNumber + addonsPrice
         : price * itemNumber + addonsPrice,
       note: note,
+      restaurantId: product.restaurantId,
     };
 
     addItem(item);
@@ -102,7 +107,12 @@ const ProductPage: React.FC<productsProps> = ({ product, onClose }) => {
   };
 
   useEffect(() => {
-    if (product.variable && selectedVariant !== null) {
+    if (
+      product.variable &&
+      product.variations.options &&
+      product.variations.options.length > 0 &&
+      selectedVariant
+    ) {
       setSalePrice(selectedVariant.salePrice);
       setPrice(selectedVariant.price);
     } else {
@@ -148,7 +158,9 @@ const ProductPage: React.FC<productsProps> = ({ product, onClose }) => {
         <div className="flex flex-col justify-center items-center w-full px-2">
           <div className="flex flex-col items-center justify-center gap-2 w-full">
             <div className="flex pt-4 justify-center w-full gap-4 flex-wrap">
-              {product.variations.options &&
+              {product.variable &&
+                product.variations.options &&
+                product.variations.options.length > 0 &&
                 product.variations?.options?.map((option, index) => (
                   <Button
                     className="text-[12px] rounded-lg w-16 h-8"

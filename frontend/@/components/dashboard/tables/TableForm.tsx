@@ -5,7 +5,7 @@ import { useMutation, useQueryClient } from "react-query";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import useSection from "@/hooks/use-section";
-import { addTable, deleteTable } from "@/hooks/use-table";
+import { postTable, deleteTable } from "@/hooks/use-table";
 import {
   Select,
   SelectContent,
@@ -45,7 +45,7 @@ const TableForm = () => {
   const { toast } = useToast();
   const { data: sections } = useSection();
 
-  const addTableMutation = useMutation(addTable, {
+  const addTableMutation = useMutation(postTable, {
     onSuccess() {
       queryClient.invalidateQueries("tables");
       toast({

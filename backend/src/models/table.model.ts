@@ -6,17 +6,18 @@ export interface ITable extends Document {
   chairsNo: number;
   token?: string;
   sectionId?: string;
+  qrCode?: string;
 }
 
 const tableSchema = new Schema({
   tableNo: { type: Number, required: true },
   tableStatus: { type: Boolean, required: false, default: true },
   chairsNo: { type: Number, required: true },
-  token: { type: String },
   sectionId: {
     type: Types.ObjectId,
     ref: "Section",
   },
+  qrCode: { type: String },
 });
 
 export default mongoose.model<ITable>("Table", tableSchema);

@@ -9,27 +9,42 @@ export type ITable = {
 };
 
 const tableApi = axios.create({
-  baseURL: process.env.NEXT_API_BASE_URL,
+  baseURL: process.env.NEXT_PUBLIC_MONGODB_URI,
 });
 
 // Get tables data
-export const useTable = () => {
+export const useTables = () => {
   return useQuery({
     queryKey: ["tables"],
     queryFn: async () => {
-      const { data } = await tableApi.get("/table");
+      const { data } = await getTables();
       return data;
     },
   });
 };
 
-// Add new table
+export const useTable = (tableNo: number) => {
+  return useQuery({
+    queryKey: ["table", tableNo],
+    queryFn: async () => {
+      const { data } = await getTable(tableNo);
+      return data;
+    },
+  });
+};
+
+// GET Tables
 export const getTables = async () => {
   return await tableApi.get("/table");
 };
 
-// Add new table
-export const addTable = async (table: ITable) => {
+// GET Table
+export const getTable = async (tableNo: number) => {
+  return await tableApi.get(`/table/${tableNo}`);
+};
+
+// POST Table
+export const postTable = async (table: ITable) => {
   return await tableApi.post("/table", table);
 };
 

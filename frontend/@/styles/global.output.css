@@ -850,6 +850,9 @@ video {
 .min-h-screen {
   min-height: 100vh;
 }
+.min-h-svh {
+  min-height: 100svh;
+}
 .w-1\/12 {
   width: 8.333333%;
 }
@@ -1531,6 +1534,10 @@ video {
   padding-top: 1rem;
   padding-bottom: 1rem;
 }
+.py-8 {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
 .py-\[2px\] {
   padding-top: 2px;
   padding-bottom: 2px;
@@ -1642,6 +1649,9 @@ video {
 }
 .text-\[12px\] {
   font-size: 12px;
+}
+.text-\[15px\] {
+  font-size: 15px;
 }
 .text-\[16px\] {
   font-size: 16px;

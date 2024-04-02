@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 
 import Order from "../models/order.model";
 import Cart from "../models/cart.model";
+import Product from "../models/product.model";
 import {
   validateAddress,
   validateCustomerToken,
@@ -66,7 +67,7 @@ export async function postOrderController(req: Request, res: Response) {
       orderStatus: "Pending",
     };
 
-    return res.status(201).json("Order created successfully");
+    return res.status(201).json(order);
   } catch (error) {
     console.log(error);
     return res

@@ -13,12 +13,12 @@ export function Sidebar() {
 
   return (
     <div
-      className={`flex relative flex-col items-start justify-start gap-2 w-1/6 bg-gray-200 h-screen transition-all duration-500 ${
+      className={`flex relative flex-col items-start justify-start gap-2 w-1/6 bg-gray-200 min-h-svh transition-all duration-500 ${
         isSidebarMinimized ? "w-14 px-2" : "w-44"
       } gap-2 px-2`}
     >
       <div className={`w-full flex flex-col`}>
-        <ul className="w-full flex flex-col gap-2">
+        <ul className="w-full flex flex-col gap-4">
           {variables.dashboardMenuItems.map((item, index) => {
             const Icon = item.icon;
             const isActive = active == item.id;
@@ -44,7 +44,7 @@ export function Sidebar() {
                   <Link
                     onClick={() => setActive(0)}
                     href={item.href}
-                    className={`w-full flex items-center ${
+                    className={`w-full flex items-center gap-2 px-2${
                       isActive ? "text-white" : ""
                     } gap-1 hover:bg-red`}
                   >
@@ -53,7 +53,7 @@ export function Sidebar() {
                         isActive ? "text-white" : ""
                       }`}
                     />
-                    <span>{item.name}</span>
+                    <span className="text-[15px]">{item.name}</span>
                   </Link>
                 )}
               </li>

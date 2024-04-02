@@ -1,7 +1,15 @@
 import mongoose, { Schema, Document } from "mongoose";
 
+type IProduct = {
+  id: string;
+  name: string;
+  imgURL: string;
+  category: string;
+  restaurantId: string;
+};
+
 export interface ICartItem extends Document {
-  itemId: string;
+  product: IProduct;
   quantity: number;
   addons?: string[];
   note: string;
@@ -29,6 +37,12 @@ const cartSchema = new Schema({
       variations: { type: String, required: false },
       total: { type: Number, required: true },
       priceAtTheTime: { type: Number, required: true },
+      restaurantId: {
+        type: Schema.Types.ObjectId,
+        ref: "Restaurant",
+        required: false,
+      },
+      createdAt: { type: Date, default: Date.now },
     },
   ],
 });
