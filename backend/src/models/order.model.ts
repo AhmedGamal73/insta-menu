@@ -18,6 +18,7 @@ interface IOrder extends Document {
   rating: number;
   feedback: string;
   orderStatus: string;
+  clickVirefiy: boolean;
   timestamp: string;
 }
 
@@ -33,7 +34,7 @@ const orderSchema = new Schema({
   cashier: { type: Schema.Types.ObjectId, ref: "Cashier", required: false },
   waiter: { type: Schema.Types.ObjectId, ref: "Waiter", required: false },
   phoneNumber: { type: String, required: true },
-  cart: [{ type: Schema.Types.ObjectId, ref: "Cart", required: true }],
+  cart: { type: Schema.Types.ObjectId, ref: "Cart", required: true },
   quantity: { type: Number, required: false },
   subtotal: { type: Number, required: true },
   total: { type: Number, required: true },
@@ -56,6 +57,7 @@ const orderSchema = new Schema({
     required: true,
     enum: ["Pending", "Processing", "Delivered", "Cancelled"],
   },
+  clickVirefiy: { type: Boolean, default: false },
   timestamp: { type: String },
   createdAt: { type: Date, default: Date.now },
 });

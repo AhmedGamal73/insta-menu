@@ -130,6 +130,29 @@ export async function getOrdersController(req: Request, res: Response) {
   }
 }
 
+// GET Orders With All Product Data
+export async function getOrdersWithCartItemsController(
+  req: Request,
+  res: Response
+) {
+  try {
+    const orders = await Order.find()
+      .sort({ createdAt: -1 })
+      .populate({
+        path: "cart",
+        populate: {
+          path: "items.productId",
+          model: "Product",
+        },
+      });
+
+    return res.status(201).json(orders);
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ error: "An error occurred" });
+  }
+}
+
 // GET Order by ID
 export async function getOrderByIdController(req: Request, res: Response) {
   try {
