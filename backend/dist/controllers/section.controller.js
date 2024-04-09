@@ -2,12 +2,14 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getSectionsController = exports.getSection = exports.postSection = void 0;
 const section_service_1 = require("../services/section.service");
+// POST Section
 async function postSection(req, res) {
-    if (!(req.body && req.body.name)) {
+    const { name } = req.body;
+    if (!name) {
         return res.status(400).json({ message: "Not Found" });
     }
     try {
-        const section = await (0, section_service_1.createSection)(req.body.name);
+        const section = await (0, section_service_1.createSection)(name);
         res.json(section);
     }
     catch (err) {

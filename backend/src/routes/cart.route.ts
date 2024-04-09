@@ -1,14 +1,14 @@
 import express from "express";
 
 import {
-  getCartController,
+  getCartItemController,
   getCartItemsController,
 } from "../controllers/cart.controller";
 
 const cartRouter = express.Router();
 
 // Cart
-cartRouter.get("/:id", getCartController);
+cartRouter.get("/:id", getCartItemController);
 // Cart Items
 cartRouter.get("/", getCartItemsController);
 

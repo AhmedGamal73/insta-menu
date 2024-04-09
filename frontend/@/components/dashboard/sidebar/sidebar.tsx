@@ -24,36 +24,42 @@ export function Sidebar() {
             const isActive = active == item.id;
             return (
               <li
-                className={`w-full py-2 px-2 transition hover:bg-white hover:text-primary rounded ${
-                  isActive ? "bg-primary text-white" : ""
-                }`}
+                key={index}
+                className="w-full py-2 px-2 transition hover:bg-white hover:text-primary rounded"
               >
                 {isSidebarMinimized ? (
                   <Link
                     href={item.href}
                     onClick={() => setActive(item.id)}
-                    className="w-full flex justify-center items-center gap-1 hover:bg-red"
+                    className={`w-full flex justify-center items-center gap-1 ${
+                      active === item.id ? "bg-white" : ""
+                    }`}
                   >
                     <Icon
-                      className={`w-4 h-4 text-primary ${
-                        isActive ? "text-white" : ""
+                      className={`${
+                        active === item.id
+                          ? "w-4 h-4 text-primar"
+                          : "w-4 h-4 text-primary"
                       }`}
                     />
                   </Link>
                 ) : (
                   <Link
-                    onClick={() => setActive(0)}
+                    onClick={() => setActive(item.id)}
                     href={item.href}
-                    className={`w-full flex items-center gap-2 px-2${
-                      isActive ? "text-white" : ""
-                    } gap-1 hover:bg-red`}
+                    className={`w-full flex items-center gap-2 px-2
+                    ${active === item.id ? "bg-white text-primary" : ""}`}
                   >
                     <Icon
-                      className={`w-4 text-primary ${
-                        isActive ? "text-white" : ""
+                      className={` ${
+                        active === item.id
+                          ? "w-4 text-primary text-white"
+                          : "w-4 text-primary"
                       }`}
                     />
-                    <span className="text-[15px]">{item.name}</span>
+                    <span className={`text-[15px] text-primary`}>
+                      {item.name}
+                    </span>
                   </Link>
                 )}
               </li>

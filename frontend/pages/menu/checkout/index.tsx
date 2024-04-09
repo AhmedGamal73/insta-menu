@@ -36,10 +36,43 @@ import {
   SelectGroup,
 } from "@/components/ui/select";
 
+// zod schema
+const orderFormSchema = z
+  .object({
+    orderName: z.string().min(3).max(20),
+    tableNo: z.number().optional(),
+    phoneNumber: z.string().refine(
+      (value) => {
+        const phoneNumberRegex = /^01\d{9}$/;
+        return phoneNumberRegex.test(value);
+      },
+      {
+        message: "يجب ان يكون الرقم 11 رقماً ويبدأ ب 01",
+      }
+    ),
+    orderType: z.string(),
+    city: z.string().optional(),
+    district: z.string().optional(),
+    street: z.string().optional(),
+  })
+  .refine(
+    (data) =>
+      data.orderType === "Delivery"
+        ? !!data.street || !!data.city || data.district || !!data.street
+        : true,
+    {
+      message: "العنوان مطلوب",
+      path: ["address"],
+    }
+  );
+// .refine((data) => (data.orderType === "Indoor" ? !!data.tableNo : true), {
+//   message: "رقم الطاولة مطلوب",
+//   path: ["tableNo"],
+// });
+
 const CheckoutPage = () => {
   const [selectedMethod, setSelectedMethod] = useState<string>("Cash");
   const [selectedCity, setSelectedCity] = useState<string>("");
-  const [orderType, setOrderType] = useState<string>("Takeaway");
   const [promoCode, setPromoCode] = useState<number>(0);
   const [deliveryFee, setDeliveryFee] = useState<number>(0);
   const [deliveryTime, setDeliveryTime] = useState<number>(0);
@@ -47,11 +80,20 @@ const CheckoutPage = () => {
   const [openOtp, setOpenOtp] = useState<Boolean>(false);
   const [phoneNumber, setPhoneNumber] = useState<string>("");
 
-  const { data: cities } = useCities(orderType);
   const { data: districts } = useDistrict(selectedCity);
 
   const customerToken = Cookies.get("customerToken");
   let tableNo: any;
+  if (typeof window !== "undefined") {
+    window.localStorage.getItem("tableNo")
+      ? (tableNo = window.localStorage.getItem("tableNo"))
+      : (tableNo = 0);
+  }
+
+  const [orderType, setOrderType] = useState<string>(
+    tableNo ? "Indoor" : "Takeaway"
+  );
+  const { data: cities } = useCities(orderType);
 
   const {
     quantity,
@@ -73,40 +115,6 @@ const CheckoutPage = () => {
       : orderType == "Delivery"
       ? subtotal + vat + deliveryFee
       : subtotal + vat;
-
-  // zod schema
-  const orderFormSchema = z
-    .object({
-      orderName: z.string().min(3).max(20),
-      tableNo: z.number().optional(),
-      phoneNumber: z.string().refine(
-        (value) => {
-          const phoneNumberRegex = /^01\d{9}$/;
-          return phoneNumberRegex.test(value);
-        },
-        {
-          message: "يجب ان يكون الرقم 11 رقماً ويبدأ ب 01",
-        }
-      ),
-      orderType: z.string(),
-      city: z.string().optional(),
-      district: z.string().optional(),
-      street: z.string().optional(),
-    })
-    .refine(
-      (data) =>
-        data.orderType === "Delivery"
-          ? !!data.street || !!data.city || data.district || !!data.street
-          : true,
-      {
-        message: "العنوان مطلوب",
-        path: ["address"],
-      }
-    )
-    .refine((data) => (data.orderType === "Indoor" ? !!data.tableNo : true), {
-      message: "رقم الطاولة مطلوب",
-      path: ["tableNo"],
-    });
 
   const form = useForm<z.infer<typeof orderFormSchema>>({
     resolver: zodResolver(orderFormSchema),
@@ -167,10 +175,8 @@ const CheckoutPage = () => {
   };
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      tableNo = localStorage.getItem("tableNo");
-    }
     tableNo && orderType === "Indoor";
+    console.log(orderType);
     const savedCart = Cookies.get("cart");
     if (savedCart) {
       const parsedCart = JSON.parse(savedCart);
@@ -505,7 +511,7 @@ const CheckoutPage = () => {
                 type="submit"
                 className="w-1/2 px-4 text-xs rounded py-2"
               >
-                الدفع
+                تأكيد الطلب
               </Button>
               <SmallCart
                 quantaity={quantity}

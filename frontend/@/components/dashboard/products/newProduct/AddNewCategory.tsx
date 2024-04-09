@@ -7,8 +7,6 @@ import { z } from "zod";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Category, createCategory } from "@/hooks/use-category";
-import categorySchema from "@/schemas/categorySchema";
 import { useToast } from "@/components/ui/use-toast";
 import {
   Dialog,
@@ -26,6 +24,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useMutation, useQueryClient } from "react-query";
+import axios from "axios";
 
 const AddNewCategory = () => {
   const [open, setOpen] = useState(false);
@@ -42,14 +41,27 @@ const AddNewCategory = () => {
           <DialogHeader>
             <DialogTitle>أضف تصنيف جديد</DialogTitle>
           </DialogHeader>
-          <CategoryForm />
+          <CategoryForm onClose={() => setOpen(false)} />
         </DialogContent>
       </Dialog>
     </div>
   );
 };
 
-function CategoryForm({ className }: React.ComponentProps<"form">) {
+const categorySchema = z.object({
+  name: z.string(),
+  img:
+    typeof window !== "undefined"
+      ? z.instanceof(FileList).optional()
+      : z.unknown().optional(),
+});
+
+interface CategoryFormProps extends React.ComponentProps<"form"> {
+  onClose: () => void;
+  classNaem?: string;
+}
+
+function CategoryForm({ className, onClose }: CategoryFormProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const form = useForm<z.infer<typeof categorySchema>>({
@@ -58,40 +70,44 @@ function CategoryForm({ className }: React.ComponentProps<"form">) {
       name: "",
     },
   });
+  const fileRef = form.register("img");
 
-  const useCreateCategory = () => {
-    return useMutation(
-      async (newCategory: Category) => {
-        const { data } = await createCategory(newCategory);
-        return data;
-      },
+  const createCategory = async (data: FormData) => {
+    const response = await axios.post(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/category`,
+      data,
       {
-        onSuccess: () => {
-          toast({
-            title: "تم إضافة التصنيف بنجاح",
-            variant: "default",
-            style: {
-              backgroundColor: "#4caf50",
-              color: "#fff",
-            },
-          });
-          queryClient.invalidateQueries("categories");
-        },
-        onError: (error) => {
-          console.error(error);
-          toast({
-            title: "حدث خطأ أثناء إضافة التصنيف",
-            variant: "destructive",
-          });
+        headers: {
+          "Content-Type": "multipart/form-data",
         },
       }
     );
+
+    return response;
   };
 
-  const createCategoryMutation = useCreateCategory();
+  const createCategoryMutation = useMutation(createCategory, {
+    onSuccess: () => {
+      toast({
+        title: "تم إضافة التصنيف بنجاح",
+        variant: "default",
+        dir: "rtl",
+        style: {
+          backgroundColor: "#4caf50",
+          color: "#fff",
+          border: "none",
+        },
+      });
+      queryClient.invalidateQueries("categories");
+      onClose;
+    },
+  });
 
   const onSubmit = async (data: z.infer<typeof categorySchema>) => {
-    createCategoryMutation.mutate({ name: data.name });
+    const formData = new FormData();
+    formData.append("name", data.name);
+    formData.append("img", data.img[0]);
+    createCategoryMutation.mutate(formData);
   };
 
   return (
@@ -102,6 +118,22 @@ function CategoryForm({ className }: React.ComponentProps<"form">) {
         className={cn("grid items-start gap-4", className)}
       >
         <div className="grid gap-2">
+          <FormField
+            control={form.control}
+            name="img"
+            render={({ field }) => {
+              return (
+                <FormItem>
+                  <FormLabel>File</FormLabel>
+                  <FormControl>
+                    <Input type="file" placeholder="shadcn" {...fileRef} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              );
+            }}
+          />
+
           <FormField
             control={form.control}
             name="name"

@@ -43,7 +43,7 @@ export function DrawerDemo({ open }) {
           <DrawerFooter>
             <Button>رؤية الطلب</Button>
             <Button variant="outline">
-              <Link href="/menu">الذهاب لقائمة الطعام</Link>
+              <Link href="/">الرئيسية</Link>
             </Button>
           </DrawerFooter>
         </div>

@@ -4,8 +4,8 @@ interface ICategory extends Document {
   _id?: string;
   name: string;
   total: number;
+  imgURL: string;
   subcategories: ISubCategory[];
-  restaurantId?: string;
 }
 
 interface ISubCategory {
@@ -22,8 +22,8 @@ const subCategorySchema = new Schema({
 const categorySchema = new Schema({
   name: { type: String, required: true },
   total: { type: Number, default: 0 },
+  imgURL: { type: String, required: true },
   subcategories: [subCategorySchema],
-  restaurantId: { type: Schema.Types.ObjectId, ref: "Restaurant" },
 });
 
 export default mongoose.model<ICategory>("Category", categorySchema);

@@ -15,13 +15,13 @@ export type Cart = {
 };
 
 const cartAPI = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_MONGODB_URI,
+  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
 });
 
 // GET Cart
 export const useGetCartById = (id: string) => {
   return useQuery({
-    queryKey: ["orders", id],
+    queryKey: ["cart", id],
     queryFn: async () => {
       try {
         const { data } = await getCart(id);

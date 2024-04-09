@@ -1,8 +1,6 @@
-import { ConnectOptions, mongo } from "mongoose";
+import mongoose, { ConnectOptions } from "mongoose";
+const dotenv = require("dotenv");
 
-import mongoose from "mongoose";
-
-require("dotenv").config({ path: "../../.env" });
 export const MONGO_URL: string = process.env.MONGO_URL as string;
 
 export const connect = (): void => {
@@ -10,8 +8,8 @@ export const connect = (): void => {
   mongoose
     .connect(MONGO_URL, optioimportns)
 
-    .  then(() => {
-     console.log("Connected to database");
+    .then(() => {
+      console.log("Connected to database");
     })
 
     .catch((err: Error) => {

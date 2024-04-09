@@ -6,6 +6,7 @@ import Cookies from "js-cookie";
 import { Item } from "@/components/menu/cart/Cart";
 
 import { TransitionGroup, CSSTransition } from "react-transition-group";
+import useEmblaCarousel from "embla-carousel-react/components/useEmblaCarousel";
 
 const CartItems = () => {
   const {
@@ -22,7 +23,7 @@ const CartItems = () => {
     removeItem(index);
     toast({
       variant: "destructive",
-      description: `تم حذف ${cart[index].name} من السلة`,
+      description: `تم حذف ${cart[index].prodcut.name} من السلة`,
       style: {
         justifyContent: "center",
       },
@@ -85,7 +86,7 @@ const CartItems = () => {
                         <span className=" text-black ps-1 text-sm">
                           {"x" + item.quantity}
                         </span>
-                        <h6 className="">{item.name}</h6>
+                        <h6 className="">{item.product?.name}</h6>
                       </div>
                       <p className="flex items-center">
                         {item.priceAtTheTime ? item.priceAtTheTime : item.price}{" "}

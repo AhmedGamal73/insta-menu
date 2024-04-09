@@ -25,14 +25,15 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
 const tableSchema = new mongoose_1.Schema({
-    tableNo: { type: Number, required: true },
+    tableNo: { type: Number, required: false },
     tableStatus: { type: Boolean, required: false, default: true },
-    chairsNo: { type: Number, required: true },
+    chairsNo: { type: Number, required: false },
     sectionId: {
         type: mongoose_1.Types.ObjectId,
         ref: "Section",
+        required: false,
     },
-    qrCode: { type: String },
+    qrCode: { type: String, required: false },
 });
 exports.default = mongoose_1.default.model("Table", tableSchema);
 //# sourceMappingURL=table.model.js.map

@@ -1,3 +1,5 @@
+"use client";
+
 import { useRouter } from "next/router";
 import { Pen, Trash2, ScrollText, MailMinus, Phone } from "lucide-react";
 

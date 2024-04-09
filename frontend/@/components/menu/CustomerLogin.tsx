@@ -20,7 +20,7 @@ import { useMutation } from "react-query";
 import { toast } from "../ui/use-toast";
 import React, { useEffect, useState } from "react";
 import { ReloadIcon } from "@radix-ui/react-icons";
-import { Cookie } from "lucide-react";
+import { useRouter } from "next/router";
 
 const wait = () => new Promise((resolve) => setTimeout(resolve, 1000));
 
@@ -30,6 +30,7 @@ const CustomerLogin = ({ onSubmitHandler, wideButton }) => {
   // to close the modal after success auth
   const [authSuccess, setAuthSuccess] = useState(false);
 
+  const router = useRouter();
   const customerSchema = z.object({
     phone: z.string().refine(
       (value) => {
@@ -66,6 +67,7 @@ const CustomerLogin = ({ onSubmitHandler, wideButton }) => {
               color: "white",
             },
           });
+          router.push("/menu/checkout");
         },
         onError: (error) => {
           console.log({ message: error });

@@ -3,13 +3,13 @@ import { useQuery } from "react-query";
 
 export type ITable = {
   tableNo: Number;
-  tableStatus?: boolean;
   chairsNo: Number;
   sectionId: string;
+  tableStatus: boolean;
 };
 
 const tableApi = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_MONGODB_URI,
+  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
 });
 
 // Get tables data
@@ -30,6 +30,7 @@ export const useTable = (tableNo: number) => {
       const { data } = await getTable(tableNo);
       return data;
     },
+    enabled: !!tableNo,
   });
 };
 

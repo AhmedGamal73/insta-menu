@@ -3,9 +3,9 @@ import express from "express";
 import {
   postTableController,
   getTablesController,
-  getTableController,
   deleteTableController,
   putTableController,
+  getTableController,
 } from "../controllers/table.controller";
 
 const tableRouter = express.Router();
@@ -17,7 +17,7 @@ tableRouter.post("/", postTableController);
 tableRouter.get("/", getTablesController);
 
 // GET Table
-// tableRouter.get("/:tableNo", getTableController);
+tableRouter.get("/:tableNo", getTableController);
 
 // Delete table
 tableRouter.delete("/:tableNo", deleteTableController);

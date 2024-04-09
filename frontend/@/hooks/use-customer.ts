@@ -15,7 +15,7 @@ export type CustomerLogin = {
 };
 
 const customerAPI = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_MONGODB_URI,
+  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
 });
 
 // POST Customer

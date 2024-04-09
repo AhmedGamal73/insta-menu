@@ -11,7 +11,7 @@ tableRouter.post("/", table_controller_1.postTableController);
 // GET Tables
 tableRouter.get("/", table_controller_1.getTablesController);
 // GET Table
-// tableRouter.get("/:tableNo", getTableController);
+tableRouter.get("/:tableNo", table_controller_1.getTableController);
 // Delete table
 tableRouter.delete("/:tableNo", table_controller_1.deleteTableController);
 // Update table

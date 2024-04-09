@@ -4,7 +4,7 @@ import { Address } from "./use-location";
 import { useQuery } from "react-query";
 
 const orderAPI = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_MONGODB_URI,
+  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
 });
 
 export type Order = {
@@ -153,4 +153,19 @@ export const generateOtp = async () => {
 // GET Order By ID
 export const getOrderById = async (id: string) => {
   return await orderAPI.get(`/order/${id}`);
+};
+
+// Delete Order
+export const deleteOrder = async (id: string) => {
+  return await orderAPI.delete(`/order/${id}`);
+};
+
+// PUT Order
+export const putOrder = async (id: string, order: Order) => {
+  return await orderAPI.put(`/order/${id}`, order);
+};
+
+// PUT Order WaiterApproval
+export const putOrderWaiterApproval = async (id: string, order: Order) => {
+  return await orderAPI.put(`/order/waiter-approval/${id}`, order);
 };

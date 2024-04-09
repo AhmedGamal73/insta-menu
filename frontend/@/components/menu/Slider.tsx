@@ -1,33 +1,25 @@
 import { Category } from "@/hooks/use-category";
 
-const Slider = ({ data, selectedItem, setSelectedItem }) => {
+const Slider = ({ data = [], selectedItem, setSelectedItem }) => {
+  const allOption = { _id: "all", name: "الجميع" };
+  const categories = [allOption, ...data];
+
   return (
-    <div className="w-full sticky top-0 py-2 bg-white shadow-sm z-20">
+    <div className="w-full sticky top-0 py-2 bg-white shadow-sm z-999">
       <ul className="ps-4 w-full flex gap-2 overflow-x-scroll scrollbar-hide">
-        <button>
-          <li
-            className={`w-full py-2 border-b border-b-white hover:border-b-red-500  flex justify-between items-center px-2 whitespace-nowrap`}
-          >
-            الكل
-          </li>
-        </button>
-        {data && data.length > 0
-          ? data.map((category: Category, i: number) => (
-              <button
+        {categories && categories.length > 0
+          ? categories.map((category: Category, i: number) => (
+              <li
                 key={i}
-                className={`${
-                  category.name === selectedItem
-                    ? " font-bold pt-1 text-xs rounded-lg bg-primary text-white transition ease-in-out border-b-2 border-warning"
-                    : "color-text text-text bg-bgc rounded-lg px-2 text-xs"
+                className={`py-2 px-2 ${
+                  category._id === selectedItem
+                    ? " font-bold text-xs rounded-lg bg-primary text-white transition ease-in-out border-b-2 border-warning"
+                    : "color-text text-text bg-bgc rounded-lg text-xs"
                 }`}
-                onClick={() => setSelectedItem(category.name)}
+                onClick={() => setSelectedItem(category._id)}
               >
-                <li
-                  className={`w-full py-2 border-bborder-b-white hover:border-b-red-500  flex justify-between items-center px-2 whitespace-nowrap`}
-                >
-                  {category.name}
-                </li>
-              </button>
+                {category.name}
+              </li>
             ))
           : "يتم التحميل..."}
       </ul>

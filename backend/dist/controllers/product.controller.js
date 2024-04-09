@@ -3,63 +3,74 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateToActiveController = exports.updateProductController = exports.deleteProductController = exports.getProductByIdController = exports.getInactiveProductsController = exports.getActiveProductsController = exports.getProductsController = exports.postProductController = void 0;
-const sharp_1 = __importDefault(require("sharp"));
-const client_s3_1 = require("@aws-sdk/client-s3");
-const s3_1 = __importDefault(require("../config/s3"));
+exports.getProductsByCategoryIdAndRestaurantIdController = exports.getProductsByCategoryIdController = exports.getProductsByRestaurantSlugController = exports.updateToActiveController = exports.updateProductController = exports.deleteProductController = exports.getProductByIdController = exports.getInactiveProductsController = exports.getActiveProductsController = exports.getProductsController = exports.postProductController = void 0;
 const product_service_1 = require("../services/product.service");
 const product_model_1 = __importDefault(require("../models/product.model"));
 const category_model_1 = __importDefault(require("../models/category.model"));
 const addon_model_1 = require("../models/addon.model");
+const mongoose_1 = __importDefault(require("mongoose"));
+const restaurant_model_1 = __importDefault(require("../models/restaurant.model"));
 // Create Product
 async function postProductController(req, res) {
     try {
-        const { name, description, calories, price, salePrice, categoryId, subcategoryId, addonCategory, addons, variations, } = req.body;
-        let variable;
-        // add Variation
-        if (variations.length > 0) {
+        const { name, description, calories, price, salePrice, categoryId, subcategoryId, restaurantId, addonCategory, addons, variations, } = req.body;
+        let parsedVariations;
+        let variable = false;
+        if (variations !== "undefined") {
+            parsedVariations = JSON.parse(variations);
             variable = true;
         }
-        else {
-            variable = false;
-        }
-        // const parsedVariations = JSON.parse(variations);
-        // add addons in array
-        const addonsArr = addons ? addons.split(",") : [];
         // Get AddonCategory name
         let addonCategoryName = "";
         const addonCategoryExist = await addon_model_1.AddonCategory.findById(addonCategory);
         if (addonCategoryExist) {
             addonCategoryName = addonCategoryExist.name;
         }
-        // validate img
-        if (!req.file) {
-            return res.status(400).send("Image is required");
+        // Validate Category
+        const category = await category_model_1.default.findById(categoryId);
+        if (!category) {
+            return res.status(400).send("Category not found");
         }
-        // resize image
-        const resizedImage = await (0, sharp_1.default)(req.file?.buffer)
-            .resize({ width: 400, height: 400, fit: "contain" })
-            .png({ quality: 80 })
-            .toBuffer();
-        // encrepted key
-        const timestamp = Date.now();
-        const randomString = Math.random().toString(36).substring(2, 15);
-        const encreptedKey = timestamp + randomString;
-        const imgName = encreptedKey + req.file?.originalname;
-        const s3 = new client_s3_1.S3Client(s3_1.default);
-        const params = {
-            Bucket: process.env.AWS_BUCKET_NAME || "",
-            Key: imgName,
-            Body: resizedImage,
-            ContentType: req.file?.mimetype,
-        };
-        const command = new client_s3_1.PutObjectCommand(params);
-        await s3.send(command);
-        const imageUrl = `https://${process.env.AWS_BUCKET_NAME}.s3.amazonaws.com/${imgName}`;
+        category.total++;
+        await category.save();
+        // Add Category to Restaurant
+        const restaurant = await restaurant_model_1.default.findById(restaurantId);
+        if (!restaurant) {
+            return res.status(400).send("Restaurant not found");
+        }
+        if (!restaurant.categories.includes(categoryId)) {
+            restaurant.categories.push(categoryId);
+            return await restaurant.save();
+        }
+        // // validate img
+        // if (!req.file) {
+        //   return res.status(400).send("Image is required");
+        // }
+        // // resize image
+        // const resizedImage = await sharp(req.file?.buffer)
+        //   .resize({ width: 400, height: 400, fit: "contain" })
+        //   .png({ quality: 80 })
+        //   .toBuffer();
+        // // encrepted key
+        // const timestamp = Date.now();
+        // const randomString = Math.random().toString(36).substring(2, 15);
+        // const encreptedKey = timestamp + randomString;
+        // const imgName = encreptedKey + req.file?.originalname;
+        // const s3 = new S3Client(config);
+        // const params = {
+        //   Bucket: process.env.AWS_BUCKET_NAME || "",
+        //   Key: imgName,
+        //   Body: resizedImage,
+        //   ContentType: req.file?.mimetype,
+        // };
+        // const command = new PutObjectCommand(params);
+        // await s3.send(command);
+        // const imageUrl = `https://${process.env.AWS_BUCKET_NAME}.s3.amazonaws.com/${imgName}`;
         const product = await product_model_1.default.create({
             name: name,
-            price: price,
-            salePrice: salePrice,
+            restaurantId,
+            price: variable ? 0 : price,
+            salePrice: variable ? 0 : salePrice,
             description: description,
             category: categoryId,
             subcategoryId: subcategoryId,
@@ -67,16 +78,16 @@ async function postProductController(req, res) {
             rating: 0,
             active: true,
             subcategory: subcategoryId,
-            imgURL: imageUrl,
+            // imgURL: imageUrl,
             addonCategory: {
                 id: addonCategory,
                 name: addonCategoryName,
             },
-            addons: addonsArr,
-            variable: false,
-            variations: [],
+            addons,
+            variable: variable,
+            variations: parsedVariations,
         });
-        res.status(200).send(product);
+        return res.status(200).json(product);
     }
     catch (err) {
         console.log(err);
@@ -98,7 +109,14 @@ async function getProductsController(req, res) {
 exports.getProductsController = getProductsController;
 async function getActiveProductsController(req, res) {
     try {
-        const products = await product_model_1.default.find({ active: true });
+        const products = await product_model_1.default.find({ active: true })
+            .populate("category", "name")
+            .populate({
+            path: "restaurantId",
+            select: "_id title",
+        })
+            .populate("addons")
+            .sort({ createdAt: -1 });
         res.json(products);
     }
     catch (error) {
@@ -119,6 +137,9 @@ exports.getInactiveProductsController = getInactiveProductsController;
 // GET Product by id
 async function getProductByIdController(req, res) {
     const { id } = req.params;
+    if (!mongoose_1.default.Types.ObjectId.isValid(id)) {
+        return res.status(400).send("Invalid product id");
+    }
     try {
         const product = await product_model_1.default.findById(id);
         if (!product) {
@@ -183,15 +204,13 @@ async function updateProductController(req, res) {
         if (categoryName !== oldCategory.name && oldCategory.total > 0) {
             --oldCategory.total;
         }
-        // Create product image
-        const img = "http://localhost:3001/content/demo.jfif";
         // Update product
         const updatedProduct = await product_model_1.default.findByIdAndUpdate(oldProductId, // The id of the product to update
         {
             ...productData,
             category: category._id,
             name,
-            imgURL: img,
+            imgURL,
             sizes,
         }, {
             new: true, // Return the updated document
@@ -227,4 +246,72 @@ async function updateToActiveController(req, res) {
     }
 }
 exports.updateToActiveController = updateToActiveController;
+// GET Products by restaurant slug
+async function getProductsByRestaurantSlugController(req, res) {
+    try {
+        const { slug } = req.params;
+        const restaurant = await restaurant_model_1.default.findOne({ slug });
+        if (!restaurant) {
+            return res.status(404).json({ message: "Restaurant Not Found" });
+        }
+        const products = await product_model_1.default.find({ restaurantId: restaurant._id });
+        res.json(products);
+    }
+    catch (err) {
+        console.log(err);
+    }
+}
+exports.getProductsByRestaurantSlugController = getProductsByRestaurantSlugController;
+// GET Products by categoryId
+async function getProductsByCategoryIdController(req, res) {
+    try {
+        const { categoryId } = req.params;
+        const category = await category_model_1.default.findById(categoryId);
+        if (!category) {
+            return res.status(404).json({ message: "Category Not Found" });
+        }
+        const activeProducts = await product_model_1.default.find({
+            active: true,
+            category: categoryId,
+        })
+            .populate({
+            path: "restaurantId",
+            select: "_id name",
+        })
+            .sort({ createdAt: -1 });
+        res.json(activeProducts);
+    }
+    catch (err) {
+        console.log(err);
+    }
+}
+exports.getProductsByCategoryIdController = getProductsByCategoryIdController;
+// GET Products by CategoryId and RestaurantId
+async function getProductsByCategoryIdAndRestaurantIdController(req, res) {
+    try {
+        const { slug, categoryId } = req.params;
+        // const category = await Category.findById(categoryId);
+        // if (!category || categoryId !== "all") {
+        //   return res.status(404).json({ message: "Category Not Found" });
+        // }
+        const restaurant = await restaurant_model_1.default.findOne({ slug });
+        if (!restaurant) {
+            return res.status(404).json({ message: "Restaurant Not Found" });
+        }
+        let query = { active: true, restaurantId: restaurant._id };
+        if (categoryId !== "all") {
+            query = { ...query, category: categoryId };
+        }
+        const activeProducts = await product_model_1.default.find(query).populate({
+            path: "category",
+            select: "name",
+        });
+        return res.status(200).json(activeProducts);
+    }
+    catch (err) {
+        console.log(err);
+        return res.status(500).json({ message: "Server Error" });
+    }
+}
+exports.getProductsByCategoryIdAndRestaurantIdController = getProductsByCategoryIdAndRestaurantIdController;
 //# sourceMappingURL=product.controller.js.map

@@ -35,14 +35,22 @@ export const CartProvider = ({ children }) => {
   const clearCart = () => {
     setCart([]);
     setSubtotal(0);
+    setQuantity(0);
   };
+
+  useEffect(() => {
+    const savedQuantity = Cookies.get("quantity");
+    if (savedQuantity) {
+      setQuantity(JSON.parse(savedQuantity));
+    }
+  }, []);
 
   useEffect(() => {
     Cookies.set("cart", JSON.stringify(cart));
     Cookies.set("subtotal", JSON.stringify(subtotal));
     Cookies.set("vat", JSON.stringify(vat));
     Cookies.set("quantity", JSON.stringify(quantity));
-  }, [cart]);
+  }, [cart, quantity]);
 
   return (
     <CartContext.Provider

@@ -2,12 +2,13 @@ import axios from "axios";
 import { QueryClient, useQuery } from "react-query";
 
 const categoryApi = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_MONGODB_URI,
+  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
 });
 
 export interface Category {
   _id?: string;
   name: string;
+  imgURL: string;
   subcategories?: Subcategory[];
 }
 
@@ -34,23 +35,6 @@ export const useCategory = () => {
   });
 };
 
-// Fetch all prodcuts by category
-export const useActiveProductByCategory = (categoryName: string) => {
-  return useQuery({
-    queryKey: ["productByCategory", categoryName],
-    queryFn: async () => {
-      try {
-        const { data } = await getProductByCategory(categoryName);
-        return data;
-      } catch (error) {
-        console.log(`Thier is an error: ${error}`);
-        return { error: "There was an error fetching the category" };
-      }
-    },
-    keepPreviousData: true,
-  });
-};
-
 // GET Subcategories
 export const useSubcategories = (categoryId: string) => {
   return useQuery({
@@ -63,6 +47,7 @@ export const useSubcategories = (categoryId: string) => {
         console.log(err);
       }
     },
+    enabled: !!categoryId,
   });
 };
 
@@ -90,9 +75,4 @@ export const createCategory = async (newCategory: Category) => {
 // Get Subcategories
 export const getSubcategories = async (categoryId: string) => {
   return await categoryApi.get(`/category/${categoryId}/sub`);
-};
-
-// Get GetProductByCategory
-export const getProductByCategory = async (categoryId: string) => {
-  return await categoryApi.get(`/category/${categoryId}/products`);
 };

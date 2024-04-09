@@ -15,6 +15,7 @@ interface productsProps {
 
 const ProductPage: React.FC<productsProps> = ({ product, onClose }) => {
   const { data: addons } = useGetProductAddons(product._id);
+
   const [note, setNote] = useState("");
   const [selectedAddons, setSelectedAddons] = useState([]);
   const [addonsPrice, setAddonsPrice] = useState(0);
@@ -63,26 +64,29 @@ const ProductPage: React.FC<productsProps> = ({ product, onClose }) => {
 
   // Add to cart
   const handleAddToCart = () => {
-    // if (selectedVariant) {
     const item = {
-      productId: product._id,
-      name: product.name,
-      priceAtTheTime: salePrice,
+      product: {
+        id: product._id,
+        name: product.name,
+        imgURL: product.imgURL,
+        price: price,
+        salePrice: salePrice,
+        restaurantId: product.restaurantId ? product.restaurantId : null,
+      },
       quantity: itemNumber,
-      price: price,
-      variations: selectedVariant,
       addons: selectedAddons,
+      variations: product.variable ? selectedVariant : [],
       total: salePrice
         ? salePrice * itemNumber + addonsPrice
         : price * itemNumber + addonsPrice,
       note: note,
-      restaurantId: product.restaurantId,
+      priceAtTheTime: salePrice,
     };
 
     addItem(item);
     setTimeout(() => {
       toast({
-        description: `تم اضافة ${item.name} الى السلة`,
+        description: `تم اضافة ${item.product.name} الى السلة`,
         style: {
           justifyContent: "center",
           backgroundColor: "var(--secondary)",
@@ -165,6 +169,7 @@ const ProductPage: React.FC<productsProps> = ({ product, onClose }) => {
                   <Button
                     className="text-[12px] rounded-lg w-16 h-8"
                     onClick={() => handleVariant(index)}
+                    key={index}
                     variant={
                       selectedVariant !== undefined &&
                       selectedVariant !== option

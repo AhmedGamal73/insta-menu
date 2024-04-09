@@ -1,12 +1,16 @@
 import mongoose, { Schema, Document, Types } from "mongoose";
 
+interface Cart {
+  items: any[];
+}
+
 interface IOrder extends Document {
   orderNo: string;
   customerId: Types.ObjectId;
   orderName: string;
   customerType: string;
   phoneNumber: string;
-  cart: Types.ObjectId[];
+  cart: Cart;
   quantity: number;
   subtotal: number;
   discount: number;

@@ -38,7 +38,9 @@ async function postTableController(req, res) {
         return res.status(400).json({ error: "Request body cannot be null" });
     }
     try {
-        const table = await (0, table_service_1.postTable)(req.body);
+        // const table = await postTable(req.body);
+        const table = new table_model_1.default(req.body);
+        await table.save();
         const qrCode = await QRCode.toDataURL(`http://${process.env.MENU_URL}/menu?tableNo=${table.tableNo}`);
         table.qrCode = qrCode;
         await table.save();

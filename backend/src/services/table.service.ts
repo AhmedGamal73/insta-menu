@@ -20,10 +20,10 @@ export async function postTable(params: postTableProps) {
   }
 
   // Validate if table exist in database
-  const tableExist = await Table.findOne({ tableNo });
-  if (tableExist) {
-    throw new Error("Table Already Exist");
-  }
+  // const tableExist = await Table.findOne({ tableNo });
+  // if (tableExist) {
+  //   return new Error("Table Already Exist");
+  // }
   // Validate if seciton exist in database
   const section = await Section.findById(sectionId);
   if (!section) {

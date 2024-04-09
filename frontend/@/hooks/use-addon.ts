@@ -2,14 +2,35 @@ import axios from "axios";
 import { QueryClient, useQuery } from "react-query";
 
 const addonApi = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_MONGODB_URI,
+  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
 });
 
 export interface Addon {
   _id?: string;
   name: string;
   price: number;
+  addonCategoryId: string;
 }
+
+export interface AddonCategory {
+  name: string;
+}
+
+// GET Addon By ID
+export const useAddon = (id: string) => {
+  return useQuery({
+    queryKey: ["addon", id],
+    queryFn: async () => {
+      try {
+        const { data } = await getAddonById(id);
+        return data;
+      } catch (err) {
+        console.log(err);
+      }
+    },
+    enabled: !!id,
+  });
+};
 
 // Fetch all Addons
 export const useAddons = () => {
@@ -39,13 +60,14 @@ export const useGetAddonsByCategory = (categoryId: string) => {
         console.log(err);
       }
     },
+    enabled: !!categoryId,
   });
 };
 
 // GET AddonsCategories
 export const useGetAddonsCategories = () => {
   return useQuery({
-    queryKey: ["AddonCategory"],
+    queryKey: ["Addon-category"],
     queryFn: async () => {
       try {
         const { data } = await getAddonsCategories();
@@ -81,17 +103,27 @@ export const getProductAddons = async (productId: string) => {
   return await addonApi.get(`/addon/product/${productId}`);
 };
 
-// POST Category
-export const createCategory = async (newAddon: Addon) => {
+// GET Addons by category
+export const getAddonsByCategory = async (addonCategoryId: string) => {
+  return await addonApi.get(`/addon/${addonCategoryId}`);
+};
+
+// POST Addon Category
+export const postAddonCategory = async (newAddon: AddonCategory) => {
+  return await addonApi.post("/addon/addoncategory", newAddon);
+};
+
+// POST Addon
+export const postAddon = async (newAddon: Addon) => {
   return await addonApi.post("/addon", newAddon);
 };
 
-// GET Addons by category
-export const getAddonsByCategory = async (categoryId: string) => {
-  return await addonApi.get(`/addon/${categoryId}`);
+// GET Addons Categories
+export const getAddonsCategories = async () => {
+  return await addonApi.get("/addon/addoncategory");
 };
 
-// GET AddonsCategories
-export const getAddonsCategories = async () => {
-  return await addonApi.get("/addoncategory");
+// GET Addon By ID
+export const getAddonById = async (id: string) => {
+  return await addonApi.get(`/addon/${id}`);
 };

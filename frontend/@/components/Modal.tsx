@@ -17,7 +17,7 @@ const Modal = ({ isOpen, onClose, children }) => {
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="p-4 h-[100vh] w-full bottom-0 rounded-t-lg bg-white shadow-md overflow-y-auto scrollbar-hide pb-8"
+        className="p-4 h-[90vh] w-full bottom-0 rounded-t-lg bg-white shadow-md overflow-y-auto scrollbar-hide pb-8"
       >
         {children}
       </div>

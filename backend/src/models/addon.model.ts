@@ -8,22 +8,24 @@ export interface IAddon extends Document {
 
 export interface ICategory extends Document {
   name: string;
+  total: number;
 }
 
-const categorySchema = new Schema({
+const addonCategorySchema = new Schema({
   name: { type: String, required: true },
+  total: { type: Number, required: true, default: 0 },
 });
 
 const addonSchema = new Schema({
   name: { type: String, required: true },
   price: { type: Number, required: true },
-  categoryId: { type: Schema.Types.ObjectId, ref: "Category" },
+  addonCategory: { type: Schema.Types.ObjectId, ref: "AddonCategory" },
 });
 
 const Addon = mongoose.model<IAddon>("Addon", addonSchema);
 const AddonCategory = mongoose.model<ICategory>(
   "AddonCategory",
-  categorySchema
+  addonCategorySchema
 );
 
 export { Addon, AddonCategory };

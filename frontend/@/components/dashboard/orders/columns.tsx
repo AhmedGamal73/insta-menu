@@ -1,13 +1,14 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, Banknote } from "lucide-react";
+import { ArrowUpDown, ArrowUpLeft, Banknote } from "lucide-react";
 
 import { useAddressById } from "@/hooks/use-location";
 import { Button } from "@/components/ui/button";
 import { useGetCustomerById } from "@/hooks/use-customer";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import OrderActions from "./OrderActions";
 
 type Order = {
   orderNo: string;
@@ -77,14 +78,11 @@ export const columns: ColumnDef<any>[] = [
     accessorKey: "orderStatus",
     cell: ({ row }) => {
       let orderStatus;
-      const status = row.getValue("orderStatus") as string;
-      status == "Pending"
+      const status = row.getValue("waiterApproval") as string;
+      !status
         ? (orderStatus = "بإنتظار الموافقة")
-        : status == "Delivered"
-        ? (orderStatus = "تم التوصيل")
-        : status == "Processing"
-        ? (orderStatus = "يتم العمل")
-        : (orderStatus = "تم الإلغاء");
+        : (orderStatus = "تم الموافقة");
+
       return (
         <span className="px-2 py-1 bg-gray-200 text-center rounded-full text-[12px]">
           {orderStatus}
@@ -155,17 +153,12 @@ export const columns: ColumnDef<any>[] = [
   },
   {
     accessorKey: "action",
-    header: "",
+    header: ({ column }) => {
+      return <span className="text-xs">بيانات الطلب</span>;
+    },
     cell: ({ row }) => {
-      const router = useRouter();
-      return (
-        <Button
-          variant="ghost"
-          className="text-lg py-2 pt-0 font-rubikBold z-50"
-        >
-          <Link href={`/dashboard/orders/${row.original._id}`}>...</Link>
-        </Button>
-      );
+      const orderId = row.original._id;
+      return <OrderActions orderId={orderId} />;
     },
   },
 ];

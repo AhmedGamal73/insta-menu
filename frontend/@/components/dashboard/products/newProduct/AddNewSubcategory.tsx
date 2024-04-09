@@ -9,7 +9,6 @@ import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Subcategory, postSubcategories } from "@/hooks/use-category";
-import categorySchema from "@/schemas/categorySchema";
 import { useToast } from "@/components/ui/use-toast";
 import {
   Dialog,
@@ -46,18 +45,26 @@ const AddNewSubcategory = ({ selectedCategoryId }: AddNewSubcategoryProps) => {
           <DialogHeader>
             <DialogTitle>أضف تصنيف فرعي جديد</DialogTitle>
           </DialogHeader>
-          <CategoryForm selectedCategoryId={selectedCategoryId} />
+          <SubcategoryForm selectedCategoryId={selectedCategoryId} />
         </DialogContent>
       </Dialog>
     </div>
   );
 };
 
-interface CategoryFormProps extends React.ComponentProps<"form"> {
+const categorySchema = z.object({
+  name: z.string(),
+  categoryId: z.string(),
+});
+
+interface SubcategoryFormProps extends React.ComponentProps<"form"> {
   selectedCategoryId: string;
 }
 
-function CategoryForm({ className, selectedCategoryId }: CategoryFormProps) {
+function SubcategoryForm({
+  className,
+  selectedCategoryId,
+}: SubcategoryFormProps) {
   const { toast } = useToast();
   const queryClient = new QueryClient();
 
@@ -99,10 +106,10 @@ function CategoryForm({ className, selectedCategoryId }: CategoryFormProps) {
     );
   };
 
-  const createCategoryMutation = useCreateSubcategory(selectedCategoryId);
+  const createSubcategoryMutation = useCreateSubcategory(selectedCategoryId);
 
   const onSubmit = async (data: z.infer<typeof categorySchema>) => {
-    createCategoryMutation.mutate({ name: data.name });
+    createSubcategoryMutation.mutate({ name: data.name });
   };
 
   return (

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -12,7 +12,7 @@ import SelectVariation from "../../../../@/components/dashboard/products/newProd
 import { Textarea } from "@/components/ui/textarea";
 import Layout from "@/components/dashboard/layout";
 import Box from "@/components/ui/Box";
-import { VariationProvider, useVariations } from "@/context/VariationContext";
+import { VariationProvider } from "@/context/VariationContext";
 
 import {
   Form,
@@ -23,6 +23,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import InnerPageHeader from "@/components/ui/inner-page-header";
+import { SelectRestaurant } from "@/components/dashboard/products/newProduct/SelectRestaurant";
+import { useMutation } from "react-query";
+import { toast } from "@/components/ui/use-toast";
 
 interface CreatePostFormProps {
   name?: string | null;
@@ -36,27 +39,22 @@ const productSchema = z
         ? z.instanceof(FileList).optional()
         : z.unknown().optional(),
     name: z.string().min(1, "الرجاء إدخال اسم الخيار"),
-    desc: z.string().min(1, "الرجاء إدخال اسم الخيار"),
+    desc: z.string().min(1, "الرجاء إدخال اسم الخيار").optional(),
     calories: z
       .string()
-      .transform((v) => Number(v) || 0)
       .optional()
+      .transform((v) => Number(v) || 0)
       .refine((v) => v > 0, {
         message: "يجب أن تكون السعرات الحرارية أكبر من 0",
       }),
     price: z
       .string()
       .transform((v) => Number(v) || 0)
-      .refine((v) => v >= 0, {
-        message: "يجب أن يكون السعر أكبر من 0",
-      }),
+      .optional(),
     salePrice: z
       .string()
       .transform((v) => Number(v) || 0)
-      .optional()
-      .refine((v) => v > -1, {
-        message: "يجب أن يكون السعر أكبر من 0",
-      }),
+      .optional(),
   })
   .refine((data) => data.price > data.salePrice, {
     message: "سعر الخصم يجب أن يكون أقل من السعر الإفتراضي",
@@ -65,6 +63,7 @@ const productSchema = z
 export default function CreatePostForm(user: CreatePostFormProps) {
   const [categoryId, setCategoryId] = useState<string | null>(null);
   const [subcategoryId, setSubcategoryId] = useState<string | null>(null);
+  const [restaurantId, setRestaurantId] = useState<string | null>(null);
   const [addonCategoryId, setAddonCategoryId] = useState<string>(null);
   const [addons, setAddons] = useState<string[]>([]);
   const [file, setFile] = useState<File | null>(null);
@@ -84,6 +83,11 @@ export default function CreatePostForm(user: CreatePostFormProps) {
     } else {
       setPreviewUrl(null);
     }
+  };
+
+  // handle restaurant select
+  const handleRestaurantSelect = (restId: string) => {
+    setRestaurantId(restId);
   };
 
   // handle category and subcategory change
@@ -108,13 +112,40 @@ export default function CreatePostForm(user: CreatePostFormProps) {
     defaultValues: {
       name: "",
       desc: "",
-      price: 0,
-      salePrice: 0,
-      calories: 0,
     },
   });
 
   const fileRef = form.register("img");
+
+  const createProduct = async (formData: FormData) => {
+    const response = await axios.post(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/product`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
+    if (response.status < 200 || response.status >= 300) {
+      throw new Error("Network response was not ok");
+    }
+    return response.data;
+  };
+
+  const mutation = useMutation(createProduct, {
+    onSuccess: (data) => {
+      toast({
+        title: "تم إنشاء منتج جديد بنجاح",
+        dir: "rtl",
+        style: {
+          backgroundColor: "#4BB543",
+          color: "#fff",
+        },
+      });
+    },
+  });
 
   async function onSubmit(data: z.infer<typeof productSchema>) {
     try {
@@ -128,17 +159,14 @@ export default function CreatePostForm(user: CreatePostFormProps) {
       }
       formData.append("categoryId", categoryId);
       formData.append("subcategoryId", subcategoryId);
+      formData.append("restaurantId", restaurantId);
       addons.forEach((addon, index) => {
         formData.append(`addons[${index}]`, addon);
       });
       formData.append("addonCategoryId", addonCategoryId);
       formData.append("variations", JSON.stringify(variations[0]));
 
-      await axios.post(`http://localhost:3001/product`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      mutation.mutate(formData);
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.log(error.response?.data); // Log server error message
@@ -148,12 +176,7 @@ export default function CreatePostForm(user: CreatePostFormProps) {
 
   useEffect(() => {
     setSubcategoryId("");
-    console.log({ addonCategoryId: addonCategoryId });
   }, [categoryId]);
-
-  useEffect(() => {
-    console.log(variations);
-  }, [variations]);
 
   return (
     <VariationProvider>
@@ -162,17 +185,17 @@ export default function CreatePostForm(user: CreatePostFormProps) {
           <form
             onSubmit={form.handleSubmit(onSubmit)}
             dir="rtl"
-            className="w-full flex justify-center items-center bg-slate-50"
+            className="w-full flex justify-center items-center bg-slate-50 px-8"
           >
-            <div className="w-10/12 flex flex-col gap-8 px-6 py-4">
+            <div className="w-full flex flex-col gap-8 px-6 py-4">
               <InnerPageHeader href="/dashboard/products">
                 <Button type="submit">حفظ المنتج</Button>
                 <Button variant="outline">حفظ وأضف منتج جديد</Button>
               </InnerPageHeader>
-              <div className="w-full flex gap-4">
+              <div className="w-full flex  gap-4">
                 <div className="w-2/3 flex flex-col gap-4">
                   <Box
-                    title="تفاصيل عامة"
+                    title="تفاصيل عامة "
                     className="w-full"
                     dataClassName="gap-4"
                   >
@@ -326,6 +349,21 @@ export default function CreatePostForm(user: CreatePostFormProps) {
                       </label>
                     </div>
                   </Box>
+
+                  <Box
+                    dataClassName="flex-col"
+                    title="المطعم"
+                    className="w-full flex flex-col justify-center items-center"
+                  >
+                    <div className="w-full flex gap-4">
+                      <label className="w-full text-sm text-text flex flex-col gap-2">
+                        <SelectRestaurant
+                          onRestaurantSelect={handleRestaurantSelect}
+                        />
+                      </label>
+                    </div>
+                  </Box>
+
                   <Box
                     dataClassName="flex-col"
                     title="سعر المنتج"

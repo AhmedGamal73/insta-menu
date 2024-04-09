@@ -3,7 +3,7 @@ import axiox from "axios";
 import jwt from "jsonwebtoken";
 
 import Order from "../models/order.model";
-import Cart from "../models/cart.model";
+import { Cart } from "../models/cart.model";
 import Product from "../models/product.model";
 import {
   validateAddress,
@@ -43,7 +43,9 @@ export async function postOrderController(req: Request, res: Response) {
     // verify address
     const addressId = await validateAddress(orderType, address);
 
-    const newCart = await Cart.create({ items: cart });
+    const newCart = await Cart.create({
+      items: cart,
+    });
     await newCart.save();
 
     order = {
@@ -61,7 +63,7 @@ export async function postOrderController(req: Request, res: Response) {
       dileveryFee,
       dileveryTime,
       promoCode,
-      cart: newCart._id,
+      cart: newCart,
       rating: 0,
       feedback: "",
       orderStatus: "Pending",
@@ -131,22 +133,20 @@ export async function getOrdersController(req: Request, res: Response) {
 }
 
 // GET Orders With All Product Data
-export async function getOrdersWithCartItemsController(
-  req: Request,
-  res: Response
-) {
+export async function getClickOrdersController(req: Request, res: Response) {
   try {
-    const orders = await Order.find()
-      .sort({ createdAt: -1 })
-      .populate({
-        path: "cart",
-        populate: {
-          path: "items.productId",
-          model: "Product",
-        },
-      });
+    const orders = await Order.find({ clickVirefiy: false })
+      .sort({
+        createdAt: -1,
+      })
+      .populate("cart");
 
-    return res.status(201).json(orders);
+    const modifiedOrders = orders.map((order) => {
+      const { cart, ...otherProps } = order.toObject();
+      return { ...otherProps, items: cart.items };
+    });
+
+    res.status(201).json(modifiedOrders);
   } catch (err) {
     console.log(err);
     return res.status(500).json({ error: "An error occurred" });
@@ -161,7 +161,7 @@ export async function getOrderByIdController(req: Request, res: Response) {
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ error: "Invalid ID" });
     }
-    const order = await Order.findById(id);
+    const order = await Order.findById(id).populate("cart");
     return res.status(201).json(order);
   } catch (err) {
     console.log(err);
@@ -211,6 +211,7 @@ export async function getIndoorOrdersController(req: Request, res: Response) {
   }
 }
 
+// PUT Order Approved
 export async function putOrderApprovedController(req: Request, res: Response) {
   // get the order id from the request parameters
   const orderId = req.params.id;
@@ -228,6 +229,40 @@ export async function putOrderApprovedController(req: Request, res: Response) {
         }
       }
     );
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ error: "An error occurred" });
+  }
+}
+
+// Delete Order
+export async function deleteOrderController(req: Request, res: Response) {
+  try {
+    const { id } = req.params;
+    // Check if id is a valid ObjectId
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ error: "Invalid ID" });
+    }
+    await Order.findByIdAndDelete(id);
+    return res.status(201).json({ message: "Order deleted successfully" });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ error: "An error occurred" });
+  }
+}
+
+// PUT Order
+export async function putOrderController(req: Request, res: Response) {
+  try {
+    const { id } = req.params;
+    // Check if id is a valid ObjectId
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ error: "Invalid ID" });
+    }
+    const updatedOrder = await Order.findByIdAndUpdate(id, req.body, {
+      new: true,
+    });
+    return res.status(201).json(updatedOrder);
   } catch (err) {
     console.log(err);
     return res.status(500).json({ error: "An error occurred" });

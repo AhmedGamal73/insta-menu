@@ -26,7 +26,7 @@ const ProductCard = ({ product, index, totalProductLength }) => {
     }
   });
   return (
-    <button
+    <div
       key={index}
       onClick={() => setModalOpen(true)}
       className={`pb-4 flex justify-between items-center  px-4 ${
@@ -98,7 +98,7 @@ const ProductCard = ({ product, index, totalProductLength }) => {
           <ProductPage onClose={() => setModalOpen(false)} product={product} />
         </Modal>
       </div>
-    </button>
+    </div>
   );
 };
 

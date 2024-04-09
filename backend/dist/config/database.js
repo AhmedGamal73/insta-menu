@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.connect = exports.MONGO_URL = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
-require("dotenv").config({ path: "../../.env" });
+const dotenv = require("dotenv");
 exports.MONGO_URL = process.env.MONGO_URL;
 const connect = () => {
     const optioimportns = {};

@@ -21,11 +21,11 @@ import { CustomerSignup, postCustomerSignin } from "@/hooks/use-customer";
 
 function CustomerSignup({ onSubmitHandler }) {
   const [isIndoor, setIsIndoor] = React.useState<boolean>(false);
+  const [isSigned, setIsSigned] = React.useState<boolean>(false);
 
-  const tableExist = localStorage.getItem("tableNo");
-  if (tableExist !== null) {
-    setIsIndoor(true);
-  }
+  useEffect(() => {
+    isSigned && onSubmitHandler("login");
+  }, [isSigned]);
 
   const customerSchema = z
     .object({
@@ -66,7 +66,7 @@ function CustomerSignup({ onSubmitHandler }) {
       {
         onSuccess: () => {
           // redirect to login tab
-          onSubmitHandler("login");
+          setIsSigned(true);
           toast({
             description: "تم إنشاء العميل بنجاح",
             style: {
@@ -97,6 +97,13 @@ function CustomerSignup({ onSubmitHandler }) {
   const onSubmit = (customer: CustomerSignup) => {
     mutation.mutate(customer);
   };
+
+  useEffect(() => {
+    const tableExist = localStorage.getItem("tableNo");
+    if (tableExist) {
+      setIsIndoor(true);
+    }
+  }, []);
 
   return (
     <Form {...form}>

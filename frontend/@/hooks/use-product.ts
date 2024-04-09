@@ -2,7 +2,7 @@ import axios from "axios";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 
 const productApi = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_MONGODB_URI,
+  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
 });
 
 export type Product = {
@@ -29,6 +29,7 @@ export type Product = {
 const getProducts = async () => {
   return await productApi.get("/product");
 };
+
 export const useProduct = () => {
   return useQuery({
     queryKey: ["products"],
@@ -71,6 +72,23 @@ export const useActiveProducts = () => {
   });
 };
 
+// GET Prodcuts by category name
+export const useActiveProductsByCategoryId = (categoryId: string) => {
+  return useQuery({
+    queryKey: ["productByCategory", categoryId],
+    queryFn: async () => {
+      try {
+        const { data } = await getProductByCategory(categoryId);
+        return data;
+      } catch (error) {
+        console.log(`Thier is an error: ${error}`);
+        return { error: "There was an error fetching the category" };
+      }
+    },
+    keepPreviousData: true,
+  });
+};
+
 // GET Product By Id
 export const useGetProductById = (id: string) => {
   return useQuery({
@@ -86,6 +104,28 @@ export const useGetProductById = (id: string) => {
     },
     refetchOnMount: false,
     refetchOnWindowFocus: false,
+  });
+};
+
+// GET Product By Restaurant Slug
+export const useGetProductByRestaurant = (slug: string, categoryId: string) => {
+  return useQuery({
+    queryKey: ["restaurant-products", slug, categoryId],
+    queryFn: async () => {
+      try {
+        const { data } = await getProductsByRestaurantSlugAndCategoryId(
+          slug,
+          categoryId
+        );
+        return data;
+      } catch (error) {
+        console.log(error);
+        throw error;
+      }
+    },
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    enabled: !!slug,
   });
 };
 
@@ -142,3 +182,18 @@ const getProductById = async (id: string) => {
   return await productApi.post(`/product/${id}`);
 };
 export default useProduct;
+
+// Get Products By Category Name
+export const getProductByCategory = async (categoryId: string) => {
+  return await productApi.get(`/product/category/${categoryId}`);
+};
+
+// Get Products By Restaurant Slug
+export const getProductsByRestaurantSlugAndCategoryId = async (
+  slug: string,
+  categoryId
+) => {
+  return await productApi.get(
+    `/product/restaurant/${slug}/category/${categoryId}`
+  );
+};

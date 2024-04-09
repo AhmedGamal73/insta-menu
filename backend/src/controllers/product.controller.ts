@@ -3,10 +3,12 @@ import sharp from "sharp";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import config from "../config/s3";
 
-import { getProducts, postProducts } from "../services/product.service";
+import { getProducts } from "../services/product.service";
 import Product from "../models/product.model";
 import Category from "../models/category.model";
 import { AddonCategory } from "../models/addon.model";
+import mongoose from "mongoose";
+import Restaurant from "../models/restaurant.model";
 
 // Create Product
 export async function postProductController(req: Request, res: Response) {
@@ -19,22 +21,18 @@ export async function postProductController(req: Request, res: Response) {
       salePrice,
       categoryId,
       subcategoryId,
+      restaurantId,
       addonCategory,
       addons,
       variations,
     } = req.body;
 
-    let variable: boolean;
-    // add Variation
-    if (variations.length > 0) {
+    let parsedVariations;
+    let variable = false;
+    if (variations !== "undefined") {
+      parsedVariations = JSON.parse(variations);
       variable = true;
-    } else {
-      variable = false;
     }
-    // const parsedVariations = JSON.parse(variations);
-
-    // add addons in array
-    const addonsArr = addons ? addons.split(",") : [];
 
     // Get AddonCategory name
     let addonCategoryName = "";
@@ -43,41 +41,60 @@ export async function postProductController(req: Request, res: Response) {
       addonCategoryName = addonCategoryExist.name;
     }
 
-    // validate img
-    if (!req.file) {
-      return res.status(400).send("Image is required");
+    // Validate Category
+    const category = await Category.findById(categoryId);
+    if (!category) {
+      return res.status(400).send("Category not found");
+    }
+    category.total++;
+    await category.save();
+
+    // Add Category to Restaurant
+    const restaurant = await Restaurant.findById(restaurantId);
+    if (!restaurant) {
+      return res.status(400).send("Restaurant not found");
+    }
+    if (!restaurant.categories.includes(categoryId)) {
+      restaurant.categories.push(categoryId);
+      return await restaurant.save();
     }
 
-    // resize image
-    const resizedImage = await sharp(req.file?.buffer)
-      .resize({ width: 400, height: 400, fit: "contain" })
-      .png({ quality: 80 })
-      .toBuffer();
+    // // validate img
+    // if (!req.file) {
+    //   return res.status(400).send("Image is required");
+    // }
 
-    // encrepted key
-    const timestamp = Date.now();
-    const randomString = Math.random().toString(36).substring(2, 15);
-    const encreptedKey = timestamp + randomString;
-    const imgName = encreptedKey + req.file?.originalname;
+    // // resize image
+    // const resizedImage = await sharp(req.file?.buffer)
+    //   .resize({ width: 400, height: 400, fit: "contain" })
+    //   .png({ quality: 80 })
+    //   .toBuffer();
 
-    const s3 = new S3Client(config);
+    // // encrepted key
+    // const timestamp = Date.now();
+    // const randomString = Math.random().toString(36).substring(2, 15);
+    // const encreptedKey = timestamp + randomString;
+    // const imgName = encreptedKey + req.file?.originalname;
 
-    const params = {
-      Bucket: process.env.AWS_BUCKET_NAME || "",
-      Key: imgName,
-      Body: resizedImage,
-      ContentType: req.file?.mimetype,
-    };
+    // const s3 = new S3Client(config);
 
-    const command = new PutObjectCommand(params);
-    await s3.send(command);
+    // const params = {
+    //   Bucket: process.env.AWS_BUCKET_NAME || "",
+    //   Key: imgName,
+    //   Body: resizedImage,
+    //   ContentType: req.file?.mimetype,
+    // };
 
-    const imageUrl = `https://${process.env.AWS_BUCKET_NAME}.s3.amazonaws.com/${imgName}`;
+    // const command = new PutObjectCommand(params);
+    // await s3.send(command);
+
+    // const imageUrl = `https://${process.env.AWS_BUCKET_NAME}.s3.amazonaws.com/${imgName}`;
 
     const product = await Product.create({
       name: name,
-      price: price,
-      salePrice: salePrice,
+      restaurantId,
+      price: variable ? 0 : price,
+      salePrice: variable ? 0 : salePrice,
       description: description,
       category: categoryId,
       subcategoryId: subcategoryId,
@@ -85,17 +102,17 @@ export async function postProductController(req: Request, res: Response) {
       rating: 0,
       active: true,
       subcategory: subcategoryId,
-      imgURL: imageUrl,
+      // imgURL: imageUrl,
       addonCategory: {
         id: addonCategory,
         name: addonCategoryName,
       },
-      addons: addonsArr,
-      variable: false,
-      variations: [],
+      addons,
+      variable: variable,
+      variations: parsedVariations,
     });
 
-    res.status(200).send(product);
+    return res.status(200).json(product);
   } catch (err) {
     console.log(err);
     return res.status(500).send("Server error");
@@ -115,7 +132,14 @@ export async function getProductsController(req: Request, res: Response) {
 
 export async function getActiveProductsController(req: Request, res: Response) {
   try {
-    const products = await Product.find({ active: true });
+    const products = await Product.find({ active: true })
+      .populate("category", "name")
+      .populate({
+        path: "restaurantId",
+        select: "_id title",
+      })
+      .populate("addons")
+      .sort({ createdAt: -1 });
     res.json(products);
   } catch (error) {
     res.status(500).json({ message: "Server Error" });
@@ -137,6 +161,9 @@ export async function getInactiveProductsController(
 // GET Product by id
 export async function getProductByIdController(req: Request, res: Response) {
   const { id } = req.params;
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).send("Invalid product id");
+  }
   try {
     const product = await Product.findById(id);
     if (!product) {
@@ -211,9 +238,6 @@ export async function updateProductController(req: Request, res: Response) {
       --oldCategory.total;
     }
 
-    // Create product image
-    const img = "http://localhost:3001/content/demo.jfif";
-
     // Update product
     const updatedProduct = await Product.findByIdAndUpdate(
       oldProductId, // The id of the product to update
@@ -221,7 +245,7 @@ export async function updateProductController(req: Request, res: Response) {
         ...productData,
         category: category._id,
         name,
-        imgURL: img,
+        imgURL,
         sizes,
       },
       {
@@ -260,5 +284,88 @@ export async function updateToActiveController(req: Request, res: Response) {
     res.json(product);
   } catch (error) {
     res.status(500).json({ message: "Server Error" });
+  }
+}
+
+// GET Products by restaurant slug
+export async function getProductsByRestaurantSlugController(
+  req: Request,
+  res: Response
+) {
+  try {
+    const { slug } = req.params;
+    const restaurant = await Restaurant.findOne({ slug });
+    if (!restaurant) {
+      return res.status(404).json({ message: "Restaurant Not Found" });
+    }
+
+    const products = await Product.find({ restaurantId: restaurant._id });
+    res.json(products);
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+// GET Products by categoryId
+export async function getProductsByCategoryIdController(
+  req: Request,
+  res: Response
+) {
+  try {
+    const { categoryId } = req.params;
+    const category = await Category.findById(categoryId);
+    if (!category) {
+      return res.status(404).json({ message: "Category Not Found" });
+    }
+    const activeProducts = await Product.find({
+      active: true,
+      category: categoryId,
+    })
+      .populate({
+        path: "restaurantId",
+        select: "_id name",
+      })
+      .sort({ createdAt: -1 });
+    res.json(activeProducts);
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+interface Query {
+  active: boolean;
+  restaurantId: any;
+  category?: string;
+}
+
+// GET Products by CategoryId and RestaurantId
+export async function getProductsByCategoryIdAndRestaurantIdController(
+  req: Request,
+  res: Response
+) {
+  try {
+    const { slug, categoryId } = req.params;
+    // const category = await Category.findById(categoryId);
+    // if (!category || categoryId !== "all") {
+    //   return res.status(404).json({ message: "Category Not Found" });
+    // }
+
+    const restaurant = await Restaurant.findOne({ slug });
+    if (!restaurant) {
+      return res.status(404).json({ message: "Restaurant Not Found" });
+    }
+    let query: Query = { active: true, restaurantId: restaurant._id };
+    if (categoryId !== "all") {
+      query = { ...query, category: categoryId };
+    }
+
+    const activeProducts = await Product.find(query).populate({
+      path: "category",
+      select: "name",
+    });
+    return res.status(200).json(activeProducts);
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: "Server Error" });
   }
 }

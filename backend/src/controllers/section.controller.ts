@@ -4,17 +4,15 @@ import {
   getSections,
 } from "../services/section.service";
 import { Request, Response } from "express";
-import { ISection } from "../models/section.model";
 
-export async function postSection(
-  req: Request<{}, {}, ISection>,
-  res: Response
-): Promise<Response | undefined> {
-  if (!(req.body && req.body.name)) {
+// POST Section
+export async function postSection(req: Request, res: Response) {
+  const { name } = req.body;
+  if (!name) {
     return res.status(400).json({ message: "Not Found" });
   }
   try {
-    const section = await createSection(req.body.name);
+    const section = await createSection(name);
     res.json(section);
   } catch (err) {
     console.log(err);

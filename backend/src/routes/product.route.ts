@@ -3,13 +3,16 @@ import multer from "multer";
 
 import {
   postProductController,
-  deleteProductController,
   getActiveProductsController,
   getInactiveProductsController,
   getProductByIdController,
   getProductsController,
+  getProductsByCategoryIdController,
   updateProductController,
   updateToActiveController,
+  deleteProductController,
+  getProductsByRestaurantSlugController,
+  getProductsByCategoryIdAndRestaurantIdController,
 } from "../controllers/product.controller";
 
 // Multer
@@ -18,28 +21,25 @@ const upload = multer({ storage: storage });
 
 const productRouter = express.Router();
 
-// POST Product
-productRouter.post("/", upload.single("img"), postProductController);
+// POST
+productRouter.post("/", upload.single("img"), postProductController); // Product
 
-// GET Products
-productRouter.get("/", getProductsController);
-
-// Get Active Products
-productRouter.get("/active", getActiveProductsController);
-
-// Get Inactive Products
-productRouter.get("/inactive", getInactiveProductsController);
-
-// Get product by id
-productRouter.get("/:id", getProductByIdController);
+// GET
+productRouter.get("/", getProductsController); // Products
+productRouter.get("/active", getActiveProductsController); // Active Products
+productRouter.get("/inactive", getInactiveProductsController); // Inactive Products
+productRouter.get("/:id", getProductByIdController); // Product by id
+productRouter.get("/category/:categoryId/", getProductsByCategoryIdController); // Products by category name
+productRouter.get(
+  "/restaurant/:slug/category/:categoryId",
+  getProductsByCategoryIdAndRestaurantIdController
+); // Products by restaurant slug and category id
 
 // Delete product
 productRouter.delete("/:id", deleteProductController);
 
-// Update prduct
-productRouter.put("/:productId", updateProductController);
-
-// Update product active status
-productRouter.patch("/:id", updateToActiveController);
+// PUT
+productRouter.put("/:productId", updateProductController); // Product
+productRouter.patch("/:id", updateToActiveController); // Active product
 
 export default productRouter;

@@ -21,13 +21,14 @@ const cart_route_1 = __importDefault(require("./routes/cart.route"));
 const address_route_1 = __importDefault(require("./routes/address.route"));
 const qrcode_route_1 = __importDefault(require("./routes/qrcode.route"));
 const customer_route_1 = __importDefault(require("./routes/customer.route"));
-const addon_model_1 = require("./models/addon.model");
+const restaurant_route_1 = __importDefault(require("./routes/restaurant.route"));
 const { API_PORT } = process.env;
 const port = process.env.API_PORT || API_PORT;
 const app = (0, express_1.default)();
 app.options("*", (0, cors_1.default)());
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());
+app.use("/uploads", express_1.default.static("uploads"));
 app.use("/section", section_route_1.default);
 app.use("/order", order_route_1.default);
 app.use("/table", table_route_1.default);
@@ -39,51 +40,7 @@ app.use("/customer", customer_route_1.default);
 app.use("/qr", qrcode_route_1.default);
 app.use("/address", address_route_1.default);
 app.use("/cart", cart_route_1.default);
-// POST Addon
-app.post("/addoncategory", async (req, res) => {
-    try {
-        const { name } = req.body;
-        const categoryExists = await addon_model_1.AddonCategory.findOne({ name });
-        if (categoryExists) {
-            return res.status(400).json({ message: "Category already exists" });
-        }
-        const newCategory = await addon_model_1.AddonCategory.create({ name });
-        res.status(201).json({ newCategory });
-    }
-    catch (err) {
-        console.log(err);
-        return res.status(500).send("Server error");
-    }
-});
-// GET AddonCategories
-app.get("/addoncategory", async (req, res) => {
-    try {
-        const categories = await addon_model_1.AddonCategory.find();
-        res.json(categories);
-    }
-    catch (err) {
-        console.log(err);
-        return res.status(500).send("Server error");
-    }
-});
-// PUT Addoncategory
-app.put("/addoncategory/:id", async (req, res) => {
-    try {
-        const { name } = req.body;
-        const { id } = req.params;
-        const category = await addon_model_1.AddonCategory.findById(id);
-        if (!category) {
-            return res.status(404).json({ message: "Category not found" });
-        }
-        category.name = name;
-        await category.save();
-        return res.json(category);
-    }
-    catch (err) {
-        console.log(err);
-        return res.status(500).send("Server error");
-    }
-});
+app.use("/restaurant", restaurant_route_1.default);
 mongoose_1.default.connect(database_1.MONGO_URL);
 const server = http_1.default.createServer(app);
 server.listen(port, () => {

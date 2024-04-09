@@ -1,50 +1,65 @@
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose, { Document, Schema } from "mongoose";
 
-type IProduct = {
-  id: string;
+interface IProduct {
+  _id: string;
   name: string;
   imgURL: string;
+  price: number;
+  salePrice: number;
   category: string;
   restaurantId: string;
-};
+}
 
-export interface ICartItem extends Document {
+interface Variant {
+  name: string;
+  price: number;
+  salePrice: number;
+  _id: string;
+}
+
+interface ICartItem {
   product: IProduct;
   quantity: number;
   addons?: string[];
   note: string;
-  price: number;
-  variations?: string;
+  total: number;
+  variations?: Variant[];
   priceAtTheTime: number;
 }
 
 interface ICart extends Document {
   items: ICartItem[];
+  total: number;
+  createdAt: Date;
 }
 
-const cartSchema = new Schema({
-  items: [
+const cartItemSchema = new Schema<ICartItem>({
+  product: {
+    id: { type: Schema.Types.ObjectId, ref: "Product", required: true },
+    name: { type: String, required: true },
+    imgURL: { type: String, required: false },
+    price: { type: Number, required: true },
+    salePrice: { type: Number, required: false },
+    restaurantId: { type: Schema.Types.ObjectId, ref: "Restaurant" },
+  },
+  quantity: { type: Number, required: true, default: 1 },
+  addons: [{ type: Schema.Types.ObjectId, ref: "Addon" }],
+  total: { type: Number, required: true },
+  variations: [
     {
-      productId: {
-        type: Schema.Types.ObjectId,
-        ref: "Product",
-        required: true,
-      },
-      quantity: { type: Number, required: true, default: 1 },
-      addons: [{ type: Schema.Types.ObjectId, ref: "Addon" }],
-      note: { type: String, required: false },
-      price: { type: Number, required: true },
-      variations: { type: String, required: false },
-      total: { type: Number, required: true },
-      priceAtTheTime: { type: Number, required: true },
-      restaurantId: {
-        type: Schema.Types.ObjectId,
-        ref: "Restaurant",
-        required: false,
-      },
-      createdAt: { type: Date, default: Date.now },
+      _id: false,
+      name: { type: String, required: false },
+      price: { type: Number, required: false },
+      salePrice: { type: Number, required: false },
     },
   ],
+  note: { type: String, required: false },
+  priceAtTheTime: { type: Number, required: true },
 });
 
-export default mongoose.model<ICart>("Cart", cartSchema);
+const cartSchema = new Schema<ICart>({
+  items: [cartItemSchema],
+  createdAt: { type: Date, default: Date.now },
+});
+
+export const Cart = mongoose.model<ICart>("Cart", cartSchema);

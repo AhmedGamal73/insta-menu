@@ -7,7 +7,8 @@ import variables from "@/config/variables";
 import Orders from "@/components/dashboard/orders/Orders";
 import Table from "@/components/dashboard/tables/Tables";
 import { CreateTable } from "@/components/dashboard/tables/CreateTable";
-import { CreateSection } from "@/components/dashboard/restaurant/CreateSection";
+import { CreateSection } from "@/components/dashboard/sections/CreateSection";
+import Sections from "@/components/dashboard/restaurant/Sections";
 
 function TablesPage() {
   const [activeTab, setActiveTab] = useState<number>(0);
@@ -33,15 +34,15 @@ function TablesPage() {
             })}
           </div>
           {tabs[activeTab]?.component === "tables" ? (
-            <CreateTable />
-          ) : tabs[activeTab]?.component === "sections" ? (
-            <CreateSection />
+            <>
+              <CreateTable />
+              <CreateSection />
+            </>
           ) : (
             ""
           )}
         </div>
         <div className="w-full flex px-6 gap-8">
-          {tabs[activeTab]?.component === "tables" ? <Table /> : ""}
           {tabs[activeTab]?.component === "tables" ? <Table /> : ""}
         </div>
       </div>

@@ -1,4 +1,4 @@
-import { Router } from "express";
+import express from "express";
 
 import {
   postAddonController,
@@ -6,23 +6,27 @@ import {
   deleteAddonController,
   getProductAddonsController,
   getAddonsByCategoryController,
+  postAddonCategoryController,
+  getAddonCategoryController,
+  putAddonCategoryController,
 } from "../controllers/addon.controller";
 
-const addonRouter = Router();
+const addonRouter = express.Router();
 
-// Create new addon
-addonRouter.post("/", postAddonController);
+// POST
+addonRouter.post("/addoncategory", postAddonCategoryController); // Addon Category
+addonRouter.post("/", postAddonController); // Addon
 
-// Get all addons
-addonRouter.get("/", getAddonsController);
+// GET
+addonRouter.get("/addoncategory", getAddonCategoryController); // Addon Categories
+addonRouter.get("/:addonCategoryId", getAddonsByCategoryController); // Addons By Category
+addonRouter.get("/", getAddonsController); // Addons
+addonRouter.get("/product/:productId", getProductAddonsController); // Addon names
 
-// Delete addon
-addonRouter.delete("/:id", deleteAddonController);
+// Delete
+addonRouter.delete("/:id", deleteAddonController); // Addon
 
-// GET Addons by category
-addonRouter.get("/:categoryId", getAddonsByCategoryController);
-
-// GET Addons names
-addonRouter.get("/product/:productId", getProductAddonsController);
+// PUT
+addonRouter.put("/addoncategory/:id", putAddonCategoryController); // Addon Category
 
 export default addonRouter;

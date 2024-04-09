@@ -14,13 +14,7 @@ export interface ISection extends Document {
 const sectionSchema = new Schema({
   name: { type: String, required: true },
   waiters: [{ type: Schema.Types.ObjectId, ref: "Waiter" }],
-  tables: [
-    {
-      _id: false,
-      id: { type: String, required: true },
-      number: { type: Number, required: true },
-    },
-  ],
+  tables: [{ type: Schema.Types.ObjectId, ref: "Table" }],
 });
 
 export default mongoose.model<ISection>("Section", sectionSchema);

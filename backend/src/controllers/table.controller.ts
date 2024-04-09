@@ -3,11 +3,7 @@ import * as QRCode from "qrcode";
 const env = require("dotenv").config();
 
 import Section from "../models/section.model";
-import {
-  postTable,
-  getTables,
-  getSpecificTable,
-} from "../services/table.service";
+import { getTables, getSpecificTable } from "../services/table.service";
 import Table from "../models/table.model";
 
 // POST Table
@@ -16,7 +12,9 @@ export async function postTableController(req: Request, res: Response) {
     return res.status(400).json({ error: "Request body cannot be null" });
   }
   try {
-    const table = await postTable(req.body);
+    // const table = await postTable(req.body);
+    const table = new Table(req.body);
+    await table.save();
 
     const qrCode = await QRCode.toDataURL(
       `http://${process.env.MENU_URL}/menu?tableNo=${table.tableNo}`

@@ -1,14 +1,12 @@
-import express, { Request, Response } from "express";
-import mongoose from "mongoose";
+import { Request, Response } from "express";
 
-import Cart from "../models/cart.model";
+import { Cart } from "../models/cart.model";
 
-export async function getCartController(req: Request, res: Response) {
+// GET Cart Item
+export async function getCartItemController(req: Request, res: Response) {
   try {
     const { id } = req.params;
-    const cart = await Cart.findById(id)
-      .populate("items.addons")
-      .populate("items.productId", "name imgURL");
+    const cart = await Cart.findById(id);
 
     return res.status(200).json(cart);
   } catch (err) {

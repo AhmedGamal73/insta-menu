@@ -16,7 +16,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import SectoinForm from "./SectionForm";
+import SectoinForm from "../sections/SectionForm";
 
 export const CreateUser: React.FC = () => {
   const [tableNo, setTableNo] = useState<Number>(0);

@@ -18,10 +18,13 @@ export const theme = {
     backgroundImage: (theme) => ({
       "menu-hero": "url('/img/menu-hero.jpg')",
       "items-loading": "url('/img/loading.webp')",
+      "restaurant-hero":
+        "url('https://lifehacker.com/imagery/articles/01HF2H25FNY97E7KS82J8RFSXD/hero-image.fill.size_1248x702.v1699834114.jpg')",
       success: "url('/img/success.png')",
     }),
     animation: {
       vibrate: "vibrate 0.2s linear",
+      fade: "fadeOut 3s ease-in-out",
     },
     fontFamily: {
       rubik: ["rubik", "sans-serif"],
@@ -29,7 +32,10 @@ export const theme = {
       rubikLight: ["rubikLight", "sans-serif"],
     },
     boxShadow: {
-      "3xl": "0 4px 13px 6px rgb(0 0 0 / 0.1), 0 2px 4px -8px rgb(0 0 0 / 0.1)",
+      "3xl": "0 5px 40px 10px rgb(0 0 0 / 0.1)",
+      "top-heavy": "0px -4px 10px -13px rgba(0,0,0,0.75)",
+      blur: "1px -1px 22px -12px rgba(247,69,69,0.75)",
+      basic: "0px 0px 20px -12px rgba(0,0,0,1)",
     },
     colors: {
       bgc: "hsl(var(--bgc))",
@@ -88,6 +94,27 @@ export const theme = {
         from: { height: "var(--radix-accordion-content-height)" },
         to: { height: "0" },
       },
+      keyframes: (theme) => ({
+        vibrate: {
+          "0%, 100%": {
+            transform: "translateX(0)",
+          },
+          "10%, 30%, 50%, 70%, 90%": {
+            transform: "translateX(-1px)",
+          },
+          "20%, 40%, 60%, 80%": {
+            transform: "translateX(1px)",
+          },
+        },
+        fadeOut: {
+          "0%": {
+            opacity: 1,
+          },
+          "100%": {
+            opacity: 0,
+          },
+        },
+      }),
     },
     animation: {
       "accordion-down": "accordion-down 0.2s ease-out",

@@ -158,15 +158,12 @@ function VariationForm({ currentVariant, setCurrentVariant, setOpen }) {
     setOpen(false);
   };
 
-  const removeOptionHandller = (index) => () => {
-    remove(index);
-  };
-
   useEffect(() => {
     if (currentVariant) {
       reset(currentVariant);
     }
   }, [variations, reset, currentVariant]);
+
   return (
     <Form {...form}>
       <form
@@ -251,12 +248,12 @@ function VariationForm({ currentVariant, setCurrentVariant, setOpen }) {
                     )}
                   />
                 </div>
-                <button
+                <div
                   className="w-auto flex justify-center items-center"
                   onClick={() => remove(index)}
                 >
                   <Trash2 className="w-4 h-4" />
-                </button>
+                </div>
               </li>
             </ul>
           ))}

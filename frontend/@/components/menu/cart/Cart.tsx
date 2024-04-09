@@ -1,5 +1,4 @@
 import * as React from "react";
-import { TransitionGroup, CSSTransition } from "react-transition-group";
 import Cookies from "js-cookie";
 import jwt from "jsonwebtoken";
 
@@ -26,8 +25,11 @@ interface Addon {
   price: number;
 }
 
+interface Product {
+  name: string;
+}
 export interface Item {
-  product: string;
+  product: Product;
   name: string;
   quantity: number;
   priceAtTheTime: number;
@@ -95,9 +97,12 @@ export function Cart() {
   return (
     <Drawer>
       <DrawerTrigger asChild>
-        <button className="flex flex-col items-center gap-1">
+        <button className="relative flex flex-col items-center gap-1">
           <ShoppingBag className={`text-text w-[22px] h-[22px]`} />
           <span className="text-sm text-text">السلة</span>
+          {quantity > 0 && (
+            <div className="absolute w-2 h-2 rounded-full bg-secondary left-[-4px] top-[-5px] animate-vibrate"></div>
+          )}
         </button>
       </DrawerTrigger>
       <DrawerContent>
@@ -127,10 +132,10 @@ export function Cart() {
           </div>
           <DrawerFooter>
             {quantity === 0 ? (
-              <Button disabled>الدفع</Button>
+              <Button disabled>تقدم للطلب</Button>
             ) : newCustomer == false ? (
               <Button asChild>
-                <Link href="/menu/checkout">الدفع</Link>
+                <Link href="/menu/checkout">تقدم للطلب</Link>
               </Button>
             ) : (
               <CustomerInfoModal onFormSubmit={handleFormSubmit} />

@@ -10,11 +10,9 @@ interface LayoutProps {
 function Layout({ children, title }: LayoutProps) {
   return (
     <div dir="rtl">
-      <div className="">
-        <Header title={title} />
-        {children}
-        <Navbar />
-      </div>
+      <Header title={title} />
+      {children}
+      <Navbar />
     </div>
   );
 }

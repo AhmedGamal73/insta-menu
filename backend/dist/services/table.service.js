@@ -17,10 +17,10 @@ async function postTable(params) {
         throw new Error("Invalid Section ID");
     }
     // Validate if table exist in database
-    const tableExist = await table_model_1.default.findOne({ tableNo });
-    if (tableExist) {
-        throw new Error("Table Already Exist");
-    }
+    // const tableExist = await Table.findOne({ tableNo });
+    // if (tableExist) {
+    //   return new Error("Table Already Exist");
+    // }
     // Validate if seciton exist in database
     const section = await section_model_1.default.findById(sectionId);
     if (!section) {

@@ -23,6 +23,7 @@ import { toast } from "@/components/ui/use-toast";
 import axios from "axios";
 import { useEffect } from "react";
 import { useQuery } from "react-query";
+import { useWaiters } from "@/hooks/use-users";
 
 const FormSchema = z.object({
   name: z.string({
@@ -38,20 +39,12 @@ interface IWaiter {
   address: string;
 }
 
-const createSection = async () => {
-  const res = await fetch("http://localhost:3000/api/sections", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({}),
-  });
-};
-
 export function SectoinForm() {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
   });
+
+  const { data: waiters } = useWaiters();
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
     toast({
@@ -63,18 +56,6 @@ export function SectoinForm() {
       ),
     });
   }
-
-  const fetchWaiters = async () => {
-    const res = await axios.get("http://localhost:3001/waiter");
-    const data = res.data;
-    return data;
-  };
-
-  const { data: myWaiters } = useQuery("waiters", fetchWaiters);
-
-  useEffect(() => {
-    console.log(myWaiters);
-  }, []);
 
   return (
     <Form {...form}>
@@ -92,35 +73,9 @@ export function SectoinForm() {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {myWaiters && myWaiters > 0
-                    ? myWaiters.map((waiter: IWaiter) => (
+                  {waiters && waiters > 0
+                    ? waiters.map((waiter: IWaiter) => (
                         <SelectItem value={waiter.name}>
-                          {waiter.name}
-                        </SelectItem>
-                      ))
-                    : null}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>الكابتن</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="قم بإختيار كابتن" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {myWaiters && myWaiters > 0
-                    ? myWaiters.map((waiter: IWaiter) => (
-                        <SelectItem key={waiter._id} value={waiter.name}>
                           {waiter.name}
                         </SelectItem>
                       ))

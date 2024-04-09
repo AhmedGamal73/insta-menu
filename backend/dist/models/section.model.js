@@ -27,13 +27,7 @@ const mongoose_1 = __importStar(require("mongoose"));
 const sectionSchema = new mongoose_1.Schema({
     name: { type: String, required: true },
     waiters: [{ type: mongoose_1.Schema.Types.ObjectId, ref: "Waiter" }],
-    tables: [
-        {
-            _id: false,
-            id: { type: String, required: true },
-            number: { type: Number, required: true },
-        },
-    ],
+    tables: [{ type: mongoose_1.Schema.Types.ObjectId, ref: "Table" }],
 });
 exports.default = mongoose_1.default.model("Section", sectionSchema);
 //# sourceMappingURL=section.model.js.map

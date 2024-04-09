@@ -10,21 +10,19 @@ const product_controller_1 = require("../controllers/product.controller");
 const storage = multer_1.default.memoryStorage();
 const upload = (0, multer_1.default)({ storage: storage });
 const productRouter = express_1.default.Router();
-// POST Product
-productRouter.post("/", upload.single("img"), product_controller_1.postProductController);
-// GET Products
-productRouter.get("/", product_controller_1.getProductsController);
-// Get Active Products
-productRouter.get("/active", product_controller_1.getActiveProductsController);
-// Get Inactive Products
-productRouter.get("/inactive", product_controller_1.getInactiveProductsController);
-// Get product by id
-productRouter.get("/:id", product_controller_1.getProductByIdController);
+// POST
+productRouter.post("/", upload.single("img"), product_controller_1.postProductController); // Product
+// GET
+productRouter.get("/", product_controller_1.getProductsController); // Products
+productRouter.get("/active", product_controller_1.getActiveProductsController); // Active Products
+productRouter.get("/inactive", product_controller_1.getInactiveProductsController); // Inactive Products
+productRouter.get("/:id", product_controller_1.getProductByIdController); // Product by id
+productRouter.get("/category/:categoryId/", product_controller_1.getProductsByCategoryIdController); // Products by category name
+productRouter.get("/restaurant/:slug/category/:categoryId", product_controller_1.getProductsByCategoryIdAndRestaurantIdController); // Products by restaurant slug and category id
 // Delete product
 productRouter.delete("/:id", product_controller_1.deleteProductController);
-// Update prduct
-productRouter.put("/:productId", product_controller_1.updateProductController);
-// Update product active status
-productRouter.patch("/:id", product_controller_1.updateToActiveController);
+// PUT
+productRouter.put("/:productId", product_controller_1.updateProductController); // Product
+productRouter.patch("/:id", product_controller_1.updateToActiveController); // Active product
 exports.default = productRouter;
 //# sourceMappingURL=product.route.js.map
