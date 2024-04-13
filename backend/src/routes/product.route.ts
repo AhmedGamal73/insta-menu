@@ -11,8 +11,8 @@ import {
   updateProductController,
   updateToActiveController,
   deleteProductController,
-  getProductsByRestaurantSlugController,
   getProductsByCategoryIdAndRestaurantIdController,
+  getOfferProductsController,
 } from "../controllers/product.controller";
 
 // Multer
@@ -26,6 +26,7 @@ productRouter.post("/", upload.single("img"), postProductController); // Product
 
 // GET
 productRouter.get("/", getProductsController); // Products
+productRouter.get("/offers", getOfferProductsController); // Offer Products
 productRouter.get("/active", getActiveProductsController); // Active Products
 productRouter.get("/inactive", getInactiveProductsController); // Inactive Products
 productRouter.get("/:id", getProductByIdController); // Product by id

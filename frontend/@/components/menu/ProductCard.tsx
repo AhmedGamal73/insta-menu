@@ -35,16 +35,16 @@ const ProductCard = ({ product, index, totalProductLength }) => {
           : ""
       } `}
     >
-      <img src={product.imgURL} className="pe-3 object-cover w-[90px]" />
+      <img
+        src={product.imgURL}
+        className="pe-3 object-cover w-[90px] rounded-lg"
+      />
       <div className="flex items-center justify-between w-full gap-4">
         <div className="flex flex-col gap-2 text-start">
           <h5 className="text-secondary">{product.name}</h5>
           <p>{product.description}</p>
         </div>
-        {product.variable &&
-        product.variations.options &&
-        product.variations.length > 0 &&
-        product.variations.options[0].salePrice > 0 ? (
+        {product.variable && product.variations.options[0].salePrice > 0 ? (
           <div className="flex items-center gap-1">
             <span className="text-xs font-rubikBold pe-2">
               {product.variations.options[0].name}
@@ -63,8 +63,6 @@ const ProductCard = ({ product, index, totalProductLength }) => {
             </div>
           </div>
         ) : product.variable &&
-          product.variations.options &&
-          product.variations.length > 0 &&
           product.variations.options[0].salePrice === 0 ? (
           <div className="flex items-center gap-1">
             <span className="text-xs font-rubikBold pe-2">

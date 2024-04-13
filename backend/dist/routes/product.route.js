@@ -14,6 +14,7 @@ const productRouter = express_1.default.Router();
 productRouter.post("/", upload.single("img"), product_controller_1.postProductController); // Product
 // GET
 productRouter.get("/", product_controller_1.getProductsController); // Products
+productRouter.get("/offers", product_controller_1.getOfferProductsController); // Offer Products
 productRouter.get("/active", product_controller_1.getActiveProductsController); // Active Products
 productRouter.get("/inactive", product_controller_1.getInactiveProductsController); // Inactive Products
 productRouter.get("/:id", product_controller_1.getProductByIdController); // Product by id

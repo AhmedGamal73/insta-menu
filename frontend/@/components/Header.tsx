@@ -9,7 +9,7 @@ const Header = ({ title }) => {
   };
   return (
     <div className="w-full insert-x-0 fixed top-2 px-2 z-10">
-      <div className="w-full flex justify-between py-3 px-3 rounded-lg isolate bg-white/90 shadow-sm">
+      <div className="w-full flex justify-between py-3 px-3 rounded-lg isolate bg-white shadow-sm">
         <button>
           <Menu />
         </button>

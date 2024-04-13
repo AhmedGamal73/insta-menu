@@ -60,35 +60,35 @@ export async function postProductController(req: Request, res: Response) {
     }
 
     // // validate img
-    // if (!req.file) {
-    //   return res.status(400).send("Image is required");
-    // }
+    if (!req.file) {
+      return res.status(400).send("Image is required");
+    }
 
     // // resize image
-    // const resizedImage = await sharp(req.file?.buffer)
-    //   .resize({ width: 400, height: 400, fit: "contain" })
-    //   .png({ quality: 80 })
-    //   .toBuffer();
+    const resizedImage = await sharp(req.file?.buffer)
+      .resize({ width: 800, height: 800, fit: "cover" })
+      .png({ quality: 80 })
+      .toBuffer();
 
-    // // encrepted key
-    // const timestamp = Date.now();
-    // const randomString = Math.random().toString(36).substring(2, 15);
-    // const encreptedKey = timestamp + randomString;
-    // const imgName = encreptedKey + req.file?.originalname;
+    // encrepted key
+    const timestamp = Date.now();
+    const randomString = Math.random().toString(36).substring(2, 15);
+    const encreptedKey = timestamp + randomString;
+    const imgName = encreptedKey + req.file?.originalname;
 
-    // const s3 = new S3Client(config);
+    const s3 = new S3Client(config);
 
-    // const params = {
-    //   Bucket: process.env.AWS_BUCKET_NAME || "",
-    //   Key: imgName,
-    //   Body: resizedImage,
-    //   ContentType: req.file?.mimetype,
-    // };
+    const params = {
+      Bucket: process.env.AWS_BUCKET_NAME || "",
+      Key: imgName,
+      Body: resizedImage,
+      ContentType: req.file?.mimetype,
+    };
 
-    // const command = new PutObjectCommand(params);
-    // await s3.send(command);
-
-    // const imageUrl = `https://${process.env.AWS_BUCKET_NAME}.s3.amazonaws.com/${imgName}`;
+    const command = new PutObjectCommand(params);
+    await s3.send(command);
+    const imageUrl = `https://${process.env.AWS_BUCKET_NAME}.s3.amazonaws.com/${imgName}`;
+    const imgUrlBackup = "https://via.placeholder.com/400";
 
     const product = await Product.create({
       name: name,
@@ -140,6 +140,18 @@ export async function getActiveProductsController(req: Request, res: Response) {
       })
       .populate("addons")
       .sort({ createdAt: -1 });
+    res.json(products);
+  } catch (error) {
+    res.status(500).json({ message: "Server Error" });
+  }
+}
+
+// GET Offer Products
+export async function getOfferProductsController(req: Request, res: Response) {
+  try {
+    const products = await Product.find({ active: true })
+      .sort({ createdAt: -1 })
+      .limit(6);
     res.json(products);
   } catch (error) {
     res.status(500).json({ message: "Server Error" });

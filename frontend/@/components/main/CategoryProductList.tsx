@@ -8,10 +8,8 @@ import ProductCard from "../menu/ProductCard";
 import { Button } from "@/components/ui/button";
 import {
   Drawer,
-  DrawerClose,
   DrawerContent,
   DrawerDescription,
-  DrawerFooter,
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
@@ -57,7 +55,7 @@ export const CategoryProductsList = () => {
                   >
                     {category.imgURL && (
                       <img
-                        className="w-[40px] h-[40px] bg-transparent"
+                        className="w-[50px] h-[50px] bg-transparent"
                         src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${category.imgURL}`}
                       />
                     )}
@@ -73,7 +71,6 @@ export const CategoryProductsList = () => {
         <div className="h-[90vh] pt-2">
           <DrawerHeader>
             <DrawerTitle>{category && category.name}</DrawerTitle>
-            <DrawerDescription>Set your daily activity goal.</DrawerDescription>
           </DrawerHeader>
           <div className="flex flex-col gap-6 pb-24 z-2">
             {category === null && categoriesIsLoading ? (

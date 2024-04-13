@@ -3,7 +3,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getProductsByCategoryIdAndRestaurantIdController = exports.getProductsByCategoryIdController = exports.getProductsByRestaurantSlugController = exports.updateToActiveController = exports.updateProductController = exports.deleteProductController = exports.getProductByIdController = exports.getInactiveProductsController = exports.getActiveProductsController = exports.getProductsController = exports.postProductController = void 0;
+exports.getProductsByCategoryIdAndRestaurantIdController = exports.getProductsByCategoryIdController = exports.getProductsByRestaurantSlugController = exports.updateToActiveController = exports.updateProductController = exports.deleteProductController = exports.getProductByIdController = exports.getInactiveProductsController = exports.getOfferProductsController = exports.getActiveProductsController = exports.getProductsController = exports.postProductController = void 0;
+const sharp_1 = __importDefault(require("sharp"));
+const client_s3_1 = require("@aws-sdk/client-s3");
+const s3_1 = __importDefault(require("../config/s3"));
 const product_service_1 = require("../services/product.service");
 const product_model_1 = __importDefault(require("../models/product.model"));
 const category_model_1 = __importDefault(require("../models/category.model"));
@@ -43,29 +46,30 @@ async function postProductController(req, res) {
             return await restaurant.save();
         }
         // // validate img
-        // if (!req.file) {
-        //   return res.status(400).send("Image is required");
-        // }
+        if (!req.file) {
+            return res.status(400).send("Image is required");
+        }
         // // resize image
-        // const resizedImage = await sharp(req.file?.buffer)
-        //   .resize({ width: 400, height: 400, fit: "contain" })
-        //   .png({ quality: 80 })
-        //   .toBuffer();
-        // // encrepted key
-        // const timestamp = Date.now();
-        // const randomString = Math.random().toString(36).substring(2, 15);
-        // const encreptedKey = timestamp + randomString;
-        // const imgName = encreptedKey + req.file?.originalname;
-        // const s3 = new S3Client(config);
-        // const params = {
-        //   Bucket: process.env.AWS_BUCKET_NAME || "",
-        //   Key: imgName,
-        //   Body: resizedImage,
-        //   ContentType: req.file?.mimetype,
-        // };
-        // const command = new PutObjectCommand(params);
-        // await s3.send(command);
-        // const imageUrl = `https://${process.env.AWS_BUCKET_NAME}.s3.amazonaws.com/${imgName}`;
+        const resizedImage = await (0, sharp_1.default)(req.file?.buffer)
+            .resize({ width: 800, height: 800, fit: "cover" })
+            .png({ quality: 80 })
+            .toBuffer();
+        // encrepted key
+        const timestamp = Date.now();
+        const randomString = Math.random().toString(36).substring(2, 15);
+        const encreptedKey = timestamp + randomString;
+        const imgName = encreptedKey + req.file?.originalname;
+        const s3 = new client_s3_1.S3Client(s3_1.default);
+        const params = {
+            Bucket: process.env.AWS_BUCKET_NAME || "",
+            Key: imgName,
+            Body: resizedImage,
+            ContentType: req.file?.mimetype,
+        };
+        const command = new client_s3_1.PutObjectCommand(params);
+        await s3.send(command);
+        const imageUrl = `https://${process.env.AWS_BUCKET_NAME}.s3.amazonaws.com/${imgName}`;
+        const imgUrlBackup = "https://via.placeholder.com/400";
         const product = await product_model_1.default.create({
             name: name,
             restaurantId,
@@ -124,6 +128,19 @@ async function getActiveProductsController(req, res) {
     }
 }
 exports.getActiveProductsController = getActiveProductsController;
+// GET Offer Products
+async function getOfferProductsController(req, res) {
+    try {
+        const products = await product_model_1.default.find({ active: true })
+            .sort({ createdAt: -1 })
+            .limit(6);
+        res.json(products);
+    }
+    catch (error) {
+        res.status(500).json({ message: "Server Error" });
+    }
+}
+exports.getOfferProductsController = getOfferProductsController;
 async function getInactiveProductsController(req, res) {
     try {
         const products = await product_model_1.default.find({ active: false });

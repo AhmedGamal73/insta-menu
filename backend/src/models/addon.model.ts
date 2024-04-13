@@ -19,6 +19,7 @@ const addonCategorySchema = new Schema({
 const addonSchema = new Schema({
   name: { type: String, required: true },
   price: { type: Number, required: true },
+  clickId: { type: String, required: false },
   addonCategory: { type: Schema.Types.ObjectId, ref: "AddonCategory" },
 });
 

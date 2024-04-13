@@ -191,6 +191,7 @@ export default function CreatePostForm(user: CreatePostFormProps) {
               <InnerPageHeader href="/dashboard/products">
                 <Button type="submit">حفظ المنتج</Button>
                 <Button variant="outline">حفظ وأضف منتج جديد</Button>
+                
               </InnerPageHeader>
               <div className="w-full flex  gap-4">
                 <div className="w-2/3 flex flex-col gap-4">

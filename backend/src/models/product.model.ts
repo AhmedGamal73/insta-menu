@@ -16,6 +16,7 @@ interface IVariation {
 export interface IProduct extends Document {
   _id: string;
   name: string;
+  clickId: string;
   restaurantId: string;
   price?: number;
   salePrice?: number;
@@ -35,6 +36,7 @@ export interface IProduct extends Document {
 
 const productSchema = new Schema({
   name: { type: String, required: true },
+  clickId: { type: String, required: false },
   restaurantId: { type: Schema.Types.ObjectId, ref: "Restaurant" },
   price: { type: Number, required: false, default: null },
   salePrice: { type: Number, required: false, default: null },
@@ -64,6 +66,7 @@ const productSchema = new Schema({
     title: { type: String, required: false },
     options: [
       {
+        clickId: { type: String, required: false },
         name: { type: String, required: false },
         price: { type: Number, required: false },
         salePrice: { type: Number, required: false },
@@ -82,6 +85,7 @@ const productSchema = new Schema({
     },
   },
   addons: [{ type: Schema.Types.ObjectId, required: false }],
+  createdAt: { type: Date, default: Date.now },
 });
 
 export default mongoose.model<IProduct>("Product", productSchema);

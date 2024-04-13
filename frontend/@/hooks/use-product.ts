@@ -54,6 +54,24 @@ export const useCreateProduct = () => {
   });
 };
 
+// GET Offer Products
+export const useGetOfferProducts = () => {
+  return useQuery({
+    queryKey: ["offer-products"],
+    queryFn: async () => {
+      try {
+        const { data } = await productApi.get("/product/offers");
+        return data;
+      } catch (error) {
+        console.log(error);
+        throw error;
+      }
+    },
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+  });
+};
+
 // Active products
 export const useActiveProducts = () => {
   return useQuery({

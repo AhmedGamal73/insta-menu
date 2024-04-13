@@ -158,7 +158,7 @@ const ProductPage: React.FC<productsProps> = ({ product, onClose }) => {
         </div>
       </div>
       <div className="flex flex-col justify-center items-center">
-        <img src={product.imgURL} className="w-2/3" />
+        <img src={product.imgURL} className="w-full rounded-lg" />
         <div className="flex flex-col justify-center items-center w-full px-2">
           <div className="flex flex-col items-center justify-center gap-2 w-full">
             <div className="flex pt-4 justify-center w-full gap-4 flex-wrap">

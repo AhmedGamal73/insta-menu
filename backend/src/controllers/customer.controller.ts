@@ -56,13 +56,21 @@ export async function postCustomerLogin(req: Request, res: Response) {
 
     // Check if phone number exists
     const customer = await Customer.findOne({ phone });
-    // Decrypt password
+    if (!customer) {
+      return res.status(401).json({ message: "Invalid phone number" });
+    }
+
+    // Check if phone number and password are valid and Decrypt password
     const validPassword = await bcrypt.compare(password, customer?.password);
-    // Check if phone number and password are valid
-    if (!customer || !validPassword) {
+    if (!validPassword) {
       return res
         .status(401)
         .json({ message: "Invalid phone number or password" });
+    }
+
+    const isMatch = await bcrypt.compare(password, customer.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: "Invalid password" });
     }
 
     // Check secret key

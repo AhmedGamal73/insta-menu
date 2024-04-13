@@ -4,6 +4,9 @@
 
 /frontend/node_modules
 /frontend/.next
+
+./rsync.log
+/node_modules
 =======
 >>>>>>> 86fdbe849c45fb8adc95c58497c9480cb8f2568a
 ```
