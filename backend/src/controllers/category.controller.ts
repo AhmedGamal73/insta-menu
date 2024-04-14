@@ -18,7 +18,7 @@ export async function postCategoryController(req: Request, res: Response) {
     const { name } = req.body;
     let imgURL = "";
     if (req.file !== undefined) {
-      imgURL = req.file?.originalname;
+      imgURL = req.file?.path;
     }
 
     if (!name) {
