@@ -11,13 +11,10 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import AddonForm from "./AddonForm";
+import { DialogPortal } from "@radix-ui/react-dialog";
 
 export default function AddNewAddon({ selectedCategory }) {
   const [open, setOpen] = useState(false);
-
-  //   useEffect(() => {
-  //     console.log(selectedCategory);
-  //   }, [selectedCategory]);
 
   return (
     <div>
@@ -28,15 +25,17 @@ export default function AddNewAddon({ selectedCategory }) {
             <Plus />
           </Button>
         </DialogTrigger>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>أضف عنصر جديد</DialogTitle>
-          </DialogHeader>
-          <AddonForm
-            selectedCategory={selectedCategory}
-            onClose={() => setOpen(false)}
-          />
-        </DialogContent>
+        <DialogPortal>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>أضف عنصر جديد</DialogTitle>
+            </DialogHeader>
+            <AddonForm
+              selectedCategory={selectedCategory}
+              onClose={() => setOpen(false)}
+            />
+          </DialogContent>
+        </DialogPortal>
       </Dialog>
     </div>
   );

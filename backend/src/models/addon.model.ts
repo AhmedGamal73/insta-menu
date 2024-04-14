@@ -3,6 +3,7 @@ import mongoose, { Document, Schema } from "mongoose";
 export interface IAddon extends Document {
   name: string;
   price: number;
+  clickId: string;
   categoryId: string;
 }
 

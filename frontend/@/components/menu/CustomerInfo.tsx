@@ -5,7 +5,6 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -13,15 +12,15 @@ import {
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-import CustomerSignup from "./CustomerSignup";
-import CustomerLogin from "./CustomerLogin";
+import CustomerSignupDialog from "./CustomerSignup";
+import CustomerLoginDialog from "./CustomerLogin";
 
-export function CustomerInfoModal({ onFormSubmit }) {
+export function CustomerInfoModal({ isSignedIn }) {
   const [open, setOpen] = React.useState<boolean>(false);
   const [activeTab, setActiveTab] = React.useState<string>("login");
 
   React.useEffect(() => {
-    console.log(activeTab);
+    setActiveTab(isSignedIn ? "login" : "signup");
   }, [activeTab]);
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -36,16 +35,16 @@ export function CustomerInfoModal({ onFormSubmit }) {
             حساب جديد لدينا.
           </DialogDescription>
         </DialogHeader>
-        <Tabs defaultValue={activeTab} className="">
+        <Tabs defaultValue={activeTab}>
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="signup">حساب جديد</TabsTrigger>
             <TabsTrigger value="login">تسجيل الدخول</TabsTrigger>
           </TabsList>
           <TabsContent value="signup">
-            <CustomerSignup onSubmitHandler={setActiveTab} />
+            <CustomerSignupDialog onSubmitHandler={() => setActiveTab("")} />
           </TabsContent>
           <TabsContent value="login">
-            <CustomerLogin wideButton={false} onSubmitHandler={setOpen} />
+            <CustomerLoginDialog wideButton={false} onSubmitHandler={setOpen} />
           </TabsContent>
         </Tabs>
       </DialogContent>

@@ -17,15 +17,10 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { toast } from "../ui/use-toast";
-import { CustomerSignup, postCustomerSignin } from "@/hooks/use-customer";
+import { CustomerSignup, postCustomerSignup } from "@/hooks/use-customer";
 
-function CustomerSignup({ onSubmitHandler }) {
+function CustomerSignupDialog({ onSubmitHandler }) {
   const [isIndoor, setIsIndoor] = React.useState<boolean>(false);
-  const [isSigned, setIsSigned] = React.useState<boolean>(false);
-
-  useEffect(() => {
-    isSigned && onSubmitHandler("login");
-  }, [isSigned]);
 
   const customerSchema = z
     .object({
@@ -62,11 +57,11 @@ function CustomerSignup({ onSubmitHandler }) {
   // POST Customer mutation
   const useMutationCustomer = () => {
     return useMutation(
-      (customer: CustomerSignup) => postCustomerSignin(customer),
+      (customer: CustomerSignup) => postCustomerSignup(customer),
       {
         onSuccess: () => {
           // redirect to login tab
-          setIsSigned(true);
+          onSubmitHandler("login");
           toast({
             description: "تم إنشاء العميل بنجاح",
             style: {
@@ -187,4 +182,4 @@ function CustomerSignup({ onSubmitHandler }) {
   );
 }
 
-export default CustomerSignup;
+export default CustomerSignupDialog;

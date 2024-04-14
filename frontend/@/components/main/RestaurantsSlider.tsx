@@ -1,10 +1,10 @@
 import { ArrowUpLeft } from "lucide-react";
 import Link from "next/link";
-import { useGetRestaurants } from "@/hooks/use-restaurant";
+import { useGetFeaturedRestaurants } from "@/hooks/use-restaurant";
 import LoadingScreen from "../ui/loadingScreen";
 
 const RestaurantsSlider = () => {
-  const { data: restaurants, isLoading } = useGetRestaurants();
+  const { data: restaurants, isLoading } = useGetFeaturedRestaurants();
 
   return (
     <div className="flex flex-col gap-2">

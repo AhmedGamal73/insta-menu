@@ -53,7 +53,7 @@ export default function AddNewAddonCategory() {
 }
 
 interface AddonCategoryFormProps {
-  onClose: () => void;
+  onClose: (prop) => void;
   className?: string;
 }
 
@@ -85,8 +85,8 @@ function AddonCategoryForm({ className, onClose }: AddonCategoryFormProps) {
               border: "none",
             },
           });
-          onClose();
-          queryClient.invalidateQueries("categories");
+          queryClient.invalidateQueries("addons-categories");
+          onClose(true);
         },
         onError: (error) => {
           console.error(error);

@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/form";
 import { variantSchema } from "@/schemas/variationSchema";
 import { VariationContext } from "@/context/VariationContext";
-import { DialogOverlay } from "@radix-ui/react-dialog";
+import { DialogOverlay, DialogPortal } from "@radix-ui/react-dialog";
 
 export default function AddNewVariant({ currentVariant, setCurrentVariant }) {
   const [open, setOpen] = useState(false);
@@ -51,23 +51,23 @@ export default function AddNewVariant({ currentVariant, setCurrentVariant }) {
             </Button>
           )}
         </DialogTrigger>
-        <DialogContent
-          onInteractOutside={() => setCurrentVariant(null)}
-          className="sm:max-w-[600px]"
-        >
-          <div className="w-6 h-6 bg-white absolute left-4 top-4 z-10"></div>
-          <DialogHeader>
-            <DialogTitle>أضف خيار جديد</DialogTitle>
-          </DialogHeader>
+        <DialogPortal>
+          <DialogContent
+            onInteractOutside={() => setCurrentVariant(null)}
+            className="sm:max-w-[600px]"
+          >
+            <div className="w-6 h-6 bg-white absolute left-4 top-4 z-10"></div>
+            <DialogHeader>
+              <DialogTitle>أضف خيار جديد</DialogTitle>
+            </DialogHeader>
 
-          <VariationForm
-            setOpen={setOpen}
-            setCurrentVariant={setCurrentVariant}
-            currentVariant={currentVariant}
-          />
-
-          <DialogFooter></DialogFooter>
-        </DialogContent>
+            <VariationForm
+              onClose={() => setOpen(false)}
+              setCurrentVariant={setCurrentVariant}
+              currentVariant={currentVariant}
+            />
+          </DialogContent>
+        </DialogPortal>
         <DialogOverlay onPointerDown={(e) => e.stopPropagation()} />
       </Dialog>
     </div>
@@ -85,7 +85,7 @@ type variant = {
   options: option[];
 };
 
-function VariationForm({ currentVariant, setCurrentVariant, setOpen }) {
+function VariationForm({ currentVariant, setCurrentVariant, onClose }) {
   // show the title input when the user add the first option
   const [showTitle, setShowTitle] = useState(false);
   const [titleExists, setTitleExists] = useState(false);
@@ -136,7 +136,7 @@ function VariationForm({ currentVariant, setCurrentVariant, setOpen }) {
     }
     if (currentVariant) {
       updateVariant(currentVariant.title, data as variant);
-      setOpen(false);
+      onClose(false);
       setCurrentVariant(null);
     } else {
       if (!data.title) {
@@ -144,7 +144,7 @@ function VariationForm({ currentVariant, setCurrentVariant, setOpen }) {
         return;
       }
       setVariations((prev: any) => [...prev, data]);
-      setOpen(false);
+      onClose(false);
     }
   };
 
@@ -155,7 +155,7 @@ function VariationForm({ currentVariant, setCurrentVariant, setOpen }) {
 
   const onCloseHandller = () => {
     setCurrentVariant(null);
-    setOpen(false);
+    onClose(false);
   };
 
   useEffect(() => {

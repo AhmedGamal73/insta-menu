@@ -38,23 +38,20 @@ const productSchema = z
       typeof window !== "undefined"
         ? z.instanceof(FileList).optional()
         : z.unknown().optional(),
-    name: z.string().min(1, "الرجاء إدخال اسم الخيار"),
-    desc: z.string().min(1, "الرجاء إدخال اسم الخيار").optional(),
+    name: z.string().min(1, "الرجاء إدخال اسم المنتج"),
+    desc: z.string().optional(),
     calories: z
       .string()
       .optional()
-      .transform((v) => Number(v) || 0)
-      .refine((v) => v > 0, {
-        message: "يجب أن تكون السعرات الحرارية أكبر من 0",
-      }),
+      .transform((v) => Number(v) || 0),
     price: z
       .string()
-      .transform((v) => Number(v) || 0)
-      .optional(),
+      .optional()
+      .transform((v) => Number(v) || 0),
     salePrice: z
       .string()
-      .transform((v) => Number(v) || 0)
-      .optional(),
+      .optional()
+      .transform((v) => Number(v) || 0),
   })
   .refine((data) => data.price > data.salePrice, {
     message: "سعر الخصم يجب أن يكون أقل من السعر الإفتراضي",
@@ -166,6 +163,18 @@ export default function CreatePostForm(user: CreatePostFormProps) {
       formData.append("addonCategoryId", addonCategoryId);
       formData.append("variations", JSON.stringify(variations[0]));
 
+      if (variations.length === 0 && data.price === 0) {
+        toast({
+          title: "يجب إضافة سعر للمنتج",
+          dir: "rtl",
+          style: {
+            backgroundColor: "#FF0000",
+            color: "#fff",
+          },
+        });
+        return;
+      }
+
       mutation.mutate(formData);
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -191,7 +200,6 @@ export default function CreatePostForm(user: CreatePostFormProps) {
               <InnerPageHeader href="/dashboard/products">
                 <Button type="submit">حفظ المنتج</Button>
                 <Button variant="outline">حفظ وأضف منتج جديد</Button>
-                
               </InnerPageHeader>
               <div className="w-full flex  gap-4">
                 <div className="w-2/3 flex flex-col gap-4">

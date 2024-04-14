@@ -8,6 +8,7 @@ export interface ICustomer extends Document {
   address?: string;
   cart: string;
   orders: string[];
+  favorites: string[];
 }
 
 // customer schema

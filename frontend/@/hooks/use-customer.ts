@@ -1,4 +1,4 @@
-import axios from "axios";
+import { API_URL } from "@/config/variables";
 import { useQuery } from "react-query";
 
 export type CustomerSignup = {
@@ -14,29 +14,26 @@ export type CustomerLogin = {
   password: string;
 };
 
-const customerAPI = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
-});
-
 // POST Customer
-export const useAddCustomer = (customer: CustomerSignup) => {
+export const useCustomerSignup = (customer: CustomerSignup) => {
   return useQuery({
     queryKey: ["customerSignup", customer],
     queryFn: async () => {
       try {
-        const { data } = await postCustomerSignin(customer);
+        const { data } = await postCustomerSignup(customer);
         return data;
       } catch (err) {
         console.log(err);
       }
     },
+    enabled: !!customer,
   });
 };
 
-// GET Customer
-export const useGetCustomer = (customer: CustomerLogin) => {
+// POST Customer Login
+export const useCustomerLogin = (customer: CustomerLogin) => {
   return useQuery({
-    queryKey: ["customerLogin", customer],
+    queryKey: ["customer-ogin", customer],
     queryFn: async () => {
       try {
         const { data } = await postCustomerLogin(customer);
@@ -45,34 +42,54 @@ export const useGetCustomer = (customer: CustomerLogin) => {
         console.log(err);
       }
     },
+    enabled: !!customer,
   });
 };
-
-export const useGetCustomerById = (id: string) => {
+// GET Customer By Id
+export const useGetCustomerById = (customerId: string) => {
   return useQuery({
-    queryKey: ["customer", id],
+    queryKey: ["customer", customerId],
     queryFn: async () => {
       try {
-        const { data } = await getCustomer(id);
+        const { data } = await getCustomer(customerId);
         return data;
       } catch (err) {
         console.log(err);
       }
     },
+    enabled: !!customerId,
   });
 };
 
 // POST Customer Signin
-export const postCustomerSignin = async (customer: CustomerSignup) => {
-  return await customerAPI.post("/customer/signup", customer);
+export const postCustomerSignup = async (customer: CustomerSignup) => {
+  return await API_URL.post("/customer/signup", customer);
 };
 
 // Post Customer
 export const postCustomerLogin = async (customer: CustomerLogin) => {
-  return await customerAPI.post("/customer/login", customer);
+  return await API_URL.post("/customer/login", customer);
 };
 
 // GET Customer
-export const getCustomer = async (id: string) => {
-  return await customerAPI.get(`/customer/${id}`);
+export const getCustomer = async (customerId: string) => {
+  return await API_URL.get(`/customer/${customerId}`);
+};
+
+// PUT Add Customer Favorite
+export const putCustomerAddFavorite = async (
+  customerId: string,
+  productId: string
+) => {
+  return await API_URL.put(`/customer/${customerId}/addfavorite/${productId}`);
+};
+
+// PUT Remove Customer Favorite
+export const putCustomerRemoveFavorite = async (
+  customerId: string,
+  productId: string
+) => {
+  return await API_URL.put(
+    `/customer/${customerId}/removefavorite/${productId}`
+  );
 };

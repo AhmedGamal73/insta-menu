@@ -57,7 +57,7 @@ const categorySchema = z.object({
 });
 
 interface CategoryFormProps extends React.ComponentProps<"form"> {
-  onClose: () => void;
+  onClose: (prop) => void;
   classNaem?: string;
 }
 
@@ -88,6 +88,8 @@ function CategoryForm({ className, onClose }: CategoryFormProps) {
 
   const createCategoryMutation = useMutation(createCategory, {
     onSuccess: () => {
+      queryClient.invalidateQueries("categories");
+      onClose(true);
       toast({
         title: "تم إضافة التصنيف بنجاح",
         variant: "default",
@@ -98,8 +100,6 @@ function CategoryForm({ className, onClose }: CategoryFormProps) {
           border: "none",
         },
       });
-      queryClient.invalidateQueries("categories");
-      onClose;
     },
   });
 

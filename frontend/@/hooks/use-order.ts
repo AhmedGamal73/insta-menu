@@ -9,7 +9,7 @@ const orderAPI = axios.create({
 
 export type Order = {
   _id?: string;
-  customerToken: string;
+  customerId: string;
   orderName: string;
   tableNo: number;
   phoneNumber: string;

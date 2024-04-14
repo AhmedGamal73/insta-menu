@@ -6,7 +6,7 @@ import Restaurant from "../models/restaurant.model";
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "uploads/restaurants");
+    cb(null, "uploads" + "/" + "restaurants");
   },
   filename: function (req, file, cb) {
     cb(null, new Date().toISOString().replace(/:/g, "-") + file.originalname);
@@ -60,6 +60,29 @@ export async function getRestaurantsController(req: Request, res: Response) {
   try {
     const items = await Restaurant.find().sort({ createdAt: -1 });
     return res.status(200).json(items);
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ error: "An error occurred" });
+  }
+}
+
+// GET Featured Restaurants
+export async function getFeaturedRestaurantsController(
+  req: Request,
+  res: Response
+) {
+  let restaurants = [];
+  try {
+    const featuredRestaurants = await Restaurant.find({ featured: true }).sort({
+      createdAt: -1,
+    });
+    if (featuredRestaurants.length === 0) {
+      restaurants = await Restaurant.find().sort({ createdAt: -1 }).limit(5);
+    } else {
+      restaurants = featuredRestaurants;
+    }
+
+    return res.status(200).json(restaurants);
   } catch (err) {
     console.log(err);
     return res.status(500).json({ error: "An error occurred" });

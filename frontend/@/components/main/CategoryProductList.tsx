@@ -50,6 +50,7 @@ export const CategoryProductsList = () => {
               categories.map((category, index) => (
                 <li key={index} className="p-0 flex flex-col">
                   <div
+                    key={index}
                     onClick={() => setCategory(category)}
                     className="min-w-16 flex flex-col gap-2 justify-between items-center rounded-[30px] p-3 shadow-blur bg-white"
                   >
@@ -75,7 +76,7 @@ export const CategoryProductsList = () => {
           <div className="flex flex-col gap-6 pb-24 z-2">
             {category === null && categoriesIsLoading ? (
               <LoadingScreen />
-            ) : category && products && products.length > 0 ? (
+            ) : products && products.length > 0 ? (
               products.map((product: Product, index: Key) => {
                 return (
                   <ProductCard
@@ -86,7 +87,10 @@ export const CategoryProductsList = () => {
                 );
               })
             ) : (
-              "لا يوجد منتجات"
+              <div>
+                <h1 className="text-3xl text-center">لا يوجد منتجات</h1>
+                <p className="text-center">لا يوجد منتجات في هذا القسم</p>
+              </div>
             )}
           </div>
         </div>

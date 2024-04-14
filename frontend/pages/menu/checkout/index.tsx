@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useMutation } from "react-query";
+import jwt from "jsonwebtoken";
 
 import { useCart } from "@/context/CartContext";
 import CartItems from "@/components/menu/cart/CartItems";
@@ -35,6 +36,7 @@ import {
   SelectValue,
   SelectGroup,
 } from "@/components/ui/select";
+import { useGetCustomerById } from "@/hooks/use-customer";
 
 // zod schema
 const orderFormSchema = z
@@ -65,10 +67,6 @@ const orderFormSchema = z
       path: ["address"],
     }
   );
-// .refine((data) => (data.orderType === "Indoor" ? !!data.tableNo : true), {
-//   message: "رقم الطاولة مطلوب",
-//   path: ["tableNo"],
-// });
 
 const CheckoutPage = () => {
   const [selectedMethod, setSelectedMethod] = useState<string>("Cash");
@@ -78,11 +76,9 @@ const CheckoutPage = () => {
   const [deliveryTime, setDeliveryTime] = useState<number>(0);
   const [open, setOpen] = useState<Boolean>(false);
   const [openOtp, setOpenOtp] = useState<Boolean>(false);
-  const [phoneNumber, setPhoneNumber] = useState<string>("");
 
   const { data: districts } = useDistrict(selectedCity);
 
-  const customerToken = Cookies.get("customerToken");
   let tableNo: any;
   if (typeof window !== "undefined") {
     window.localStorage.getItem("tableNo")
@@ -116,11 +112,19 @@ const CheckoutPage = () => {
       ? subtotal + vat + deliveryFee
       : subtotal + vat;
 
+  // GET Customer Data
+  const customerToken = Cookies.get("customerToken");
+  let customerId = jwt.decode(customerToken)?._id;
+  let phoneNumber = jwt.decode(customerToken)?.phoneNumber;
+  const { data: customer, isLoading: customerLoading } =
+    useGetCustomerById(customerId);
+
   const form = useForm<z.infer<typeof orderFormSchema>>({
     resolver: zodResolver(orderFormSchema),
     defaultValues: {
       orderName: "",
       tableNo: tableNo && Number(tableNo),
+      phoneNumber: phoneNumber,
       orderType:
         orderType === "Delivery"
           ? "Delivery"
@@ -128,14 +132,14 @@ const CheckoutPage = () => {
           ? "Takeaway"
           : "Indoor",
       city: "",
-      phoneNumber: "",
-      district: "",
-      street: "",
+      district: customer?.address?.districtId || "",
+      street: customer?.address?.street || "",
     },
   });
 
   const mutation = useMutation(postOrder, {
     onSuccess: (data) => {
+      console.log(order);
       setOpenOtp(true);
     },
     onError: (error: any) => {
@@ -147,9 +151,8 @@ const CheckoutPage = () => {
 
   let order: Order;
   const onSubmit = async (checkoutData) => {
-    setPhoneNumber(checkoutData.phoneNumber);
     order = {
-      customerToken: customerToken,
+      customerId: customerId,
       orderName: checkoutData.orderName,
       tableNo: typeof tableNo === "number" ? tableNo : 0,
       phoneNumber: checkoutData.phoneNumber,
@@ -176,7 +179,6 @@ const CheckoutPage = () => {
 
   useEffect(() => {
     tableNo && orderType === "Indoor";
-    console.log(orderType);
     const savedCart = Cookies.get("cart");
     if (savedCart) {
       const parsedCart = JSON.parse(savedCart);

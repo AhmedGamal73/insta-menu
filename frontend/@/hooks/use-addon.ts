@@ -32,7 +32,7 @@ export const useAddon = (id: string) => {
   });
 };
 
-// Fetch all Addons
+// GET Addons
 export const useAddons = () => {
   return useQuery({
     queryKey: ["addons"],
@@ -51,7 +51,7 @@ export const useAddons = () => {
 // GET Addons by category
 export const useGetAddonsByCategory = (categoryId: string) => {
   return useQuery({
-    queryKey: ["AddonsByCategory", categoryId],
+    queryKey: ["addons-by-category", categoryId],
     queryFn: async () => {
       try {
         const { data } = await getAddonsByCategory(categoryId);
@@ -64,10 +64,10 @@ export const useGetAddonsByCategory = (categoryId: string) => {
   });
 };
 
-// GET AddonsCategories
+// GET Addon Categories
 export const useGetAddonsCategories = () => {
   return useQuery({
-    queryKey: ["Addon-category"],
+    queryKey: ["addons-categories"],
     queryFn: async () => {
       try {
         const { data } = await getAddonsCategories();

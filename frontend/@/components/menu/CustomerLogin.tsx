@@ -24,7 +24,7 @@ import { useRouter } from "next/router";
 
 const wait = () => new Promise((resolve) => setTimeout(resolve, 1000));
 
-const CustomerLogin = ({ onSubmitHandler, wideButton }) => {
+const CustomerLoginDialog = ({ onSubmitHandler, wideButton }) => {
   // to disable the button after submit
   const [disabled, setDisabled] = useState(false);
   // to close the modal after success auth
@@ -152,4 +152,4 @@ const CustomerLogin = ({ onSubmitHandler, wideButton }) => {
     </Form>
   );
 };
-export default CustomerLogin;
+export default CustomerLoginDialog;

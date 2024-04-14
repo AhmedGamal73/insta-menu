@@ -1,3 +1,1 @@
-rsync -avz --exclude '.git' --exclude 'backend/node_modules' --exclude 'frontend/node_modules' --exclude 'frontend/.env.local' --exclude 'backend/.env' \
--e "ssh -i /mnt/c/Users/Ms/Downloads/ssh" \
-. ubuntu@ec2-3-79-185-157.eu-central-1.compute.amazonaws.com:~/food-ordering-app
+rsync -avz --exclude '.git' --exclude 'backend/node_modules' --exclude 'backend/dist' --exclude 'backend/.env' --exclude 'frontend/node_modules' --exclude 'frontend/.env.local' --exclude 'frontend/.next' \ -e "./.ssh/pc.pem" \ . ubuntu@ec2-3-79-185-157.eu-central-1.compute.amazonaws.com:~/app

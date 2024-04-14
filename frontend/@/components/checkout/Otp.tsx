@@ -142,9 +142,7 @@ export default function Otp({ openOtp, onClose, phoneNumber }) {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>
-            <h1>كود ال تفعيل</h1>
-          </DialogTitle>
+          <DialogTitle>كود التفعيل</DialogTitle>
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit)}
@@ -158,6 +156,7 @@ export default function Otp({ openOtp, onClose, phoneNumber }) {
                     <FormLabel>الرقم السري من ستة ارقام </FormLabel>
                     <FormControl>
                       <InputOTP
+                        className="flex justify-center w-full gap-2"
                         maxLength={6}
                         render={({ slots }) => (
                           <>

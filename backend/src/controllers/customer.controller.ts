@@ -108,3 +108,45 @@ export async function getCustomerController(req: Request, res: Response) {
     return res.status(500).json({ message: err });
   }
 }
+
+// PUT Add favorite product to customer
+export async function putCustomerFavoritesController(
+  req: Request,
+  res: Response
+) {
+  const { customerId, favoriteProduct } = req.params;
+  try {
+    const customer = await Customer.findByIdAndUpdate(
+      customerId,
+      {
+        $push: { favoriteProducts: favoriteProduct },
+      },
+      { new: true }
+    );
+    return res.status(200).json(customer);
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: err });
+  }
+}
+
+// PUT Remove favorite product from customer
+export async function putCustomerRemoveFavoriteController(
+  req: Request,
+  res: Response
+) {
+  const { customerId, favoriteProduct } = req.params;
+  try {
+    const customer = await Customer.findByIdAndUpdate(
+      customerId,
+      {
+        $pull: { favoriteProducts: favoriteProduct },
+      },
+      { new: true }
+    );
+    return res.status(200).json(customer);
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: err });
+  }
+}

@@ -45,15 +45,6 @@ export const useProduct = () => {
   });
 };
 
-export const useCreateProduct = () => {
-  const queryClient = useQueryClient();
-  return useMutation(postProduct, {
-    onSuccess: () => {
-      queryClient.invalidateQueries("products");
-    },
-  });
-};
-
 // GET Offer Products
 export const useGetOfferProducts = () => {
   return useQuery({
@@ -104,6 +95,7 @@ export const useActiveProductsByCategoryId = (categoryId: string) => {
       }
     },
     keepPreviousData: true,
+    enabled: !!categoryId,
   });
 };
 
@@ -122,6 +114,7 @@ export const useGetProductById = (id: string) => {
     },
     refetchOnMount: false,
     refetchOnWindowFocus: false,
+    enabled: !!id,
   });
 };
 

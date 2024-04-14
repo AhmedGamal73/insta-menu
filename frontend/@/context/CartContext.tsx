@@ -15,7 +15,7 @@ export const CartProvider = ({ children }) => {
 
     const total = subtotal + item.total;
     setSubtotal(total);
-    setVat(Math.round(total * 0.14));
+    setVat(parseFloat((total * 0.14).toFixed(2)));
     setQuantity(quantity + item.quantity);
   };
 
@@ -27,7 +27,7 @@ export const CartProvider = ({ children }) => {
       setCart(newCart);
       const total = subtotal - item.total;
       setSubtotal(total);
-      setVat(Math.round(total * 0.14));
+      setVat(parseFloat((total * 0.14).toFixed(2)));
       setQuantity(quantity - item.quantity);
     }
   };
@@ -50,6 +50,7 @@ export const CartProvider = ({ children }) => {
     Cookies.set("subtotal", JSON.stringify(subtotal));
     Cookies.set("vat", JSON.stringify(vat));
     Cookies.set("quantity", JSON.stringify(quantity));
+    console.log(cart);
   }, [cart, quantity]);
 
   return (

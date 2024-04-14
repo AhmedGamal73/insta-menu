@@ -25,10 +25,7 @@ const ProductPage: React.FC<productsProps> = ({ product, onClose }) => {
       : null
   );
   const [salePrice, setSalePrice] = useState(
-    product.variable &&
-      product.variations.options &&
-      product.variations.options.length > 0 &&
-      product.variations.options[0].salePrice
+    product.variable && product.variations.options[0].salePrice
       ? selectedVariant.salePrice
       : product.variable && product.salePrice
       ? product.salePrice
@@ -36,11 +33,7 @@ const ProductPage: React.FC<productsProps> = ({ product, onClose }) => {
   );
   const [itemNumber, setItemNumber] = useState(1);
   const [price, setPrice] = useState(
-    product.variable &&
-      product.variations.options &&
-      product.variations.options.length > 0
-      ? selectedVariant.price
-      : product.price
+    product.variable ? selectedVariant.price : product.price
   );
 
   const { addItem } = useContext(CartContext);
@@ -111,12 +104,7 @@ const ProductPage: React.FC<productsProps> = ({ product, onClose }) => {
   };
 
   useEffect(() => {
-    if (
-      product.variable &&
-      product.variations.options &&
-      product.variations.options.length > 0 &&
-      selectedVariant
-    ) {
+    if (product.variable && selectedVariant) {
       setSalePrice(selectedVariant.salePrice);
       setPrice(selectedVariant.price);
     } else {
@@ -126,25 +114,19 @@ const ProductPage: React.FC<productsProps> = ({ product, onClose }) => {
   }, [selectedVariant, itemNumber, salePrice]);
 
   useEffect(() => {
-    if (
-      product.variable &&
-      product.variations.options &&
-      product.variations.options.length > 0
-    ) {
+    if (product.variable) {
       setSelectedVariant(product.variations.options[0]);
     }
-
-    if (
-      product.variable &&
-      product.variations.options &&
-      product.variations.options.length > 0
-    ) {
+    if (product.variable && product.variations.options[0].salePrice) {
       setSalePrice(product.variations.options[0].salePrice);
     } else {
       setSalePrice(product.salePrice);
     }
   }, []);
 
+  useEffect(() => {
+    console.log(selectedAddons);
+  }, [selectedAddons]);
   return (
     <div className="flex flex-col gap-8 justify-between relative pb-[4rem]">
       <div className="flex justify-between">
@@ -163,8 +145,6 @@ const ProductPage: React.FC<productsProps> = ({ product, onClose }) => {
           <div className="flex flex-col items-center justify-center gap-2 w-full">
             <div className="flex pt-4 justify-center w-full gap-4 flex-wrap">
               {product.variable &&
-                product.variations.options &&
-                product.variations.options.length > 0 &&
                 product.variations?.options?.map((option, index) => (
                   <Button
                     className="text-[12px] rounded-lg w-16 h-8"
@@ -227,6 +207,7 @@ const ProductPage: React.FC<productsProps> = ({ product, onClose }) => {
                 {addons &&
                   addons.map((addon) => (
                     <label
+                      key={addon._id}
                       className={
                         selectedAddons?.includes(addon)
                           ? "text-primary bg-secondary text-white text-ms rounded-xl border border-secondary p-2"

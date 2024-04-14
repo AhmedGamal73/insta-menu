@@ -26,6 +26,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { DialogPortal } from "@radix-ui/react-dialog";
 
 const AddNewRestaurant = () => {
   const [open, setOpen] = useState(false);
@@ -38,12 +39,14 @@ const AddNewRestaurant = () => {
             <Plus className="w-4 h-4" />
           </Button>
         </DialogTrigger>
-        <DialogContent className="">
-          <DialogHeader>
-            <DialogTitle>أضف مطعم جديد</DialogTitle>
-          </DialogHeader>
-          <RestaurantForm onClose={() => setOpen(false)} />
-        </DialogContent>
+        <DialogPortal>
+          <DialogContent className="">
+            <DialogHeader>
+              <DialogTitle>أضف مطعم جديد</DialogTitle>
+            </DialogHeader>
+            <RestaurantForm onClose={() => setOpen(false)} />
+          </DialogContent>
+        </DialogPortal>
       </Dialog>
     </div>
   );
@@ -61,7 +64,7 @@ const restaurantSchema = z.object({
 });
 
 interface CategoryFormProps extends React.ComponentProps<"form"> {
-  onClose: () => void;
+  onClose: (prop) => void;
   classNaem?: string;
 }
 
@@ -94,6 +97,8 @@ function RestaurantForm({ className, onClose }: CategoryFormProps) {
 
   const createRestaurantMutation = useMutation(createRestaurant, {
     onSuccess: () => {
+      queryClient.invalidateQueries("restaurants");
+      onClose(true);
       toast({
         title: "تم إضافة مطعم جديد بنجاح",
         variant: "default",
@@ -104,8 +109,6 @@ function RestaurantForm({ className, onClose }: CategoryFormProps) {
           border: "none",
         },
       });
-      queryClient.invalidateQueries("restaurant");
-      onClose;
     },
   });
 

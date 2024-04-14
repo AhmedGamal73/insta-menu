@@ -45,7 +45,10 @@ const AddNewSubcategory = ({ selectedCategoryId }: AddNewSubcategoryProps) => {
           <DialogHeader>
             <DialogTitle>أضف تصنيف فرعي جديد</DialogTitle>
           </DialogHeader>
-          <SubcategoryForm selectedCategoryId={selectedCategoryId} />
+          <SubcategoryForm
+            onClose={() => setOpen(false)}
+            selectedCategoryId={selectedCategoryId}
+          />
         </DialogContent>
       </Dialog>
     </div>
@@ -59,11 +62,14 @@ const categorySchema = z.object({
 
 interface SubcategoryFormProps extends React.ComponentProps<"form"> {
   selectedCategoryId: string;
+  className?: string;
+  onClose?: (prop: boolean) => void;
 }
 
 function SubcategoryForm({
   className,
   selectedCategoryId,
+  onClose,
 }: SubcategoryFormProps) {
   const { toast } = useToast();
   const queryClient = new QueryClient();
@@ -87,6 +93,7 @@ function SubcategoryForm({
       {
         onSuccess: () => {
           queryClient.invalidateQueries("categories, subcategories");
+          onClose(true);
           toast({
             title: "تم إضافة التصنيف الفرعي بنجاح",
             variant: "default",

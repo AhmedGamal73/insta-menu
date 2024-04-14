@@ -14,10 +14,26 @@ export const API_URL = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
 });
 
+// GET Featured Restaurants
+export const useGetFeaturedRestaurants = () => {
+  return useQuery({
+    queryKey: ["featured-restaurants"],
+    queryFn: async () => {
+      try {
+        const { data } = await getFeaturedRestaurants();
+        return data;
+      } catch (error) {
+        console.log(error);
+        throw error;
+      }
+    },
+  });
+};
+
 // GET Restaurant
 export const useGetRestaurant = (slug: string) => {
   return useQuery({
-    queryKey: ["restaurant", slug],
+    queryKey: ["restaurants", slug],
     queryFn: async () => {
       try {
         const { data } = await getRestaurant(slug);
@@ -77,6 +93,11 @@ export const postRestaurant = async (data: Restaurant) => {
 // GET Restaurants
 export const getRestaurants = async () => {
   return await API_URL.get("/restaurant");
+};
+
+// GET Featured Restaurants
+export const getFeaturedRestaurants = async () => {
+  return await API_URL.get("/restaurant/featured");
 };
 
 // GET Restaurant Categories

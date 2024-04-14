@@ -1,10 +1,8 @@
 import { Request, Response } from "express";
 import axiox from "axios";
-import jwt from "jsonwebtoken";
 
 import Order from "../models/order.model";
 import { Cart } from "../models/cart.model";
-import Product from "../models/product.model";
 import {
   validateAddress,
   validateCustomerToken,
@@ -43,10 +41,9 @@ export async function postOrderController(req: Request, res: Response) {
     // verify address
     const addressId = await validateAddress(orderType, address);
 
-    const newCart = await Cart.create({
+    const newCart = await await Cart.create({
       items: cart,
     });
-    await newCart.save();
 
     order = {
       customerId,
@@ -86,6 +83,7 @@ const WASAGE_DATA = {
   message: "رمز التحقق الخاص بك هو " + otp + " وقت انتهاء الصلاحية 5 دقائق",
 };
 
+// Generate OTP
 export async function generateOtpController(req: Request, res: Response) {
   try {
     const wasageURI = "https://wasage.com/api/otp/?";
@@ -98,6 +96,7 @@ export async function generateOtpController(req: Request, res: Response) {
   }
 }
 
+// Verify OTP
 export async function verifyOtpController(req: Request, res: Response) {
   const { otp: customerOtp } = req.body;
 
@@ -132,14 +131,23 @@ export async function getOrdersController(req: Request, res: Response) {
   }
 }
 
-// GET Orders With All Product Data
+// GET Orders - Dinner Mind -
 export async function getClickOrdersController(req: Request, res: Response) {
   try {
     const orders = await Order.find({ clickVirefiy: false })
       .sort({
         createdAt: -1,
       })
-      .populate("cart");
+      .populate("cart")
+      .populate({
+        path: "cart",
+        populate: {
+          path: "items",
+          populate: {
+            path: "addons", // Assuming 'addons' is the field name
+          },
+        },
+      });
 
     const modifiedOrders = orders.map((order) => {
       const { cart, ...otherProps } = order.toObject();

@@ -6,7 +6,6 @@ import Cookies from "js-cookie";
 import { Item } from "@/components/menu/cart/Cart";
 
 import { TransitionGroup, CSSTransition } from "react-transition-group";
-import useEmblaCarousel from "embla-carousel-react/components/useEmblaCarousel";
 
 const CartItems = () => {
   const {
@@ -23,7 +22,7 @@ const CartItems = () => {
     removeItem(index);
     toast({
       variant: "destructive",
-      description: `تم حذف ${cart[index].prodcut.name} من السلة`,
+      description: `تم حذف ${cart[index].product.name} من السلة`,
       style: {
         justifyContent: "center",
       },

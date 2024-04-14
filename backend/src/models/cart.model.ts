@@ -43,7 +43,13 @@ const cartItemSchema = new Schema<ICartItem>({
     restaurantId: { type: Schema.Types.ObjectId, ref: "Restaurant" },
   },
   quantity: { type: Number, required: true, default: 1 },
-  addons: [{ type: Schema.Types.ObjectId, ref: "Addon" }],
+  addons: [
+    {
+      price: { type: Number, required: true },
+      name: { type: String, required: true },
+      _id: { type: String, required: true },
+    },
+  ],
   total: { type: Number, required: true },
   variations: [
     {

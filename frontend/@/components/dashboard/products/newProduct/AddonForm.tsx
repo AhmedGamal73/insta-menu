@@ -17,7 +17,7 @@ import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 
 interface AddonFormProps {
-  onClose: () => void;
+  onClose: (prop) => void;
   selectedCategory: any;
 }
 
@@ -58,8 +58,8 @@ export default function AddonForm({
               border: "none",
             },
           });
-          queryClient.invalidateQueries("AddonsByCategory");
-          onClose();
+          queryClient.invalidateQueries("addons-by-category");
+          onClose(true);
         },
         onError: (error) => {
           console.error(error);

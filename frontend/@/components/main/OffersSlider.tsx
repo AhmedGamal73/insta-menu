@@ -6,20 +6,31 @@ import jwt from "jsonwebtoken";
 import { useGetOfferProducts } from "@/hooks/use-product";
 import LoadingScreen from "../ui/loadingScreen";
 import { useEffect, useState } from "react";
-import { useGetCustomer } from "@/hooks/use-customer";
+import { useGetCustomerById } from "@/hooks/use-customer";
 
 const OffersSlider = () => {
-  const [liked, setLiked] = useState(false);
-
-  const customerToken = Cookies.get("customerToken");
-  const decodedToken = jwt.decode(customerToken);
-  const customerId = decodedToken?.userId;
+  let customerId: string;
+  useEffect(() => {
+    const customerToken = Cookies.get("customerToken");
+    const decodedToken = jwt.decode(customerToken);
+    customerId = decodedToken?._id;
+    console.log(customerId);
+  }, []);
 
   const { data: products, isLoading } = useGetOfferProducts();
   const { data: customer, isLoading: customerIsLoading } =
-    useGetCustomer(customerId);
+    useGetCustomerById(customerId);
 
-  useEffect(() => {}, []);
+  const updateCustomerFavorites = async (
+    customerId: string,
+    productId: string
+  ) => {
+    if (customer && customer.favorites.includes(productId)) {
+      console.log(`Remove ${productId} from favorites from ${customerId}`);
+    } else {
+      console.log(`Add ${productId} to favorites for ${customerId}`);
+    }
+  };
   return (
     <div className="flex flex-col gap-2">
       <div className="w-full flex justify-between items-center pe-2 ps-4">
@@ -51,14 +62,16 @@ const OffersSlider = () => {
                 <div className="w-full bg-black/30 h-[200px] rounded-2xl">
                   <button
                     onClick={() => {
-                      setLiked(!liked);
+                      updateCustomerFavorites(customerId, product._id);
                     }}
                     className="w-full p-2 flex justify-between items-center"
                   >
-                    {!liked ? (
-                      <Heart className="bg-white text-black w-8 h-8 rounded-full p-2" />
-                    ) : (
+                    {product &&
+                    customer &&
+                    customer.favorites.includes(product._id) ? (
                       <Heart className="bg-white text-red-500 w-8 h-8 rounded-full p-2" />
+                    ) : (
+                      <Heart className="bg-white text-black w-8 h-8 rounded-full p-2" />
                     )}
                   </button>
                 </div>
