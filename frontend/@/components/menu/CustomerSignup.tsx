@@ -19,7 +19,7 @@ import { Input } from "@/components/ui/input";
 import { toast } from "../ui/use-toast";
 import { CustomerSignup, postCustomerSignup } from "@/hooks/use-customer";
 
-function CustomerSignupDialog({ onSubmitHandler }) {
+function CustomerSignupDialog({ onSignup }) {
   const [isIndoor, setIsIndoor] = React.useState<boolean>(false);
 
   const customerSchema = z
@@ -60,8 +60,7 @@ function CustomerSignupDialog({ onSubmitHandler }) {
       (customer: CustomerSignup) => postCustomerSignup(customer),
       {
         onSuccess: () => {
-          // redirect to login tab
-          onSubmitHandler("login");
+          onSignup(true); // Activate login tab
           toast({
             description: "تم إنشاء العميل بنجاح",
             style: {

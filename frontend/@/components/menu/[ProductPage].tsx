@@ -243,7 +243,7 @@ const ProductPage: React.FC<productsProps> = ({ product, onClose }) => {
       </div>
       <Button
         onClick={handleAddToCart}
-        className="w-5/6 fixed left-1/2 transform -translate-x-1/2 bottom-4"
+        className="w-5/6 fixed left-1/2 transform -translate-x-1/2 bottom-4 rounded-full"
         variant="secondary"
       >
         اضف للسلة

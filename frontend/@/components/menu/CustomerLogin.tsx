@@ -24,11 +24,9 @@ import { useRouter } from "next/router";
 
 const wait = () => new Promise((resolve) => setTimeout(resolve, 1000));
 
-const CustomerLoginDialog = ({ onSubmitHandler, wideButton }) => {
+const CustomerLoginDialog = ({ onClose, wideButton }) => {
   // to disable the button after submit
   const [disabled, setDisabled] = useState(false);
-  // to close the modal after success auth
-  const [authSuccess, setAuthSuccess] = useState(false);
 
   const router = useRouter();
   const customerSchema = z.object({
@@ -58,7 +56,6 @@ const CustomerLoginDialog = ({ onSubmitHandler, wideButton }) => {
       {
         onSuccess: (data) => {
           Cookies.set("customerToken", data.data.token);
-          setAuthSuccess(true);
           toast({
             description: "تم تسجيل الدخول بنجاح",
             style: {
@@ -66,6 +63,9 @@ const CustomerLoginDialog = ({ onSubmitHandler, wideButton }) => {
               backgroundColor: "green",
               color: "white",
             },
+          });
+          wait().then(() => {
+            onClose(true);
           });
           router.push("/menu/checkout");
         },
@@ -92,13 +92,6 @@ const CustomerLoginDialog = ({ onSubmitHandler, wideButton }) => {
     setDisabled(true);
   }
 
-  useEffect(() => {
-    if (authSuccess) {
-      wait().then(() => {
-        onSubmitHandler(false);
-      });
-    }
-  }, [authSuccess]);
   return (
     <Form {...form}>
       <form

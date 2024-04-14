@@ -77,7 +77,7 @@ export default function Otp({ openOtp, onClose, phoneNumber }) {
       onClose(false);
       toast({
         variant: "default",
-        description: "تم إرسال كود التفعيل بنجاح",
+        description: "تم التحقق بنجاح، ويتم تحضير طلبك الأن",
         style: {
           justifyContent: "center",
           border: "0px",

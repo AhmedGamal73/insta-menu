@@ -15,12 +15,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import CustomerSignupDialog from "./CustomerSignup";
 import CustomerLoginDialog from "./CustomerLogin";
 
-export function CustomerInfoModal({ isSignedIn }) {
+export function CustomerInfoModal() {
   const [open, setOpen] = React.useState<boolean>(false);
+  const [isSignedup, setIsSignedup] = React.useState<boolean>(false);
   const [activeTab, setActiveTab] = React.useState<string>("login");
 
   React.useEffect(() => {
-    setActiveTab(isSignedIn ? "login" : "signup");
+    setActiveTab(isSignedup ? "login" : "signup");
   }, [activeTab]);
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -41,10 +42,13 @@ export function CustomerInfoModal({ isSignedIn }) {
             <TabsTrigger value="login">تسجيل الدخول</TabsTrigger>
           </TabsList>
           <TabsContent value="signup">
-            <CustomerSignupDialog onSubmitHandler={() => setActiveTab("")} />
+            <CustomerSignupDialog onSignup={() => setIsSignedup(false)} />
           </TabsContent>
           <TabsContent value="login">
-            <CustomerLoginDialog wideButton={false} onSubmitHandler={setOpen} />
+            <CustomerLoginDialog
+              wideButton={true}
+              onClose={() => setOpen(false)}
+            />
           </TabsContent>
         </Tabs>
       </DialogContent>

@@ -48,6 +48,7 @@ const cartItemSchema = new Schema<ICartItem>({
       price: { type: Number, required: true },
       name: { type: String, required: true },
       _id: { type: String, required: true },
+      clickId: { type: String, required: false },
     },
   ],
   total: { type: Number, required: true },

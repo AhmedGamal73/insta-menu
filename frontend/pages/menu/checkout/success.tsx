@@ -1,21 +1,19 @@
-import { useRouter } from "next/router";
+import router, { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
   Drawer,
-  DrawerClose,
   DrawerContent,
   DrawerDescription,
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,
 } from "@/components/ui/drawer";
-import Link from "next/link";
 
 const success = () => {
-  const router = useRouter();
   const [openDrawer, setOpenDrawer] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     setTimeout(() => {
@@ -42,8 +40,8 @@ export function DrawerDemo({ open }) {
           </DrawerHeader>
           <DrawerFooter>
             <Button>رؤية الطلب</Button>
-            <Button variant="outline">
-              <Link href="/">الرئيسية</Link>
+            <Button variant="outline" onClick={() => router.push("/")}>
+              الرئيسية
             </Button>
           </DrawerFooter>
         </div>

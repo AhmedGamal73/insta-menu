@@ -53,19 +53,6 @@ export function Cart() {
   } = useCart();
   const total = subtotal + Math.round(subtotal * 0.14);
 
-  const handleFormSubmit = () => {};
-
-  const handleRemoveItem = (index: number) => {
-    removeItem(index);
-    toast({
-      variant: "destructive",
-      description: `تم حذف ${cart[index].name} من السلة`,
-      style: {
-        justifyContent: "center",
-      },
-    });
-  };
-
   const customerToken = Cookies.get("customerToken");
   const token = customerToken ? jwt.decode(customerToken) : null;
   React.useEffect(() => {
@@ -138,7 +125,7 @@ export function Cart() {
                 <Link href="/menu/checkout">تقدم للطلب</Link>
               </Button>
             ) : (
-              <CustomerInfoModal onFormSubmit={handleFormSubmit} />
+              <CustomerInfoModal />
             )}
           </DrawerFooter>
         </div>

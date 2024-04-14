@@ -114,8 +114,11 @@ const CheckoutPage = () => {
 
   // GET Customer Data
   const customerToken = Cookies.get("customerToken");
-  let customerId = jwt.decode(customerToken)?._id;
-  let phoneNumber = jwt.decode(customerToken)?.phoneNumber;
+  let customerId: string, phoneNumber: string;
+  if (customerToken) {
+    customerId = jwt.decode(customerToken)?._id;
+    phoneNumber = jwt.decode(customerToken)?.phoneNumber;
+  }
   const { data: customer, isLoading: customerLoading } =
     useGetCustomerById(customerId);
 
@@ -139,7 +142,6 @@ const CheckoutPage = () => {
 
   const mutation = useMutation(postOrder, {
     onSuccess: (data) => {
-      console.log(order);
       setOpenOtp(true);
     },
     onError: (error: any) => {
@@ -152,7 +154,7 @@ const CheckoutPage = () => {
   let order: Order;
   const onSubmit = async (checkoutData) => {
     order = {
-      customerId: customerId,
+      customerToken: customerToken,
       orderName: checkoutData.orderName,
       tableNo: typeof tableNo === "number" ? tableNo : 0,
       phoneNumber: checkoutData.phoneNumber,
@@ -174,6 +176,7 @@ const CheckoutPage = () => {
       loungeTax: orderType === "Indoor" ? loungeTax : 0,
       promoCode: promoCode,
     };
+    console.log(cart);
     const { data } = await mutation.mutateAsync(order);
   };
 
