@@ -26,6 +26,7 @@ import InnerPageHeader from "@/components/ui/inner-page-header";
 import { SelectRestaurant } from "@/components/dashboard/products/newProduct/SelectRestaurant";
 import { useMutation } from "react-query";
 import { toast } from "@/components/ui/use-toast";
+import LoadingFullScreen from "@/components/ui/LoadingFullScreen";
 
 interface CreatePostFormProps {
   name?: string | null;
@@ -53,7 +54,7 @@ const productSchema = z
       .optional()
       .transform((v) => Number(v) || 0),
   })
-  .refine((data) => data.price > data.salePrice, {
+  .refine((data) => data.salePrice < data.price, {
     message: "سعر الخصم يجب أن يكون أقل من السعر الإفتراضي",
   });
 
@@ -109,6 +110,7 @@ export default function CreatePostForm(user: CreatePostFormProps) {
     defaultValues: {
       name: "",
       desc: "",
+      price: 1,
     },
   });
 
@@ -190,6 +192,7 @@ export default function CreatePostForm(user: CreatePostFormProps) {
   return (
     <VariationProvider>
       <Layout desc="قم بإنشاء منتج جديد" title="منتج جديد">
+        {mutation.isLoading && <LoadingFullScreen />}
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
@@ -199,7 +202,9 @@ export default function CreatePostForm(user: CreatePostFormProps) {
             <div className="w-full flex flex-col gap-8 px-6 py-4">
               <InnerPageHeader href="/dashboard/products">
                 <Button type="submit">حفظ المنتج</Button>
-                <Button variant="outline">حفظ وأضف منتج جديد</Button>
+                <Button disabled variant="outline">
+                  حفظ وأضف منتج جديد
+                </Button>
               </InnerPageHeader>
               <div className="w-full flex  gap-4">
                 <div className="w-2/3 flex flex-col gap-4">

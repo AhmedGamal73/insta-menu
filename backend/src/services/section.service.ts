@@ -1,16 +1,8 @@
 import Section from "../models/section.model";
 
-export async function createSection(sectionName: string) {
-  if (
-    sectionName ||
-    typeof sectionName !== "string" ||
-    sectionName.trim() === ""
-  ) {
-    throw new Error("Invalidation Error: Sectoin ID should be string");
-  }
-
+export async function createSection(name: string) {
   // Section name to lower case
-  const lowerCaseName = sectionName.toLowerCase();
+  const lowerCaseName = name.toLowerCase();
 
   try {
     // Find Section
@@ -20,7 +12,7 @@ export async function createSection(sectionName: string) {
     }
 
     // Create new section
-    const newSection = await Section.create(lowerCaseName);
+    const newSection = await Section.create({ name: lowerCaseName });
     return newSection;
   } catch (err) {
     console.log(err);
@@ -29,15 +21,6 @@ export async function createSection(sectionName: string) {
 
 // Get section by name
 export async function getSectionByName(sectionName: string) {
-  // Validat input section name
-  if (
-    sectionName ||
-    typeof sectionName !== "string" ||
-    sectionName.trim() === ""
-  ) {
-    throw new Error("Invalidation Error: Sectoin ID should be string");
-  }
-
   // Find section
   const section = await Section.findOne({ name: sectionName.toLowerCase() });
   if (section) {

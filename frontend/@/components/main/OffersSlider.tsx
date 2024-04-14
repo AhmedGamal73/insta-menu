@@ -37,7 +37,7 @@ const OffersSlider = () => {
         <h5>العروض</h5>
 
         <Link
-          href="/products"
+          href="/offers"
           className="text-xs flex gap-1 justify-center items-center"
         >
           رؤية الجميع

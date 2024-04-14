@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getCustomerController = exports.postCustomerLogin = exports.getCustomers = exports.postCustomerSignup = void 0;
+exports.putCustomerRemoveFavoriteController = exports.putCustomerFavoritesController = exports.getCustomerController = exports.postCustomerLogin = exports.getCustomers = exports.postCustomerSignup = void 0;
 require("dotenv").config();
 const bcrypt = require("bcryptjs");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
@@ -99,4 +99,34 @@ async function getCustomerController(req, res) {
     }
 }
 exports.getCustomerController = getCustomerController;
+// PUT Add favorite product to customer
+async function putCustomerFavoritesController(req, res) {
+    const { customerId, favoriteProduct } = req.params;
+    try {
+        const customer = await customer_model_1.Customer.findByIdAndUpdate(customerId, {
+            $push: { favoriteProducts: favoriteProduct },
+        }, { new: true });
+        return res.status(200).json(customer);
+    }
+    catch (err) {
+        console.log(err);
+        return res.status(500).json({ message: err });
+    }
+}
+exports.putCustomerFavoritesController = putCustomerFavoritesController;
+// PUT Remove favorite product from customer
+async function putCustomerRemoveFavoriteController(req, res) {
+    const { customerId, favoriteProduct } = req.params;
+    try {
+        const customer = await customer_model_1.Customer.findByIdAndUpdate(customerId, {
+            $pull: { favoriteProducts: favoriteProduct },
+        }, { new: true });
+        return res.status(200).json(customer);
+    }
+    catch (err) {
+        console.log(err);
+        return res.status(500).json({ message: err });
+    }
+}
+exports.putCustomerRemoveFavoriteController = putCustomerRemoveFavoriteController;
 //# sourceMappingURL=customer.controller.js.map

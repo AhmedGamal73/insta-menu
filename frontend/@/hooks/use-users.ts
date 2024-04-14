@@ -1,12 +1,8 @@
-import axios from "axios";
 import { useQuery } from "react-query";
 
 // import { API_URL } from "../config/variables";
 import { User } from "../types/user";
-
-export const API_URL = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_MONGODB_URI,
-});
+import { API_URL } from "@/config/variables";
 
 // GET Users
 export const useUsers = () => {
@@ -55,23 +51,6 @@ export const useWaitersByShift = (shift: string) => {
     },
   });
 };
-
-// // GET Order By Id
-// export const useGetOrder = (id: string) => {
-//   return useQuery({
-//     queryKey: ["order", id],
-//     queryFn: async () => {
-//       try {
-//         const { data } = await getOrderById(id);
-//         return data;
-//       } catch (err) {
-//         console.log(err);
-//         throw err;
-//       }
-//     },
-//     enabled: !!id,
-//   });
-// };
 
 // POST User
 export const postUser = async (order: User) => {

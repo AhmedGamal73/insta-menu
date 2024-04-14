@@ -25,15 +25,15 @@ export function Sidebar() {
             return (
               <li
                 key={index}
-                className="w-full py-2 px-2 transition hover:bg-white hover:text-primary rounded"
+                className={`w-full py-2 px-2 transition hover:bg-white hover:text-primary rounded ${
+                  active === item.id ? "bg-white text-primary" : "text-primary"
+                }`}
               >
                 {isSidebarMinimized ? (
                   <Link
                     href={item.href}
                     onClick={() => setActive(item.id)}
-                    className={`w-full flex justify-center items-center gap-1 ${
-                      active === item.id ? "bg-white" : ""
-                    }`}
+                    className={`w-full flex justify-center items-center gap-1`}
                   >
                     <Icon
                       className={`${

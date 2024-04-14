@@ -1,6 +1,5 @@
-import axios from "axios";
+import { API_URL } from "@/config/variables";
 import { QueryClient, useQuery } from "react-query";
-import { API_URL } from "./use-restaurant";
 
 export interface Category {
   _id?: string;

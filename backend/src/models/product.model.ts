@@ -28,6 +28,7 @@ export interface IProduct extends Document {
   ingredients?: Iingredients["_id"][];
   rating?: number;
   active?: boolean;
+  featured?: boolean;
   variations?: IVariation;
   variable?: boolean;
   addonCategory?: string;
@@ -36,7 +37,7 @@ export interface IProduct extends Document {
 
 const productSchema = new Schema({
   name: { type: String, required: true },
-  clickId: { type: String, required: false },
+  clickId: { type: String, required: true },
   restaurantId: { type: Schema.Types.ObjectId, ref: "Restaurant" },
   price: { type: Number, required: false, default: null },
   salePrice: { type: Number, required: false, default: null },
@@ -62,6 +63,7 @@ const productSchema = new Schema({
   ],
   rating: { type: Number, default: 0, required: false },
   active: { type: Boolean, default: true, required: true },
+  featured: { type: Boolean, default: false, required: false },
   variations: {
     title: { type: String, required: false },
     options: [
@@ -85,6 +87,10 @@ const productSchema = new Schema({
     },
   },
   addons: [{ type: Schema.Types.ObjectId, required: false }],
+  isOffered: { type: Boolean, default: false },
+  offerItems: { type: String, required: false },
+  offerStart: { type: Date, required: false },
+  offerEnd: { type: Date, required: false },
   createdAt: { type: Date, default: Date.now },
 });
 

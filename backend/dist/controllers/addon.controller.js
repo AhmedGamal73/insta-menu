@@ -25,7 +25,12 @@ async function postAddonController(req, res) {
     }
     addonCategory.total++;
     await addonCategory.save();
-    const newAddon = new addon_model_1.Addon({ name, price, addonCategory: addonCategoryId });
+    const newAddon = new addon_model_1.Addon({
+        name,
+        clickId: "123",
+        price,
+        addonCategory: addonCategoryId,
+    });
     await newAddon.save();
     return res.status(201).json({ addon: newAddon });
 }

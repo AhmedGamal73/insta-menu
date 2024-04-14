@@ -9,6 +9,7 @@ import Table from "@/components/dashboard/tables/Tables";
 import { CreateTable } from "@/components/dashboard/tables/CreateTable";
 import { CreateSection } from "@/components/dashboard/sections/CreateSection";
 import Sections from "@/components/dashboard/restaurant/Sections";
+import { Card } from "@/components/ui/card";
 
 function TablesPage() {
   const [activeTab, setActiveTab] = useState<number>(0);
@@ -36,7 +37,6 @@ function TablesPage() {
           {tabs[activeTab]?.component === "tables" ? (
             <>
               <CreateTable />
-              <CreateSection />
             </>
           ) : (
             ""

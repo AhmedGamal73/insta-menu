@@ -1,19 +1,15 @@
-import axios from "axios";
+import { API_URL } from "@/config/variables";
 import { useQueries, useQuery } from "react-query";
 
 export interface Section {
   name: string;
 }
 
-const sectionApi = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
-});
-
 export const useSections = () => {
   return useQuery({
     queryKey: ["sections"],
     queryFn: async () => {
-      const { data } = await sectionApi.get("/section");
+      const { data } = await API_URL.get("/section");
       return data;
     },
   });
@@ -21,7 +17,7 @@ export const useSections = () => {
 
 // POST Section
 export const postSection = async (section: Section) => {
-  return await sectionApi.post("/section", section);
+  return await API_URL.post("/section", section);
 };
 
 export default useSections;

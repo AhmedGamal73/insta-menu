@@ -55,7 +55,6 @@ const orderSchema = new Schema({
   feedback: { type: String, required: false },
   promoCode: { type: String, required: false },
   waiterApproval: { type: Boolean, default: false },
-  // otp: { type: Number, required: false },
   orderStatus: {
     type: String,
     required: true,

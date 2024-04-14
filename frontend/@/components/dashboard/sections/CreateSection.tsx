@@ -32,11 +32,10 @@ export function CreateSection() {
   const [isOpen, setIsOpen] = React.useState(false);
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger dir="rtl" asChild>
-        <button>
-          <Plus className="me-2 w-4 h-4" />
-          قسم جديد
-        </button>
+      <DialogTrigger className="flex items-center w-2/12" dir="rtl" asChild>
+        <Button variant="outline">
+          <Plus className="w-4 h-4" />
+        </Button>
       </DialogTrigger>
       <DialogContent dir="rtl" className="sm:max-w-[425px]">
         <DialogHeader>
@@ -64,6 +63,7 @@ const SectionForm = ({ onClose }) => {
   const addSectionMutation = useMutation(postSection, {
     onSuccess() {
       queryClient.invalidateQueries("sections");
+      onClose(true);
       toast({
         title: "تم إنشاء قسم جديد بنجاح",
         dir: "rtl",
@@ -73,7 +73,6 @@ const SectionForm = ({ onClose }) => {
           color: "white",
         },
       });
-      onClose();
     },
     onError(data, error, status) {
       toast({
@@ -93,6 +92,7 @@ const SectionForm = ({ onClose }) => {
 
   const onSubmit = (data: z.infer<typeof FormSchema>) => {
     addSectionMutation.mutate(data as Section);
+    // console.log(data);
   };
 
   return (

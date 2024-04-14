@@ -1,7 +1,7 @@
-import axios from "axios";
+import { API_URL } from "@/config/variables";
 import { useQuery } from "react-query";
 
-interface Restaurant {
+export interface Restaurant {
   _id?: string;
   title: string;
   slug: string;
@@ -9,10 +9,6 @@ interface Restaurant {
   // description: string;
   bgImg: string;
 }
-
-export const API_URL = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
-});
 
 // GET Featured Restaurants
 export const useGetFeaturedRestaurants = () => {

@@ -34,10 +34,10 @@ function LoginDialog({ openDialog, onClose }) {
             الدخول
           </DrawerDescription>
         </DrawerHeader>
-        <CustomerLogin wideButton={true} onSubmitHandler={onClose} />
+        <CustomerLogin wideButton={true} onClose={() => setOpen(false)} />
         <DrawerFooter className="pt-2">
           <DrawerClose asChild>
-            <Button onClick={() => onClose(false)} variant="outline">
+            <Button onClick={() => onClose(true)} variant="outline">
               إلغاء
             </Button>
           </DrawerClose>

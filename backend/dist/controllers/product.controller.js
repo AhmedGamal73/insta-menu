@@ -69,9 +69,10 @@ async function postProductController(req, res) {
         const command = new client_s3_1.PutObjectCommand(params);
         await s3.send(command);
         const imageUrl = `https://${process.env.AWS_BUCKET_NAME}.s3.amazonaws.com/${imgName}`;
-        const imgUrlBackup = "https://via.placeholder.com/400";
+        const imgUrlBackup = "https://erasmusnation-com.ams3.digitaloceanspaces.com/woocommerce-placeholder.png";
         const product = await product_model_1.default.create({
             name: name,
+            clickId: "123",
             restaurantId,
             price: variable ? 0 : price,
             salePrice: variable ? 0 : salePrice,
@@ -82,7 +83,7 @@ async function postProductController(req, res) {
             rating: 0,
             active: true,
             subcategory: subcategoryId,
-            // imgURL: imageUrl,
+            imgURL: imageUrl || imgUrlBackup,
             addonCategory: {
                 id: addonCategory,
                 name: addonCategoryName,
@@ -99,7 +100,7 @@ async function postProductController(req, res) {
     }
 }
 exports.postProductController = postProductController;
-// Get all products
+// Get Products
 async function getProductsController(req, res) {
     try {
         const products = await (0, product_service_1.getProducts)();
@@ -111,6 +112,7 @@ async function getProductsController(req, res) {
     }
 }
 exports.getProductsController = getProductsController;
+// GET Active Products
 async function getActiveProductsController(req, res) {
     try {
         const products = await product_model_1.default.find({ active: true })

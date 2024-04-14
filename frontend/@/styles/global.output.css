@@ -1736,6 +1736,10 @@ video {
 .font-rubikBold {
   font-family: rubikBold, sans-serif;
 }
+.text-3xl {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
 .text-\[0\.8rem\] {
   font-size: 0.8rem;
 }

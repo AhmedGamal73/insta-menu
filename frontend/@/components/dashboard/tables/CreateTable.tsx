@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import useSection from "@/hooks/use-section";
 import { postTable } from "@/hooks/use-table";
+import { CreateSection } from "../sections/CreateSection";
 import {
   Select,
   SelectContent,
@@ -160,33 +161,39 @@ const TableForm = ({ onClose }) => {
           )}
         />
 
-        <FormField
-          control={form.control}
-          name="sectionId"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>حدد القسم</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="اختر القسم" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {sections &&
-                    sections.map((section) => {
-                      return (
-                        <SelectItem key={section._id} value={section._id}>
-                          {section.name}
-                        </SelectItem>
-                      );
-                    })}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <div className="w-full flex gap-2 justify-between items-center">
+          <FormField
+            control={form.control}
+            name="sectionId"
+            render={({ field }) => (
+              <FormItem className="w-10/12">
+                <FormLabel>حدد القسم</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="اختر القسم" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {sections &&
+                      sections.map((section) => {
+                        return (
+                          <SelectItem key={section._id} value={section._id}>
+                            {section.name}
+                          </SelectItem>
+                        );
+                      })}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <CreateSection />
+        </div>
 
         <Button className="mt-4" type="submit">
           إنشاء

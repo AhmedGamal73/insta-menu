@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import LoadingScreen from "@/components/ui/loadingScreen";
 import { useTables } from "@/hooks/use-table";
 import useSections from "@/hooks/use-section";
+import { Card } from "@/components/ui/card";
 
 export function Tables() {
   const { data: tables, isLoading: tablesIsLoading } = useTables();
@@ -21,7 +22,7 @@ export function Tables() {
           <TabsTrigger value="all">الكل</TabsTrigger>
         </TabsList>
         <TabsContent className="w-full flex gap-4" value="all">
-          <div className="w-2/3 flex gap-4">
+          <div className="w-3/4 flex gap-4">
             {tablesIsLoading ? (
               <LoadingScreen />
             ) : tables ? (
@@ -37,26 +38,9 @@ export function Tables() {
               </Alert>
             )}
           </div>
-          <div className="w-1/3 flex gap-4">
-            {sectionsLoading ? (
-              <LoadingScreen />
-            ) : sections ? (
-              <DataTable
-                title="سكشن"
-                columns={sectionColumns}
-                data={sections}
-              />
-            ) : (
-              <Alert dir="rtl">
-                <RocketIcon className="h-4 w-4" />
-                <AlertTitle>حدث خطأ اثناء التحميل</AlertTitle>
-                <AlertDescription>
-                  يرجي العلم انه اثناء جلب البيانات حدث خطأ ما يرجي المراجعة مع
-                  احد المهندسين
-                </AlertDescription>
-              </Alert>
-            )}
-          </div>
+          <Card className="w-1/4 flex justify-center items-center">
+            <h1>الطاولات الأكثر مبيعاً</h1>
+          </Card>
         </TabsContent>
       </Tabs>
     </div>

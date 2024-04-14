@@ -5,7 +5,6 @@ import { DataTable } from "@/components/ui/data-table";
 import { columns } from "../tables/columns";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import LoadingScreen from "@/components/ui/loadingScreen";
-import { useTables } from "@/hooks/use-table";
 import useSections from "@/hooks/use-section";
 
 export function Tables() {
