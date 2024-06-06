@@ -1,9 +1,3 @@
-Sure, here's a comprehensive README file for your fullstack food ordering application:
-
-
----
-
-
 # Fullstack Food Ordering App
 
 
