@@ -15,9 +15,14 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/continuation-local-storage": "^3.2.7",
+    "@types/express": "^5.0.0",
     "concurrently": "^8.2.2"
   },
   "dependencies": {
+    "continuation-local-storage": "^3.2.1",
+    "express": "^4.21.2",
+    "mongoose": "^8.9.3",
     "react-icons": "^5.0.1"
   }
 }
