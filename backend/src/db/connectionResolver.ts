@@ -12,7 +12,7 @@ let nameSpace = createNamespace("unique context");
 /**
  * Get the connection instance for the given tenant's name and set it to the current context.
  */
-const resolveTenant = (req: Request, res: Response, next: NextFunction) => {
+export const resolveTenant = (req: Request, res: Response, next: NextFunction) => {
   const tenant = req.headers.tenant;
 
   if (!tenant) {
@@ -23,20 +23,22 @@ const resolveTenant = (req: Request, res: Response, next: NextFunction) => {
 
   // Run the application in the defined namespace. It will contextualize every underlying function calls.
   nameSpace.run(() => {
-    const tenantDbConnection = getConnectionByTenant(tenant as string || "");
-    console.log(
-      "resolveTenant tenantDbConnection",
-      tenantDbConnection && tenantDbConnection.name
-    );
-    nameSpace.set("connection", tenantDbConnection);
-    next();
+    try {
+      const tenantDbConnection = getConnectionByTenant(tenant as string);
+      console.log("resolveTenant tenantDbConnection", tenantDbConnection && tenantDbConnection.name);
+      nameSpace.set("connection", tenantDbConnection);
+      next();
+    } catch (error) {
+      console.error("Error resolving tenant:", error);
+      next(error); // Pass the error to the next middleware
+    }
   });
 };
 
 /**
  * Get the admin db connection instance and set it to the current context.
  */
-const setAdminDb = (req:Request, res: Response, next: NextFunction) => {
+export const setAdminDb = (req:Request, res: Response, next: NextFunction) => {
   // Run the application in the defined namespace. It will contextualize every underlying function calls.
   nameSpace.run(() => {
     const adminDbConnection = getAdminConnection();
@@ -45,5 +47,3 @@ const setAdminDb = (req:Request, res: Response, next: NextFunction) => {
     next();
   });
 };
-
-module.exports = { resolveTenant, setAdminDb };

@@ -18,7 +18,9 @@ import addressRouter from "./routes/address.route";
 import qrRouter from "./routes/qrcode.route";
 import customerRouter from "./routes/customer.route";
 import restaurantRouter from "./routes/restaurant.route";
-
+import {resolveTenant, setAdminDb} from "./db/connectionResolver"
+import tenantRouter from "./routes/tenant.route";
+import adminRouter from "./routes/tenant.route";
 const { API_PORT } = process.env;
 const port = (process.env.API_PORT as String) || API_PORT;
 
@@ -28,6 +30,14 @@ app.options("*", cors());
 app.use(cors());
 app.use(express.json());
 app.use("/api/uploads", express.static("uploads"));
+
+// db connection middleware
+app.use("/tenant", resolveTenant);
+app.use("/admin", setAdminDb);
+
+
+app.use("/api/tenant", tenantRouter);
+app.use("/api/admin", adminRouter);
 
 app.use("/api/section", sectionRouter);
 app.use("/api/order", orderRouter);

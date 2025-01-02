@@ -1,6 +1,6 @@
 import mongoose, { Connection } from "mongoose";
 mongoose.Promise = global.Promise;
-import { ClinetOption } from "./adminDBConnection.js";
+import { ClinetOption } from "./adminDbConnections";
 const clientOption: ClinetOption = {
   socketTimeoutMS: 30000,
   keepAlive: true,

@@ -1,7 +1,7 @@
-import { getNamespace } from "continuation-local-storage";
-import { initAdminDbConnection } from "./adminDBConnection";
-import { initTenantDbConnection } from "./tenantDbConnection";
-import tenantService from "./service/tenant";
+import { getNamespace, Namespace } from "continuation-local-storage";
+import { initAdminDbConnection } from "./adminDbConnections";
+import { initTenantDbConnection } from "./tenantDbConnections";
+import tenantService from "../services/tenant.service";
 
 export interface Tenant {
   name: string;
@@ -68,8 +68,8 @@ const getAdminConnection = (): any => {
  * information and binds the information to current request context.
  */
 const getConnection = (): any => {
-  const nameSpace = getNamespace("unique context");
-  const conn = nameSpace.get("connection");
+  const nameSpace: Namespace | undefined = getNamespace("unique context");
+  const conn = nameSpace?.get("connection");
 
   if (!conn) {
     throw new Error("Connection is not set for any tenant database");

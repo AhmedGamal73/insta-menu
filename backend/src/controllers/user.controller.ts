@@ -1,7 +1,6 @@
 import express, { Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-const dotenv = require("dotenv");
 
 import User from "../models/user.model";
 import Section from "../models/section.model";
