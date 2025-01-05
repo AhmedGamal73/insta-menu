@@ -1,10 +1,17 @@
+import { PhoneNumber } from "./../../node_modules/twilio/lib/interfaces.d";
 import { Request, Response } from "express";
 
 import { getConnection } from "../db/connectionManager";
-import {createUser, getAllUsers}  from "../services/user.service";
+import { createUser, getAllUsers } from "../services/user.service";
 
 const signUp = async (req: Request, res: Response) => {
   try {
+    const { phoneNumber, password, email, name } = req.body;
+    console.log(req.body);
+    if (!phoneNumber || !password || !email || !name){
+
+      return res.status(400).json({ success: false, message: "All fields are required" });
+    }
     const dbConnection = getConnection();
     console.log("signUp dbConnection", dbConnection.name);
     const user = await createUser(dbConnection, req.body);

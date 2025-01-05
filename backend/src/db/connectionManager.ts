@@ -1,7 +1,7 @@
 import { getNamespace, Namespace } from "continuation-local-storage";
 import { initAdminDbConnection } from "./adminDbConnections";
 import { initTenantDbConnection } from "./tenantDbConnections";
-import tenantService from "../services/tenant.service";
+import {getAllTenants} from "../services/tenant.service";
 
 export interface Tenant {
   name: string;
@@ -20,10 +20,11 @@ let adminDbConnection: any;
 const connectAllDb = async (): Promise<void> => {
   let tenants: Tenant[];
   const ADMIN_DB_URI = `${baseUri}/${adminDbName}`;
+  console.log("make sure uri", ADMIN_DB_URI)
   adminDbConnection = initAdminDbConnection(ADMIN_DB_URI);
-  console.log("connectAllDb adminDbConnection", adminDbConnection.name);
+  console.log("connectAllDb adminDbConnection", adminDbConnection.readyState);
   try {
-    tenants = await tenantService.getAllTenants(adminDbConnection);
+    tenants = await getAllTenants(adminDbConnection);
     console.log("connectAllDb tenants", tenants);
   } catch (e) {
     console.log("connectAllDb error", e);
@@ -69,9 +70,12 @@ const getAdminConnection = (): any => {
  */
 const getConnection = (): any => {
   const nameSpace: Namespace | undefined = getNamespace("unique context");
+  console.log(nameSpace, "from getConnection at connection manager")
   const conn = nameSpace?.get("connection");
 
   if (!conn) {
+    console.log(nameSpace, "from getConnection at connection manager")
+
     throw new Error("Connection is not set for any tenant database");
   }
 

@@ -32,7 +32,7 @@ const addonCategorySchema = new mongoose_1.Schema({
 const addonSchema = new mongoose_1.Schema({
     name: { type: String, required: true },
     price: { type: Number, required: true },
-    clickId: { type: String, required: false },
+    clickId: { type: String, required: true },
     addonCategory: { type: mongoose_1.Schema.Types.ObjectId, ref: "AddonCategory" },
 });
 const Addon = mongoose_1.default.model("Addon", addonSchema);

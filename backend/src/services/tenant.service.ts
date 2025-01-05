@@ -1,9 +1,12 @@
 import { Connection } from "mongoose";
 
-const { BASE_DB_URI } = require("../../config/env.json");
+// import Tenant from "../models/tenant.model";
+const { BASE_DB_URI } = process.env
+console.log(BASE_DB_URI, "is it ok")
 
 const getAllTenants = async (adminDbConnection: Connection): Promise<any> => {
   try {
+    console.log("admin connection is:", adminDbConnection)
     const Tenant = await adminDbConnection.model("Tenant");
     const tenants = await Tenant.find({});
     console.log("getAllTenants tenants", tenants);
@@ -15,6 +18,7 @@ const getAllTenants = async (adminDbConnection: Connection): Promise<any> => {
 };
 
 const createTenant = async (adminDbConnection: Connection, body: any): Promise<any> => {
+  console.log("admin db Connection from tenant service", adminDbConnection);
   try {
     const Tenant = await adminDbConnection.model("Tenant");
     const name = body.name;

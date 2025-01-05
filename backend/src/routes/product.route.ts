@@ -2,7 +2,7 @@ import express from "express";
 import multer from "multer";
 
 import {
-  postProductController,
+  // postProductController,
   getActiveProductsController,
   getInactiveProductsController,
   getProductByIdController,
@@ -22,7 +22,7 @@ const upload = multer({ storage: storage });
 const productRouter = express.Router();
 
 // POST
-productRouter.post("/", upload.single("img"), postProductController); // Product
+// productRouter.post("/", upload.single("img"), postProductController); // Product
 
 // GET
 productRouter.get("/", getProductsController); // Products

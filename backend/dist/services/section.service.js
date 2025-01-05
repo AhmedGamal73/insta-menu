@@ -5,14 +5,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getSections = exports.getSectionByName = exports.createSection = void 0;
 const section_model_1 = __importDefault(require("../models/section.model"));
-async function createSection(sectionName) {
-    if (sectionName ||
-        typeof sectionName !== "string" ||
-        sectionName.trim() === "") {
-        throw new Error("Invalidation Error: Sectoin ID should be string");
-    }
+async function createSection(name) {
     // Section name to lower case
-    const lowerCaseName = sectionName.toLowerCase();
+    const lowerCaseName = name.toLowerCase();
     try {
         // Find Section
         const isSectionExist = await section_model_1.default.findOne({ lowerCaseName });
@@ -20,7 +15,7 @@ async function createSection(sectionName) {
             throw new Error("Section Already Exist");
         }
         // Create new section
-        const newSection = await section_model_1.default.create(lowerCaseName);
+        const newSection = await section_model_1.default.create({ name: lowerCaseName });
         return newSection;
     }
     catch (err) {
@@ -30,12 +25,6 @@ async function createSection(sectionName) {
 exports.createSection = createSection;
 // Get section by name
 async function getSectionByName(sectionName) {
-    // Validat input section name
-    if (sectionName ||
-        typeof sectionName !== "string" ||
-        sectionName.trim() === "") {
-        throw new Error("Invalidation Error: Sectoin ID should be string");
-    }
     // Find section
     const section = await section_model_1.default.findOne({ name: sectionName.toLowerCase() });
     if (section) {

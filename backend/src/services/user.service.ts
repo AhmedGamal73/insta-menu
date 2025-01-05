@@ -19,6 +19,7 @@ const createUser = async (
   body: { phoneNumber: string; password: string; email: string; name: string }
 ) => {
   try {
+    console.log('tenantConnection @ user Service:', tenantDbConnection)
     const User = await tenantDbConnection.model("User");
     const phoneNumber = body.phoneNumber;
     const password = body.password;

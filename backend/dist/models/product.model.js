@@ -26,7 +26,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
 const productSchema = new mongoose_1.Schema({
     name: { type: String, required: true },
-    clickId: { type: String, required: false },
+    clickId: { type: String, required: true },
     restaurantId: { type: mongoose_1.Schema.Types.ObjectId, ref: "Restaurant" },
     price: { type: Number, required: false, default: null },
     salePrice: { type: Number, required: false, default: null },
@@ -52,6 +52,7 @@ const productSchema = new mongoose_1.Schema({
     ],
     rating: { type: Number, default: 0, required: false },
     active: { type: Boolean, default: true, required: true },
+    featured: { type: Boolean, default: false, required: false },
     variations: {
         title: { type: String, required: false },
         options: [
@@ -75,6 +76,10 @@ const productSchema = new mongoose_1.Schema({
         },
     },
     addons: [{ type: mongoose_1.Schema.Types.ObjectId, required: false }],
+    isOffered: { type: Boolean, default: false },
+    offerItems: { type: String, required: false },
+    offerStart: { type: Date, required: false },
+    offerEnd: { type: Date, required: false },
     createdAt: { type: Date, default: Date.now },
 });
 exports.default = mongoose_1.default.model("Product", productSchema);

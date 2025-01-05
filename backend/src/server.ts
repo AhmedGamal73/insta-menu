@@ -21,6 +21,7 @@ import restaurantRouter from "./routes/restaurant.route";
 import {resolveTenant, setAdminDb} from "./db/connectionResolver"
 import tenantRouter from "./routes/tenant.route";
 import adminRouter from "./routes/tenant.route";
+import { connectAllDb } from "./db/connectionManager";
 const { API_PORT } = process.env;
 const port = (process.env.API_PORT as String) || API_PORT;
 
@@ -52,7 +53,8 @@ app.use("/api/address", addressRouter);
 app.use("/api/cart", cartRouter);
 app.use("/api/restaurant", restaurantRouter);
 
-mongoose.connect(MONGO_URL);
+// mongoose.connect(MONGO_URL);
+connectAllDb()
 const server: Server = http.createServer(app);
 server.listen(port, () => {
   console.log(`Server started at http://localhost:${port}`);

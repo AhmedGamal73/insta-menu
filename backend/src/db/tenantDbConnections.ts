@@ -3,12 +3,12 @@ mongoose.Promise = global.Promise;
 import { ClinetOption } from "./adminDbConnections";
 const clientOption: ClinetOption = {
   socketTimeoutMS: 30000,
-  keepAlive: true,
-  poolSize: 1,
+  // keepAlive: true,
+  // poolSize: 1,
   useNewUrlParser: true,
   useUnifiedTopology: true,
-  useFindAndModify: false,
-  useCreateIndex: true,
+  // useFindAndModify: false,
+  // useCreateIndex: true,
 };
 
 // CONNECTION EVENTS

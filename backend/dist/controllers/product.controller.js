@@ -3,103 +3,110 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getProductsByCategoryIdAndRestaurantIdController = exports.getProductsByCategoryIdController = exports.getProductsByRestaurantSlugController = exports.updateToActiveController = exports.updateProductController = exports.deleteProductController = exports.getProductByIdController = exports.getInactiveProductsController = exports.getOfferProductsController = exports.getActiveProductsController = exports.getProductsController = exports.postProductController = void 0;
-const sharp_1 = __importDefault(require("sharp"));
-const client_s3_1 = require("@aws-sdk/client-s3");
-const s3_1 = __importDefault(require("../config/s3"));
+exports.getProductsByCategoryIdAndRestaurantIdController = exports.getProductsByCategoryIdController = exports.getProductsByRestaurantSlugController = exports.updateToActiveController = exports.updateProductController = exports.deleteProductController = exports.getProductByIdController = exports.getInactiveProductsController = exports.getOfferProductsController = exports.getActiveProductsController = exports.getProductsController = void 0;
 const product_service_1 = require("../services/product.service");
 const product_model_1 = __importDefault(require("../models/product.model"));
 const category_model_1 = __importDefault(require("../models/category.model"));
-const addon_model_1 = require("../models/addon.model");
 const mongoose_1 = __importDefault(require("mongoose"));
 const restaurant_model_1 = __importDefault(require("../models/restaurant.model"));
 // Create Product
-async function postProductController(req, res) {
-    try {
-        const { name, description, calories, price, salePrice, categoryId, subcategoryId, restaurantId, addonCategory, addons, variations, } = req.body;
-        let parsedVariations;
-        let variable = false;
-        if (variations !== "undefined") {
-            parsedVariations = JSON.parse(variations);
-            variable = true;
-        }
-        // Get AddonCategory name
-        let addonCategoryName = "";
-        const addonCategoryExist = await addon_model_1.AddonCategory.findById(addonCategory);
-        if (addonCategoryExist) {
-            addonCategoryName = addonCategoryExist.name;
-        }
-        // Validate Category
-        const category = await category_model_1.default.findById(categoryId);
-        if (!category) {
-            return res.status(400).send("Category not found");
-        }
-        category.total++;
-        await category.save();
-        // Add Category to Restaurant
-        const restaurant = await restaurant_model_1.default.findById(restaurantId);
-        if (!restaurant) {
-            return res.status(400).send("Restaurant not found");
-        }
-        if (!restaurant.categories.includes(categoryId)) {
-            restaurant.categories.push(categoryId);
-            return await restaurant.save();
-        }
-        // // validate img
-        if (!req.file) {
-            return res.status(400).send("Image is required");
-        }
-        // // resize image
-        const resizedImage = await (0, sharp_1.default)(req.file?.buffer)
-            .resize({ width: 800, height: 800, fit: "cover" })
-            .png({ quality: 80 })
-            .toBuffer();
-        // encrepted key
-        const timestamp = Date.now();
-        const randomString = Math.random().toString(36).substring(2, 15);
-        const encreptedKey = timestamp + randomString;
-        const imgName = encreptedKey + req.file?.originalname;
-        const s3 = new client_s3_1.S3Client(s3_1.default);
-        const params = {
-            Bucket: process.env.AWS_BUCKET_NAME || "",
-            Key: imgName,
-            Body: resizedImage,
-            ContentType: req.file?.mimetype,
-        };
-        const command = new client_s3_1.PutObjectCommand(params);
-        await s3.send(command);
-        const imageUrl = `https://${process.env.AWS_BUCKET_NAME}.s3.amazonaws.com/${imgName}`;
-        const imgUrlBackup = "https://erasmusnation-com.ams3.digitaloceanspaces.com/woocommerce-placeholder.png";
-        const product = await product_model_1.default.create({
-            name: name,
-            clickId: "123",
-            restaurantId,
-            price: variable ? 0 : price,
-            salePrice: variable ? 0 : salePrice,
-            description: description,
-            category: categoryId,
-            subcategoryId: subcategoryId,
-            calories: calories,
-            rating: 0,
-            active: true,
-            subcategory: subcategoryId,
-            imgURL: imageUrl || imgUrlBackup,
-            addonCategory: {
-                id: addonCategory,
-                name: addonCategoryName,
-            },
-            addons,
-            variable: variable,
-            variations: parsedVariations,
-        });
-        return res.status(200).json(product);
-    }
-    catch (err) {
-        console.log(err);
-        return res.status(500).send("Server error");
-    }
-}
-exports.postProductController = postProductController;
+// export async function postProductController(req: Request, res: Response) {
+//   try {
+//     const {
+//       name,
+//       description,
+//       calories,
+//       price,
+//       salePrice,
+//       categoryId,
+//       subcategoryId,
+//       restaurantId,
+//       addonCategory,
+//       addons,
+//       variations,
+//     } = req.body;
+//     let parsedVariations;
+//     let variable = false;
+//     if (variations !== "undefined") {
+//       parsedVariations = JSON.parse(variations);
+//       variable = true;
+//     }
+//     // Get AddonCategory name
+//     let addonCategoryName = "";
+//     const addonCategoryExist = await AddonCategory.findById(addonCategory);
+//     if (addonCategoryExist) {
+//       addonCategoryName = addonCategoryExist.name;
+//     }
+//     // Validate Category
+//     const category = await Category.findById(categoryId);
+//     if (!category) {
+//       return res.status(400).send("Category not found");
+//     }
+//     category.total++;
+//     await category.save();
+//     // Add Category to Restaurant
+//     const restaurant = await Restaurant.findById(restaurantId);
+//     if (!restaurant) {
+//       return res.status(400).send("Restaurant not found");
+//     }
+//     if (!restaurant.categories.includes(categoryId)) {
+//       restaurant.categories.push(categoryId);
+//       return await restaurant.save();
+//     }
+//     // // validate img
+//     if (!req.file) {
+//       return res.status(400).send("Image is required");
+//     }
+//     // // resize image
+//     const resizedImage = await sharp(req.file?.buffer)
+//       .resize({ width: 800, height: 800, fit: "cover" })
+//       .png({ quality: 80 })
+//       .toBuffer();
+//     // encrepted key
+//     const timestamp = Date.now();
+//     const randomString = Math.random().toString(36).substring(2, 15);
+//     const encreptedKey = timestamp + randomString;
+//     const imgName = encreptedKey + req.file?.originalname;
+//     const s3 = new S3Client(config);
+//     const params = {
+//       Bucket: process.env.AWS_BUCKET_NAME || "",
+//       Key: imgName,
+//       Body: resizedImage,
+//       ContentType: req.file?.mimetype,
+//     };
+//     const command = new PutObjectCommand(params);
+//     await s3.send(command);
+//     const imageUrl = `https://${process.env.AWS_BUCKET_NAME}.s3.amazonaws.com/${imgName}`;
+//     const imgUrlBackup =
+//       "https://erasmusnation-com.ams3.digitaloceanspaces.com/woocommerce-placeholder.png";
+//     const product = await Product.create({
+//       name: name,
+//       clickId: "123",
+//       restaurantId,
+//       price: variable ? 0 : price,
+//       salePrice: variable ? 0 : salePrice,
+//       description: description,
+//       category: categoryId,
+//       subcategoryId: subcategoryId,
+//       calories: calories,
+//       rating: 0,
+//       active: true,
+//       subcategory: subcategoryId,
+//       imgURL: imageUrl || imgUrlBackup,
+//       addonCategory: {
+//         id: addonCategory,
+//         name: addonCategoryName,
+//       },
+//       addons,
+//       variable: variable,
+//       variations: parsedVariations,
+//     });
+//     return res.status(200).json(product);
+//   } catch (err) {
+//     console.log(err);
+//     return res.status(500).send("Server error");
+//   }
+// }
 // Get Products
 async function getProductsController(req, res) {
     try {

@@ -11,7 +11,7 @@ const storage = multer_1.default.memoryStorage();
 const upload = (0, multer_1.default)({ storage: storage });
 const productRouter = express_1.default.Router();
 // POST
-productRouter.post("/", upload.single("img"), product_controller_1.postProductController); // Product
+// productRouter.post("/", upload.single("img"), postProductController); // Product
 // GET
 productRouter.get("/", product_controller_1.getProductsController); // Products
 productRouter.get("/offers", product_controller_1.getOfferProductsController); // Offer Products

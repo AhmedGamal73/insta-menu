@@ -5,8 +5,8 @@ import {getAllTenants, createTenant}  from "../services/tenant.service";
 
 export const create = async (req: Request, res: Response) => {
   try {
-    const dbConnection = getConnection();
-    console.log("create dbConnection", dbConnection.name);
+    const dbConnection = getConnection()
+    console.log("create dbConnection", dbConnection);
     const tenant = await createTenant(dbConnection, req.body);
     res.status(200).json({ success: true, tenant });
   } catch (err: any) {
