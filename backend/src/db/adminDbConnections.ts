@@ -7,16 +7,16 @@ export interface ClinetOption {
   socketTimeoutMS: number;
   // keepAlive: boolean;
   // poolSize: number;
-  useNewUrlParser: boolean;
-  useUnifiedTopology: boolean;
+  // useNewUrlParser: boolean;
+  // useUnifiedTopology: boolean;
 }
 
 const clientOption: ClinetOption = {
   socketTimeoutMS: 30000,
   // keepAlive: true,
   // poolSize: 5,
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
+  // useNewUrlParser: true,
+  // useUnifiedTopology: true,
 };
 
 // CONNECTION EVENTS

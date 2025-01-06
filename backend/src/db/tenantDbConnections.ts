@@ -5,8 +5,8 @@ const clientOption: ClinetOption = {
   socketTimeoutMS: 30000,
   // keepAlive: true,
   // poolSize: 1,
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
+  // useNewUrlParser: true,
+  // useUnifiedTopology: true,
   // useFindAndModify: false,
   // useCreateIndex: true,
 };
@@ -59,7 +59,7 @@ const initTenantDbConnection = (DB_URL: string): Connection | undefined => {
     });
 
     // require all schemas !?
-    require("../dbModel/user/schema");
+    // import User from "../models/user.model";
     return db;
   } catch (error) {
     console.log("initTenantDbConnection error", error);

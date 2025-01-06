@@ -1,14 +1,14 @@
 import mongoose, { Schema, Document } from "mongoose";
 
 export interface ITenant extends Document {
-  BusinessName: string;
+  businessName: string;
   email: string;
   phone: string;
   slug: string;
 }
 
 const tenantSchema = new Schema({
-  BusinessName: { type: String, required: true },
+  businessName: { type: String, required: true },
   email: { type: String, required: true },
   password: { type: String, required: true },
   phone: { type: String, required: true },

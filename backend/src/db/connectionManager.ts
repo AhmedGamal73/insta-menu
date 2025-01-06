@@ -4,8 +4,8 @@ import { initTenantDbConnection } from "./tenantDbConnections";
 import {getAllTenants} from "../services/tenant.service";
 
 export interface Tenant {
-  name: string;
-  dbURI: string;
+  businessName: string;
+  slug: string;
 }
 const { BASE_DB_URI, ADMIN_DB_NAME } = process.env;
 const baseUri = (process.env.BASE_DB_URI as String) || BASE_DB_URI;
@@ -33,8 +33,9 @@ const connectAllDb = async (): Promise<void> => {
 
   connectionMap = tenants
     .map(tenant => {
+      console.log(tenant)
       return {
-        [tenant.name]: initTenantDbConnection(tenant.dbURI)
+        [tenant.businessName]: initTenantDbConnection(`${process.env.BASE_DB_URI}/mt_${tenant.slug}`)
       };
     })
     .reduce((prev, next) => {
@@ -70,11 +71,12 @@ const getAdminConnection = (): any => {
  */
 const getConnection = (): any => {
   const nameSpace: Namespace | undefined = getNamespace("unique context");
-  console.log(nameSpace, "from getConnection at connection manager")
-  const conn = nameSpace?.get("connection");
+  console.log(nameSpace?.get("connection"), "from getConnection at connection manager")
+  const ADMIN_DB_URI = `${baseUri}/${adminDbName}`;
+  const conn = nameSpace?.get("connection") || initAdminDbConnection(ADMIN_DB_URI);
 
   if (!conn) {
-    console.log(nameSpace, "from getConnection at connection manager")
+    console.log(nameSpace, "from getConnection at connection manager no conn")
 
     throw new Error("Connection is not set for any tenant database");
   }

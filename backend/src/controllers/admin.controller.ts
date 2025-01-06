@@ -4,6 +4,12 @@ import {getConnection} from"../db/connectionManager";
 import {getAllTenants, createTenant}  from "../services/tenant.service";
 
 export const create = async (req: Request, res: Response) => {
+  const { phone, password, email, businessName } = req.body;
+    console.log(req.body);
+    if (!phone || !password || !email || !businessName){
+
+      return res.status(400).json({ success: false, message: "All fields are required" });
+    }
   try {
     const dbConnection = getConnection()
     console.log("create dbConnection", dbConnection);

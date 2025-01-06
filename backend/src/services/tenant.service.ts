@@ -1,4 +1,4 @@
-import { Connection } from "mongoose";
+import { Connection, Mongoose } from "mongoose";
 
 // import Tenant from "../models/tenant.model";
 const { BASE_DB_URI } = process.env
@@ -6,8 +6,9 @@ console.log(BASE_DB_URI, "is it ok")
 
 const getAllTenants = async (adminDbConnection: Connection): Promise<any> => {
   try {
-    console.log("admin connection is:", adminDbConnection)
+    // console.log("admin connection is:", adminDbConnection)
     const Tenant = await adminDbConnection.model("Tenant");
+    console.log("tenant", Tenant)
     const tenants = await Tenant.find({});
     console.log("getAllTenants tenants", tenants);
     return tenants;
@@ -17,20 +18,33 @@ const getAllTenants = async (adminDbConnection: Connection): Promise<any> => {
   }
 };
 
+const getOneTenant = async (adminDbConnection: Connection, id: string): Promise<any> => {
+  try {
+    // console.log("admin connection is:", adminDbConnection)
+    const Tenant = await adminDbConnection.model("Tenant");
+    console.log("tenant", Tenant)
+    const tenant = await Tenant.findById(id);
+    console.log("getoneTenant", tenant);
+    return tenant;
+  } catch (error) {
+    console.log("getoneTenant error", error);
+    throw error;
+  }
+};
+
 const createTenant = async (adminDbConnection: Connection, body: any): Promise<any> => {
   console.log("admin db Connection from tenant service", adminDbConnection);
   try {
     const Tenant = await adminDbConnection.model("Tenant");
-    const name = body.name;
+    const slug = body.slug;
     const tenantPresent = await Tenant.findOne({
-      name
+      slug
     });
     if (tenantPresent) {
       throw new Error("Tenant Already Present");
     }
     const newTenant = await new Tenant({
-      name,
-      dbURI: `${BASE_DB_URI}/mt_${name}`
+      ...body,
     }).save();
     return newTenant;
   } catch (error) {
@@ -39,4 +53,4 @@ const createTenant = async (adminDbConnection: Connection, body: any): Promise<a
   }
 };
 
-export { getAllTenants, createTenant };
+export { getAllTenants, createTenant, getOneTenant };
