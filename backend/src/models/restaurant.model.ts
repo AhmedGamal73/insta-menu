@@ -1,27 +1,22 @@
-const mongoose = require("mongoose");
+import mongoose, { Document } from "mongoose"; // Import Document from mongoose
 
 interface IRestaurant extends Document {
   title: string;
   slug: string;
   bgImg: string;
-  // logoURL: string;
   categories: string[];
   tags: string[];
-  // qrcode: string;
   orders: string[];
   products: string[];
   openingHours: string;
   closingHours: string;
 }
 
-const RestaurantSchema = new mongoose.Schema({
+export const RestaurantSchema = new mongoose.Schema({
   title: { type: String, required: true },
   slug: { type: String, required: true },
-  // subtitle: { type: String, required: false },
   tags: [{ type: String, required: false }],
   bgImg: { type: String, required: false },
-  // logoURL: { type: String, required: false },
-  // qrcode: { type: String, required: false },
   orders: [{ type: mongoose.Schema.Types.ObjectId, ref: "Order" }],
   products: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
   categories: [
@@ -31,6 +26,7 @@ const RestaurantSchema = new mongoose.Schema({
   closingHours: { type: String, required: false },
 });
 
-const Restaurant = mongoose.model("Restaurant", RestaurantSchema);
+// Register the model dynamically in the tenant's context
+const Restaurant = mongoose.model<IRestaurant>("Restaurant", RestaurantSchema);
 
 export default Restaurant;

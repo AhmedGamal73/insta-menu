@@ -1,16 +1,14 @@
 import { Connection, Mongoose } from "mongoose";
 
-// import Tenant from "../models/tenant.model";
+import Tenant from "../models/tenant.model";
 const { BASE_DB_URI } = process.env
-console.log(BASE_DB_URI, "is it ok")
 
 const getAllTenants = async (adminDbConnection: Connection): Promise<any> => {
   try {
     // console.log("admin connection is:", adminDbConnection)
     const Tenant = await adminDbConnection.model("Tenant");
-    console.log("tenant", Tenant)
     const tenants = await Tenant.find({});
-    console.log("getAllTenants tenants", tenants);
+    console.log("getAllTenants tenants ok");
     return tenants;
   } catch (error) {
     console.log("getAllTenants error", error);
@@ -22,9 +20,7 @@ const getOneTenant = async (adminDbConnection: Connection, id: string): Promise<
   try {
     // console.log("admin connection is:", adminDbConnection)
     const Tenant = await adminDbConnection.model("Tenant");
-    console.log("tenant", Tenant)
     const tenant = await Tenant.findById(id);
-    console.log("getoneTenant", tenant);
     return tenant;
   } catch (error) {
     console.log("getoneTenant error", error);

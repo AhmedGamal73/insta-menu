@@ -18,7 +18,7 @@ import addressRouter from "./routes/address.route";
 import qrRouter from "./routes/qrcode.route";
 import customerRouter from "./routes/customer.route";
 import restaurantRouter from "./routes/restaurant.route";
-import {resolveTenant, setAdminDb} from "./db/connectionResolver"
+import {resolveTenant, setAdminDb} from "./middleware/connectionResolver"
 import tenantRouter from "./routes/tenant.route";
 import adminRouter from "./routes/tenant.route";
 import { connectAllDb } from "./db/connectionManager";
@@ -51,7 +51,7 @@ app.use("/api/customer", customerRouter);
 app.use("/api/qr", qrRouter);
 app.use("/api/address", addressRouter);
 app.use("/api/cart", cartRouter);
-app.use("/api/restaurant", restaurantRouter);
+app.use("/tenant/restaurant", restaurantRouter);
 
 // mongoose.connect(MONGO_URL);
 connectAllDb()

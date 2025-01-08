@@ -5,6 +5,7 @@ export interface ITenant extends Document {
   email: string;
   phone: string;
   slug: string;
+  password: string
 }
 
 const tenantSchema = new Schema({

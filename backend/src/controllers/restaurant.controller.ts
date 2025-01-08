@@ -1,8 +1,10 @@
+import { create } from "./admin.controller";
 import { Request, Response } from "express";
 import multer from "multer";
 const env = require("dotenv").config();
+import { getConnection } from "../db/connectionManager"; // Adjust import as necessary
 
-import Restaurant from "../models/restaurant.model";
+import { RestaurantSchema } from "../models/restaurant.model";
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -15,9 +17,18 @@ const storage = multer.diskStorage({
 export const upload = multer({ storage });
 
 // POST Restaurant
+
 export async function postRestaurantController(req: Request, res: Response) {
   try {
     const { title, slug, tags } = req.body;
+
+    const tenantDbConnection = getConnection();
+    console.log(tenantDbConnection.readyState, "thanks");
+
+    const Restaurant = await tenantDbConnection.model(
+      "Restaurant",
+      RestaurantSchema
+    ); // Use the tenant's connection
 
     let bgImg = "";
     if (req.file !== undefined) {
@@ -40,13 +51,15 @@ export async function postRestaurantController(req: Request, res: Response) {
     const tagsArr = tags.split("،");
     const imgURL = process.env.API_BASE_URL + bgImg;
 
-    const restaurant = new Restaurant({
+    // Create a new restaurant instance
+    const restaurant = await new Restaurant({
       title,
       slug,
       tags: tagsArr,
       bgImg: imgURL.replace(/\\/g, "/"),
-    });
-    await restaurant.save();
+    }).save();
+    // Save the restaurant to the tenant's database
+    // Get the current tenant's connection
 
     return res.status(201).json(restaurant);
   } catch (err) {
@@ -58,6 +71,9 @@ export async function postRestaurantController(req: Request, res: Response) {
 // GET Restaurants
 export async function getRestaurantsController(req: Request, res: Response) {
   try {
+    const tenantDbConnection = getConnection(); // Get the current tenant's connection
+    const Restaurant = tenantDbConnection.model("Restaurant", RestaurantSchema); // Register the model dynamically
+
     const items = await Restaurant.find().sort({ createdAt: -1 });
     return res.status(200).json(items);
   } catch (err) {
@@ -73,6 +89,9 @@ export async function getFeaturedRestaurantsController(
 ) {
   let restaurants = [];
   try {
+    const tenantDbConnection = getConnection(); // Get the current tenant's connection
+    const Restaurant = tenantDbConnection.model("Restaurant", RestaurantSchema); // Register the model dynamically
+
     const featuredRestaurants = await Restaurant.find({ featured: true }).sort({
       createdAt: -1,
     });
@@ -93,6 +112,9 @@ export async function getFeaturedRestaurantsController(
 export async function getRestaurantController(req: Request, res: Response) {
   try {
     const { id } = req.params;
+    const tenantDbConnection = getConnection(); // Get the current tenant's connection
+    const Restaurant = tenantDbConnection.model("Restaurant", RestaurantSchema); // Register the model dynamically
+
     const restaurant = await Restaurant.findById(id).populate("categories");
     return res.status(200).json(restaurant);
   } catch (err) {
@@ -108,6 +130,9 @@ export async function getRestaurantBySlugController(
 ) {
   try {
     const { slug } = req.params;
+    const tenantDbConnection = getConnection(); // Get the current tenant's connection
+    const Restaurant = tenantDbConnection.model("Restaurant", RestaurantSchema); // Register the model dynamically
+
     const restaurant = await Restaurant.findOne({ slug });
     return res.status(200).json(restaurant);
   } catch (err) {
@@ -123,13 +148,16 @@ export async function getRestaurantCategoriesController(
 ) {
   try {
     const { slug } = req.params;
+    const tenantDbConnection = getConnection(); // Get the current tenant's connection
+    const Restaurant = tenantDbConnection.model("Restaurant", RestaurantSchema); // Register the model dynamically
+
     const restaurant = await Restaurant.findOne({ slug }).populate({
       path: "categories",
       select: "_id name",
     });
     return res.status(200).json(restaurant.categories);
-  } catch (err) {
+  } catch (err: any) {
     console.log(err);
-    return res.status(500).json({ error: "An error occurred" });
+    return res.status(500).json({ error: err.message });
   }
 }

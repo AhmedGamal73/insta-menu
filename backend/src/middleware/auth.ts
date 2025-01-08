@@ -2,42 +2,60 @@ import  jwt  from 'jsonwebtoken';
 import User from "../models/user.model";
 import Tenant from '../models/tenant.model';
 import { NextFunction, Request, Response } from 'express';
-const isAuthenticated =  async (req: Request, res: Response, next: NextFunction) => {
+interface IUser {
+  _id: string;
+  slug?: string;
+}
+
+declare global {
+  namespace Express {
+    interface Request {
+      user?: IUser; // Optional user property
+      tenant?: IUser; // Optional tenant property
+    }
+  }
+}
+const isAuthenticated = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    let token: string | undefined = req.headers.authorization;
-    
+    const token: string | undefined = req.headers.authorization?.split(' ')[1];
+
     if (!token) {
       return res.status(401).json({ error: "Token is required" });
     }
+
+    const secretKey: jwt.Secret = process.env.TOKEN_SECRET_KEY as jwt.Secret;
+    if (!secretKey) {
+      return res.status(500).json({ error: "Internal server error" });
+    }
+
     let payload;
     try {
-      payload = jwt.verify(`${token}`, process.env.TOKEN_SECRET_KEY);
+      payload = jwt.verify(token, secretKey);
     } catch (err) {
+      console.error(err);
       return res.status(401).json({ error: "Invalid or expired token" });
     }
 
-    let savedToken = await Admin.findOne({ token });
-    !savedToken && (savedToken = await User.findOne({ token }));
-    
-    if (!savedToken) {
-      return res.status(401).json({ error: "Token not found in database" });
-    }
+    let user:IUser | null = await User.findById(payload.id, {_id: 1});
+    let tenant = null;
 
-    let user = await Admin.findById(payload.userId || payload.id);
-    !user && (user = await User.findById(payload.id || payload.userId));
-    
     if (!user) {
-      return res.status(404).json({ error: "User not found" });
+      tenant = await Tenant.findById(payload.id, {slug: 1});
     }
 
-    req.user = {
-      _id: user._id,
-      role: user.role, 
-      permissions: user.permissions
-    };
-    
+    if (!user && !tenant) {
+      return res.status(404).json({ error: "User or Tenant not found" });
+    }
+
+    if (user) {
+      req.user = user; // Attach user info to req.user
+    } else if (tenant) {
+      req.tenant = tenant; // Attach tenant info to req.tenant
+    }
+
     next();
   } catch (error) {
+    console.error(error);
     return res.status(500).json({ error: "Authentication error" });
   }
 };

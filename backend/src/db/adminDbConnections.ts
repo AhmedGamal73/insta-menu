@@ -46,7 +46,7 @@ process.on("SIGINT", () => {
 
 const initAdminDbConnection = (DB_URL: string): Connection | undefined => {
   try {
-    console.log("the uri at inti admin connect", DB_URL)
+    // console.log("the uri at inti admin connect", DB_URL)
     const db: Connection = mongoose.createConnection(DB_URL, clientOption);
     db.model("Tenant", Tenant.schema);
     db.on("error", console.error.bind(console, "initAdminDbConnection MongoDB Connection Error>> : "));
