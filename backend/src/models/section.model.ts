@@ -12,9 +12,14 @@ export interface ISection extends Document {
 }
 
 const sectionSchema = new Schema({
-  name: { type: String, required: true },
+  name: { type: String, required: true, unique: true }, // Ensure name is unique
   waiters: [{ type: Schema.Types.ObjectId, ref: "Waiter" }],
   tables: [{ type: Schema.Types.ObjectId, ref: "Table" }],
 });
 
-export default mongoose.model<ISection>("Section", sectionSchema);
+// Function to get the Section model for the current tenant
+const getSectionModel = (): mongoose.Model<ISection> => {
+  return mongoose.model<ISection>("Section", sectionSchema);
+};
+
+export { getSectionModel, sectionSchema };

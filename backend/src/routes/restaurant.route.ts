@@ -7,11 +7,12 @@ import {
   postRestaurantController,
   upload,
 } from "../controllers/restaurant.controller";
+import isAuthenticated, {authorizeTenant} from "../middleware/auth";
 
 const restaurantRouter = express.Router();
 
 // POST
-restaurantRouter.post("/", upload.single("bgImg"), postRestaurantController);
+restaurantRouter.post("/", isAuthenticated, authorizeTenant, upload.single("bgImg"), postRestaurantController);
 
 // GET
 restaurantRouter.get("/", getRestaurantsController);

@@ -73,17 +73,10 @@ const getAdminConnection = (): any => {
  */
 const getConnection = (): any => {
   const nameSpace: Namespace | undefined = getNamespace("unique context");
-  console.log(
-    nameSpace?.get("connection"),
-    "from getConnection at connection manager"
-  );
-  const ADMIN_DB_URI = `${baseUri}/${adminDbName}`;
-  const conn =
-    nameSpace?.get("connection")
+
+  const conn = nameSpace?.get("connection");
 
   if (!conn) {
-    console.log(nameSpace, "from getConnection at connection manager no conn");
-
     throw new Error("Connection is not set for any tenant database");
   }
 

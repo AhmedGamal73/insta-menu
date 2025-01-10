@@ -14,9 +14,9 @@ export async function postSection(req: Request, res: Response) {
   try {
     const section = await createSection(name);
     res.json(section);
-  } catch (err) {
+  } catch (err: any) {
     console.log(err);
-    return res.status(500).json({ message: "Server Error" });
+    return res.status(500).json({ message: err.message });
   }
 }
 
@@ -31,8 +31,9 @@ export async function getSection(
   try {
     const section = await getSectionByName(req.params.name);
     return res.json(section);
-  } catch (err) {
+  } catch (err: any) {
     console.log(err);
+    return res.status(500).json({ message: err.message });
   }
 }
 

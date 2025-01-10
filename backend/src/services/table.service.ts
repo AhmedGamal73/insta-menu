@@ -1,5 +1,7 @@
-import Table from "../models/table.model";
-import Section from "../models/section.model";
+import { tableSchema } from "../models/table.model";
+import { sectionSchema } from "../models/section.model";
+import { connectModel } from "../controllers/table.controller";
+import { getConnection } from "../db/connectionManager";
 
 interface postTableProps {
   tableNo: number;
@@ -18,13 +20,14 @@ export async function postTable(params: postTableProps) {
   if (!sectionId || typeof sectionId !== "string") {
     throw new Error("Invalid Section ID");
   }
-
+  const Table = await connectModel("Table", tableSchema);
   // Validate if table exist in database
-  // const tableExist = await Table.findOne({ tableNo });
-  // if (tableExist) {
-  //   return new Error("Table Already Exist");
-  // }
+  const tableExist = await Table.findOne({ tableNo });
+  if (tableExist) {
+    return new Error("Table Already Exist");
+  }
   // Validate if seciton exist in database
+  const Section = await connectModel("Section", sectionSchema);
   const section = await Section.findById(sectionId);
   if (!section) {
     throw new Error("Section does not exist");
@@ -43,8 +46,18 @@ export async function postTable(params: postTableProps) {
 
 // Get All Tables
 export async function getTables() {
-  const tables = await Table.find({}).populate("sectionId", "name -_id");
-  return tables;
+  try {
+    const dbConnection = await getConnection();
+    // const Table = await connectModel("Table", tableSchema);
+    const Table = await dbConnection.model("Table", tableSchema);
+    const Section = await dbConnection.model("Section", sectionSchema);
+    console.log("Table at get Service", Table)
+    const tables = await Table.find({}).populate("sectionId", "name -_id");
+    return tables;
+  } catch (error: Error | any) {
+    console.error("get tables service error", error);
+    throw new Error(error)
+  }
 }
 
 // GET Table
@@ -54,13 +67,14 @@ export async function getSpecificTable(tableNo: number) {
   }
 
   try {
+    const Table = await connectModel("Table", tableSchema);
     const table = await Table.findOne({ tableNo: tableNo });
     if (!table) {
       throw new Error("Table not found");
     }
     return table;
-  } catch (err) {
+  } catch (err: Error | any) {
     console.error(err);
-    throw new Error("Server error");
+    throw new Error(err);
   }
 }

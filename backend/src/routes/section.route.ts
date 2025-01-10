@@ -4,11 +4,12 @@ import {
   getSection,
   postSection,
 } from "../controllers/section.controller";
+import isAuthenticated, { authorizeTenant } from "../middleware/auth";
 
 const sectionRouter = Router();
 
 // Post Section
-sectionRouter.post("/", postSection);
+sectionRouter.post("/", isAuthenticated, authorizeTenant,postSection);
 
 // Get Section By Name
 sectionRouter.get("/:name", getSection);

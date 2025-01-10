@@ -132,7 +132,6 @@ export async function getRestaurantBySlugController(
     const { slug } = req.params;
     const tenantDbConnection = getConnection(); // Get the current tenant's connection
     const Restaurant = tenantDbConnection.model("Restaurant", RestaurantSchema); // Register the model dynamically
-
     const restaurant = await Restaurant.findOne({ slug });
     return res.status(200).json(restaurant);
   } catch (err) {

@@ -34,7 +34,7 @@ export const resolveTenant = (
       nameSpace.set("connection", tenantDbConnection);
        // Verify that the connection is set correctly
        const currentConnection = nameSpace.get("connection");
-       console.log("Current connection in namespace:", currentConnection);
+       console.log("Current connection in namespace:", currentConnection?.name);
       next();
     } catch (error) {
       console.error("Error resolving tenant:", error);
@@ -47,19 +47,20 @@ export const resolveTenant = (
  * Get the admin db connection instance and set it to the current context.
  */
 export const setAdminDb = (req: Request, res: Response, next: NextFunction) => {
+  console.log("set admin db middleware fired");
   // Run the application in the defined namespace. It will contextualize every underlying function calls.
   nameSpace.run(() => {
     const adminDbConnection: Connection = getAdminConnection();
-    console.info(
-      "setAdminDb adminDbConnection:",
-      JSON.stringify(adminDbConnection, null, 2)
-    );
+    // console.info(
+    //   "setAdminDb adminDbConnection:",
+    //   JSON.stringify(adminDbConnection, null, 2)
+    // );
     // Optionally log specific properties
     console.info("Admin DB Connection Name:", adminDbConnection.name); // This may return undefined if not set
     console.info("Admin DB Connection State:", adminDbConnection.readyState); // 0: disconnected, 1: connected, 2: connecting, 3: disconnecting
     nameSpace.set("connection", adminDbConnection);
     const currentConnection = nameSpace.get("connection");
-    console.log("Current connection in namespace:", currentConnection);
+    console.log("Current connection in namespace:", currentConnection?.name);
     next();
   });
 };

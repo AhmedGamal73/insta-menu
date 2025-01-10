@@ -8,7 +8,7 @@ export interface ITable extends Document {
   qrCode?: string;
 }
 
-const tableSchema = new Schema({
+export const tableSchema = new Schema({
   tableNo: { type: Number, required: false },
   tableStatus: { type: Boolean, required: false, default: true },
   chairsNo: { type: Number, required: false },

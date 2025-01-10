@@ -33,16 +33,16 @@ app.use(express.json());
 app.use("/api/uploads", express.static("uploads"));
 
 // db connection middleware
-app.use("/tenant", resolveTenant);
-app.use("/admin", setAdminDb);
+app.use("/api/tenant", resolveTenant);
+app.use("/api/main", setAdminDb);
 
 
-app.use("/api/tenant", tenantRouter);
-app.use("/api/admin", adminRouter);
+app.use("/api/t-auth", tenantRouter);
+// app.use("/api/admin", adminRouter);
 
-app.use("/api/section", sectionRouter);
+app.use("/api/tenant/section", sectionRouter);
 app.use("/api/order", orderRouter);
-app.use("/api/table", tableRouter);
+app.use("/api/tenant/table", tableRouter);
 app.use("/api/product", productRouter);
 app.use("/api/category", categoryRouter);
 app.use("/api/addon", addonRouter);
@@ -51,7 +51,7 @@ app.use("/api/customer", customerRouter);
 app.use("/api/qr", qrRouter);
 app.use("/api/address", addressRouter);
 app.use("/api/cart", cartRouter);
-app.use("/tenant/restaurant", restaurantRouter);
+app.use("/api/tenant/restaurant", restaurantRouter);
 
 // mongoose.connect(MONGO_URL);
 connectAllDb()

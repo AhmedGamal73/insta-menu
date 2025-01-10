@@ -2,9 +2,24 @@ import { Request, Response } from "express";
 import * as QRCode from "qrcode";
 const env = require("dotenv").config();
 
-import Section from "../models/section.model";
+// import Section from "../models/section.model";
 import { getTables, getSpecificTable } from "../services/table.service";
-import Table from "../models/table.model";
+import {tableSchema} from "../models/table.model";
+import { getConnection } from "../db/connectionManager";
+import mongoose, { Schema } from "mongoose";
+import { sectionSchema } from "../models/section.model";
+
+
+export const connectModel = async (modelName: string, schema: Schema) => {
+  // console.log("modelName:", modelName, "schema:", schema);
+  try {
+    const connection = await getConnection();
+    const model = connection.model(modelName, schema);
+    return model;
+  } catch (error: Error | any) {
+    throw new Error(error);
+  }
+};
 
 // POST Table
 export async function postTableController(req: Request, res: Response) {
@@ -13,6 +28,7 @@ export async function postTableController(req: Request, res: Response) {
   }
   try {
     // const table = await postTable(req.body);
+    const Table = await connectModel("Table", tableSchema);
     const table = new Table(req.body);
     await table.save();
 
@@ -35,29 +51,30 @@ export async function postTableController(req: Request, res: Response) {
 export async function getTablesController(req: Request, res: Response) {
   try {
     const tables = await getTables();
-    res.status(202).json(tables);
+    return res.status(202).json(tables);
   } catch (err) {
     console.log(err);
-    return res.status(400).send("Server error");
+    return res.status(400).send(err);
   }
 }
 
 // GET Table
 export async function getTableController(req: Request, res: Response) {
   try {
-    const { tableNo } = req.body;
-    const table = await getSpecificTable(tableNo);
+    const { tableNo } = req.params ;
+    const table = await getSpecificTable(parseInt(tableNo));
     return res.status(202).json(table);
-  } catch (err) {
+  } catch (err : any | Error) {
     console.log(err);
-    return res.status(500).send("Server Error");
+    return res.status(500).json({error: err.message});
   }
 }
 
 // Delete Table
 export async function deleteTableController(req: Request, res: Response) {
   try {
-    const { tableNo } = req.body;
+    const { tableNo } = req.params;
+    const Table = await connectModel("Table", tableSchema);
     const table = await Table.findOneAndDelete({ tableNo: tableNo });
 
     if (!table) {
@@ -75,15 +92,17 @@ export async function deleteTableController(req: Request, res: Response) {
 export async function putTableController(req: Request, res: Response) {
   try {
     // Find the section by name
+    const Section = await connectModel("Section", sectionSchema);
     const section = await Section.findOne({ name: req.body.section });
 
     const { section: _, ...rest } = req.body;
+    const Table = await connectModel("Table", tableSchema);
     // Update the table
     const table = await Table.findOneAndUpdate(
       { tableNo: req.params.tableNo },
       { ...rest, section: section?._id },
       { new: true }
-    ).populate("section", "name -_id");
+    ).populate("sectionId", "name -_id");
 
     // Update the section
     if (section) {

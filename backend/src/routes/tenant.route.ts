@@ -5,7 +5,7 @@ const router = express.Router();
 router.post('/signup', signUp)
 router.get("/all", fetchAll)
 router.get("/tenant/:id", getTenant)
-router.post("/tenant/login", login)
+router.post("/login", login)
 
 
 

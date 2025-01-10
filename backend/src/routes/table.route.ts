@@ -7,11 +7,12 @@ import {
   putTableController,
   getTableController,
 } from "../controllers/table.controller";
+import isAuthenticated, { authorizeTenant } from "../middleware/auth";
 
 const tableRouter = express.Router();
 
 // POST Table
-tableRouter.post("/", postTableController);
+tableRouter.post("/", isAuthenticated, authorizeTenant,postTableController);
 
 // GET Tables
 tableRouter.get("/", getTablesController);

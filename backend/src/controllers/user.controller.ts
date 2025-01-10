@@ -3,8 +3,8 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 import User from "../models/user.model";
-import Section from "../models/section.model";
-
+import {getSectionModel} from "../models/section.model";
+const Section = getSectionModel();
 export async function postUserController(req: Request, res: Response) {
   try {
     const {
