@@ -35,7 +35,7 @@ export interface IProduct extends Document {
   addons?: [];
 }
 
-const productSchema = new Schema({
+export const productSchema = new Schema({
   name: { type: String, required: true },
   clickId: { type: String, required: true },
   restaurantId: { type: Schema.Types.ObjectId, ref: "Restaurant" },

@@ -8,18 +8,18 @@ interface ICategory extends Document {
   subcategories: ISubCategory[];
 }
 
-interface ISubCategory {
+export interface ISubCategory {
   _id?: string;
   name: string;
   total: number;
 }
 
-const subCategorySchema = new Schema({
+export const subCategorySchema = new Schema({
   name: { type: String, required: true },
   total: { type: Number, default: 0 },
 });
 
-const categorySchema = new Schema({
+export const categorySchema = new Schema({
   name: { type: String, required: true },
   total: { type: Number, default: 0 },
   imgURL: { type: String, required: true },

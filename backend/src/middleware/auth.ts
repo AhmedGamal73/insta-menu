@@ -59,7 +59,6 @@ const isAuthenticated = async (
       tenant = await Tenant.findById(payload.id, { slug: 1 });
     }
 
-    console.log("payload:", payload, user, tenant);
     if (!user && !tenant) {
       return res.status(404).json({ error: "User or Tenant not found" });
     }

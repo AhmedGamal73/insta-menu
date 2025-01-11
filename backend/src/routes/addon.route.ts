@@ -10,12 +10,13 @@ import {
   getAddonCategoryController,
   putAddonCategoryController,
 } from "../controllers/addon.controller";
+import isAuthenticated, { authorizeTenant } from "../middleware/auth";
 
 const addonRouter = express.Router();
 
 // POST
-addonRouter.post("/addoncategory", postAddonCategoryController); // Addon Category
-addonRouter.post("/", postAddonController); // Addon
+addonRouter.post("/addoncategory", isAuthenticated, authorizeTenant,postAddonCategoryController); // Addon Category
+addonRouter.post("/", isAuthenticated, authorizeTenant,postAddonController); // Addon
 
 // GET
 addonRouter.get("/addoncategory", getAddonCategoryController); // Addon Categories
@@ -24,9 +25,9 @@ addonRouter.get("/", getAddonsController); // Addons
 addonRouter.get("/product/:productId", getProductAddonsController); // Addon names
 
 // Delete
-addonRouter.delete("/:id", deleteAddonController); // Addon
+addonRouter.delete("/:id", isAuthenticated, authorizeTenant,deleteAddonController); // Addon
 
 // PUT
-addonRouter.put("/addoncategory/:id", putAddonCategoryController); // Addon Category
+addonRouter.put("/addoncategory/:id", isAuthenticated, authorizeTenant,putAddonCategoryController); // Addon Category
 
 export default addonRouter;

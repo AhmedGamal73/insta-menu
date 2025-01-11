@@ -1,6 +1,8 @@
+import { ISubCategory, subCategorySchema } from './../models/category.model';
 import { Request, Response } from "express";
-import Category from "../models/category.model";
+import {categorySchema} from "../models/category.model";
 import multer from "multer";
+import { connectModel } from "./table.controller";
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -24,7 +26,7 @@ export async function postCategoryController(req: Request, res: Response) {
     if (!name) {
       return res.status(400).send("All input is required");
     }
-
+    const Category = await connectModel("Category", categorySchema);
     const categoryExist = await Category.findOne({ name });
     if (categoryExist) {
       return res.status(400).send("Category Already Exist");
@@ -34,8 +36,9 @@ export async function postCategoryController(req: Request, res: Response) {
     await newCategory.save();
 
     return res.status(201).json({ category: newCategory });
-  } catch (err) {
+  } catch (err: any) {
     console.log(err);
+    return res.status(500).json({success: false, message: err.message});
   }
 }
 
@@ -44,6 +47,7 @@ export async function postSubcategoryController(req: Request, res: Response) {
   const { categoryId } = req.params;
   const { name } = req.body;
   try {
+    const Category = await connectModel("Category", categorySchema);
     const category = await Category.findById(categoryId);
     if (!category) {
       return res.status(404).json({ message: "Category Not Found" });
@@ -52,7 +56,7 @@ export async function postSubcategoryController(req: Request, res: Response) {
     if (!name) {
       return res.status(400).json({ message: "Name is required" });
     }
-    if (category.subcategories.find((sub) => sub.name === name)) {
+    if (category.subcategories.find((sub: ISubCategory) => sub.name === name)) {
       return res.status(400).json({ message: "Subcategory already exist" });
     }
     category.subcategories.push({ name, total: 0 });
@@ -67,6 +71,7 @@ export async function postSubcategoryController(req: Request, res: Response) {
 // GET Categories
 export async function getCategoriesController(req: Request, res: Response) {
   try {
+    const Category = await connectModel("Category", categorySchema);
     const categories = await Category.find();
     res.json(categories);
   } catch (err) {
@@ -78,6 +83,7 @@ export async function getCategoriesController(req: Request, res: Response) {
 export async function getSubcategoriesController(req: Request, res: Response) {
   const { categoryId } = req.params;
   try {
+    const Category = await connectModel("Category", categorySchema);
     const category = await Category.findById(categoryId);
     if (!category) {
       return res.status(404).json({ message: "Category Not Found" });
@@ -93,6 +99,7 @@ export async function putCategoryController(req: Request, res: Response) {
   const { categoryName } = req.params;
   const update = req.body;
   try {
+    const Category = await connectModel("Category", categorySchema);
     const category = await Category.findOneAndUpdate(
       { name: categoryName },
       update,

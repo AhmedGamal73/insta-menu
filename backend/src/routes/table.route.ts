@@ -21,9 +21,9 @@ tableRouter.get("/", getTablesController);
 tableRouter.get("/:tableNo", getTableController);
 
 // Delete table
-tableRouter.delete("/:tableNo", deleteTableController);
+tableRouter.delete("/:tableNo", isAuthenticated, authorizeTenant,deleteTableController);
 
 // Update table
-tableRouter.put("/:tableNo", putTableController);
+tableRouter.put("/:tableNo", isAuthenticated, authorizeTenant,putTableController);
 
 export default tableRouter;

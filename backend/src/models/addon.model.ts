@@ -12,12 +12,12 @@ export interface ICategory extends Document {
   total: number;
 }
 
-const addonCategorySchema = new Schema({
+export const addonCategorySchema = new Schema({
   name: { type: String, required: true },
   total: { type: Number, required: true, default: 0 },
 });
 
-const addonSchema = new Schema({
+export const addonSchema = new Schema({
   name: { type: String, required: true },
   price: { type: Number, required: true },
   clickId: { type: String, required: true },
