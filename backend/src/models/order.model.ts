@@ -26,7 +26,7 @@ interface IOrder extends Document {
   timestamp: string;
 }
 
-const orderSchema = new Schema({
+export const orderSchema = new Schema({
   orderNo: { type: String, required: false },
   customerId: { type: Schema.Types.ObjectId, ref: "Customer", required: true },
   orderName: { type: String, required: true },
@@ -60,6 +60,7 @@ const orderSchema = new Schema({
     required: true,
     enum: ["Pending", "Processing", "Delivered", "Cancelled"],
   },
+  slug: { type: String, required: true },
   clickVirefiy: { type: Boolean, default: false },
   timestamp: { type: String },
   createdAt: { type: Date, default: Date.now },

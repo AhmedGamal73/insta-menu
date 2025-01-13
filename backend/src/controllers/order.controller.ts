@@ -1,14 +1,16 @@
+import { Cart } from './../models/cart.model';
 import { Request, Response } from "express";
 import axiox from "axios";
 
-import Order from "../models/order.model";
-import { Cart } from "../models/cart.model";
+import {orderSchema} from "../models/order.model";
+import { cartSchema } from "../models/cart.model";
 import {
   validateAddress,
   validateCustomerToken,
 } from "../services/order.service";
 import mongoose from "mongoose";
 import { Customer } from "../models/customer.model";
+import { connectModel } from './table.controller';
 
 let order: any = {};
 
@@ -40,7 +42,7 @@ export async function postOrderController(req: Request, res: Response) {
     const customerId = await validateCustomerToken(customerToken);
     // verify address
     const addressId = await validateAddress(orderType, address);
-
+    const Cart = await connectModel("Cart" , cartSchema)
     const newCart = await await Cart.create({
       items: cart,
     });
@@ -102,6 +104,7 @@ export async function verifyOtpController(req: Request, res: Response) {
 
   try {
     if (otp === customerOtp) {
+      const Order = await connectModel("Order", orderSchema);
       const newOrder = await Order.create(order);
       await newOrder.save();
 
@@ -123,6 +126,7 @@ export async function verifyOtpController(req: Request, res: Response) {
 // GET Orders
 export async function getOrdersController(req: Request, res: Response) {
   try {
+    const Order = await connectModel("Order", orderSchema);
     const orders = await Order.find().sort({ createdAt: -1 });
     return res.status(201).json(orders);
   } catch (err) {
@@ -134,6 +138,7 @@ export async function getOrdersController(req: Request, res: Response) {
 // GET Orders - Dinner Mind -
 export async function getClickOrdersController(req: Request, res: Response) {
   try {
+    const Order = await connectModel("Order", orderSchema);
     const orders = await Order.find({ clickVirefiy: false })
       .sort({
         createdAt: -1,
@@ -149,7 +154,7 @@ export async function getClickOrdersController(req: Request, res: Response) {
         },
       });
 
-    const modifiedOrders = orders.map((order) => {
+    const modifiedOrders = orders.map((order: any) => {
       const { cart, ...otherProps } = order.toObject();
       return { ...otherProps, items: cart.items };
     });
@@ -169,6 +174,7 @@ export async function getOrderByIdController(req: Request, res: Response) {
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ error: "Invalid ID" });
     }
+    const Order = await connectModel("Order", orderSchema);
     const order = await Order.findById(id).populate("cart");
     return res.status(201).json(order);
   } catch (err) {
@@ -180,6 +186,7 @@ export async function getOrderByIdController(req: Request, res: Response) {
 // GET Delivery Orders
 export async function getDeliveryOrdersController(req: Request, res: Response) {
   try {
+    const Order = await connectModel("Order", orderSchema);
     const orders = await Order.find({ orderType: "Delivery" }).sort({
       createdAt: -1,
     });
@@ -193,6 +200,7 @@ export async function getDeliveryOrdersController(req: Request, res: Response) {
 // GET Takeaway Orders
 export async function getTakeawayOrdersController(req: Request, res: Response) {
   try {
+    const Order = await connectModel("Order", orderSchema);
     const orders = await Order.find({ orderType: "Takeaway" }).sort({
       createdAt: -1,
     });
@@ -206,6 +214,7 @@ export async function getTakeawayOrdersController(req: Request, res: Response) {
 // GET Indoor Orders
 export async function getIndoorOrdersController(req: Request, res: Response) {
   try {
+    const Order = await connectModel("Order", orderSchema);
     const orders = await Order.find({
       orderType: "Indoor",
       waiterApproval: true,
@@ -224,6 +233,7 @@ export async function putOrderApprovedController(req: Request, res: Response) {
   // get the order id from the request parameters
   const orderId = req.params.id;
   try {
+    const Order = await connectModel("Order", orderSchema);
     Order.findByIdAndUpdate(
       orderId,
       {
@@ -251,6 +261,7 @@ export async function deleteOrderController(req: Request, res: Response) {
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ error: "Invalid ID" });
     }
+    const Order = await connectModel("Order", orderSchema);
     await Order.findByIdAndDelete(id);
     return res.status(201).json({ message: "Order deleted successfully" });
   } catch (err) {
@@ -267,6 +278,7 @@ export async function putOrderController(req: Request, res: Response) {
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ error: "Invalid ID" });
     }
+    const Order = await connectModel("Order", orderSchema);
     const updatedOrder = await Order.findByIdAndUpdate(id, req.body, {
       new: true,
     });

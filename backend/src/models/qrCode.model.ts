@@ -7,7 +7,7 @@ export interface IQRCode extends mongoose.Document {
   disabled: boolean;
 }
 
-const qrCodeSchema: Schema<IQRCode> = new Schema({
+export const qrCodeSchema: Schema<IQRCode> = new Schema({
   tableId: {
     type: Schema.Types.ObjectId,
     required: true,

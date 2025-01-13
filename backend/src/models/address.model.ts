@@ -17,18 +17,18 @@ interface IAddress extends Document {
   street: string;
 }
 
-const citySchema = new Schema({
+export const citySchema = new Schema({
   name: { type: String, required: true },
 });
 
-const districtSchema = new Schema({
+export const districtSchema = new Schema({
   name: { type: String, required: true },
   price: { type: Number, required: true },
   cityId: { type: mongoose.Schema.Types.ObjectId, ref: "City", required: true },
-  time: { type: Number, required: true, require: false },
+  time: { type: Number, required: false },
 });
 
-const locationSchecma = new Schema({
+export const locationSchecma = new Schema({
   cityId: { type: Schema.ObjectId, ref: "City", required: true },
   districtId: { type: Schema.Types.ObjectId, ref: "District" },
   street: { type: String, required: true },

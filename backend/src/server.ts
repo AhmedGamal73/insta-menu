@@ -37,21 +37,21 @@ app.use("/api/tenant", resolveTenant);
 app.use("/api/main", setAdminDb);
 
 
-app.use("/api/t-auth", tenantRouter);
+app.use("/api/main/t-auth", tenantRouter);
 // app.use("/api/admin", adminRouter);
 
 app.use("/api/tenant/section", sectionRouter);
-app.use("/api/order", orderRouter);
+app.use("/api/tenant/order", orderRouter);
 app.use("/api/tenant/table", tableRouter);
 app.use("/api/tenant/product", productRouter);
 app.use("/api/tenant/category", categoryRouter);
 app.use("/api/tenant/addon", addonRouter);
+app.use("/api/tenant/address", addressRouter);
+app.use("/api/tenant/restaurant", restaurantRouter);
+app.use("/api/tenant/qr", qrRouter);
 app.use("/api/user", userRouter);
 app.use("/api/customer", customerRouter);
-app.use("/api/qr", qrRouter);
-app.use("/api/address", addressRouter);
 app.use("/api/cart", cartRouter);
-app.use("/api/tenant/restaurant", restaurantRouter);
 
 // mongoose.connect(MONGO_URL);
 connectAllDb()

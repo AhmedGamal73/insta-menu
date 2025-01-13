@@ -42,10 +42,10 @@ export async function postRestaurantController(req: Request, res: Response) {
     }
 
     // Validate Slug
-    const validSlugExist = await Restaurant.find({ slug });
-    if (validSlugExist && validSlugExist.length > 0) {
-      return res.status(400).json({ error: "Slug already exists" });
-    }
+    // const validSlugExist = await Restaurant.find({ slug });
+    // if (validSlugExist && validSlugExist.length > 0) {
+    //   return res.status(400).json({ error: "Slug already exists" });
+    // }
 
     // tags
     const tagsArr = tags.split("،");

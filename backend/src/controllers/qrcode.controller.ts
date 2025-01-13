@@ -3,18 +3,23 @@ import jwt from "jsonwebtoken";
 import QR from "qrcode";
 
 import Table from "../models/table.model";
-import qrCode, { IQRCode } from "../models/qrCode.model";
+import  { IQRCode, qrCodeSchema } from "../models/qrCode.model";
 import ConnectedDevice from "../models/connectedDevice";
 import { generateQrCode } from "../services/qrcode.service";
+import { connectModel } from "./table.controller";
 
 // Post Qrcode
 export async function postQrcode(req: Request, res: Response) {
   try {
     const { tableId } = req.body;
-    const dataImage = await generateQrCode(tableId);
-    res.status(200).json({ dataImage: dataImage });
+    if(!tableId) return res.status(400).send("TableId is required");
+    const dataImage = await generateQrCode(tableId).catch(err =>{
+      return res.status(500).json({success:false, message: err.message});
+    });
+    return res.status(200).json({ dataImage });
   } catch (err: any) {
     console.log(`Error: ${err}`);
+    return res.status(500).json({success:false, message: err.message});
   }
 }
 
@@ -26,13 +31,13 @@ export async function postScanQrcode(req: Request, res: Response) {
       res.status(400).send("Token and deviceInformation is required");
     }
 
-    if (!process.env.TOKEN_KEY) {
+    if (!process.env.TOKEN_SECRET_KEY) {
       return res.status(500).send("TOKEN_KEY is not set");
     }
 
-    const decoded = jwt.verify(token, process.env.TOKEN_KEY);
-
-    const QRcode = await qrCode.findOne<IQRCode>({
+    const decoded = jwt.verify(token, process.env.TOKEN_SECRET_KEY);
+    const qrCode = await connectModel("Qrcode", qrCodeSchema);
+    const QRcode = await qrCode.findOne({
       tableId: (decoded as any).tableId,
       disabled: false,
     });
@@ -70,7 +75,7 @@ export async function postScanQrcode(req: Request, res: Response) {
     }
 
     // Create token
-    const authToken = jwt.sign({ table_id: table._id }, process.env.TOKEN_KEY, {
+    const authToken = jwt.sign({ table_id: table._id }, process.env.TOKEN_SECRET_KEY, {
       expiresIn: "2h",
     });
 

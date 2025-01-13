@@ -1,0 +1,1032 @@
+{
+	"info": {
+		"_postman_id": "8fa0acbe-c4e8-46c5-9369-4ff8e906c3a4",
+		"name": "food saas apis",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "27726033",
+		"_collection_link": "https://www.postman.com/blue-water-36878/workspace/food-saas/collection/27726033-8fa0acbe-c4e8-46c5-9369-4ff8e906c3a4?action=share&source=collection_link&creator=27726033"
+	},
+	"item": [
+		{
+			"name": "tenant",
+			"item": [
+				{
+					"name": "restaurant",
+					"item": [
+						{
+							"name": "restaurant",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "tenant",
+										"value": "test4",
+										"type": "text"
+									}
+								],
+								"url": "localhost:3001/api/tenant/restaurant/test4"
+							},
+							"response": []
+						},
+						{
+							"name": "create restaurant",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "tenant",
+										"value": "test4",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{t-token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"title\": \"new branch\",\r\n  \"slug\": \"test4\",\r\n  \"tags\": \"American, Pizza, Pasta\",\r\n  \"bgImg\": \"path/to/image.jpg\" // This will be handled by the upload middleware\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "localhost:3001/api/tenant/restaurant"
+							},
+							"response": []
+						},
+						{
+							"name": "all restaurants",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "tenant",
+										"value": "test3",
+										"type": "text"
+									}
+								],
+								"url": "localhost:3001/api/tenant/restaurant"
+							},
+							"response": []
+						},
+						{
+							"name": "featured restaurants",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "tenant",
+										"value": "test3",
+										"type": "text"
+									}
+								],
+								"url": "localhost:3001/tenant/restaurant/featured"
+							},
+							"response": []
+						},
+						{
+							"name": "restaurant categories",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "tenant",
+										"value": "test3",
+										"type": "text"
+									}
+								],
+								"url": "localhost:3001/tenant/restaurant/test3/categories"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "tables",
+					"item": [
+						{
+							"name": "create table",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "tenant",
+										"value": "test4",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{t-token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\"sectionId\": \"678004943aff934b4ad00ef1\", \"tableNo\": \"1\"}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "localhost:3001/api/tenant/table"
+							},
+							"response": []
+						},
+						{
+							"name": "tables",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "tenant",
+										"value": "test4",
+										"type": "text"
+									}
+								],
+								"url": "localhost:3001/api/tenant/table"
+							},
+							"response": []
+						},
+						{
+							"name": "table",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "tenant",
+										"value": "test4",
+										"type": "text"
+									}
+								],
+								"url": "localhost:3001/api/tenant/table/1"
+							},
+							"response": []
+						},
+						{
+							"name": "update table",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "tenant",
+										"value": "test4",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\"chairsNo\": 4}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "localhost:3001/api/tenant/table/1"
+							},
+							"response": []
+						},
+						{
+							"name": "delete table",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "tenant",
+										"value": "test4",
+										"type": "text"
+									}
+								],
+								"url": "localhost:3001/api/tenant/table/2"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "sections",
+					"item": [
+						{
+							"name": "create section",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "tenant",
+										"value": "test4",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\"name\": \"section2\"}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "localhost:3001/api/tenant/section"
+							},
+							"response": []
+						},
+						{
+							"name": "sections",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "tenant",
+										"value": "test4",
+										"type": "text"
+									}
+								],
+								"url": "localhost:3001/api/tenant/section"
+							},
+							"response": []
+						},
+						{
+							"name": "section",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "tenant",
+										"value": "test4",
+										"type": "text"
+									}
+								],
+								"url": "localhost:3001/api/tenant/section/section1"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "product",
+					"item": [
+						{
+							"name": "create procut",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "tenant",
+										"value": "test4",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{t-token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "name",
+											"value": "product3",
+											"type": "text"
+										},
+										{
+											"key": "description",
+											"value": "This is a sample product description",
+											"type": "text"
+										},
+										{
+											"key": "calories",
+											"value": "300",
+											"type": "text"
+										},
+										{
+											"key": "price",
+											"value": "12.5",
+											"type": "text"
+										},
+										{
+											"key": "salePrice",
+											"value": "10.9",
+											"type": "text"
+										},
+										{
+											"key": "categoryId",
+											"value": "6782492990dc84228ceaa46c",
+											"type": "text"
+										},
+										{
+											"key": "subcategoryId",
+											"value": "66115b0defadce0e65397c8c",
+											"type": "text"
+										},
+										{
+											"key": "restaurantId",
+											"value": "677ff4660cdfe011b948dc66",
+											"type": "text"
+										},
+										{
+											"key": "addonCategory",
+											"value": "661189f0e4add3b918bea62c",
+											"type": "text"
+										},
+										{
+											"key": "addons",
+											"value": "[{\"id\":\"60d5ec49f1c5f1c5f1c5f1c9\",\"name\":\"Extra Cheese\",\"price\":1.50},{\"id\":\"60d5ec49f1c5f1c5f1c5f1ca\",\"name\":\"Bacon\",\"price\":2.00}]",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "variations",
+											"value": "[{\"size\":\"Small\",\"price\":9.99},{\"size\":\"Large\",\"price\":12.99}]",
+											"type": "text"
+										},
+										{
+											"key": "img",
+											"type": "file",
+											"src": "postman-cloud:///1ef9a2cd-88db-49a0-abcb-aada8b05a3eb"
+										}
+									]
+								},
+								"url": "localhost:3001/api/tenant/product"
+							},
+							"response": []
+						},
+						{
+							"name": "all products",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "tenant",
+										"value": "test4",
+										"type": "text"
+									}
+								],
+								"url": "localhost:3001/api/tenant/product"
+							},
+							"response": []
+						},
+						{
+							"name": "offers",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "tenant",
+										"value": "test4",
+										"type": "text"
+									}
+								],
+								"url": "localhost:3001/api/tenant/product/offers"
+							},
+							"response": []
+						},
+						{
+							"name": "active",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "tenant",
+										"value": "test4",
+										"type": "text"
+									}
+								],
+								"url": "localhost:3001/api/tenant/product/active"
+							},
+							"response": []
+						},
+						{
+							"name": "one product",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "tenant",
+										"value": "test4",
+										"type": "text"
+									}
+								],
+								"url": "localhost:3001/api/tenant/product/one/67825e319a8cbe983beea664"
+							},
+							"response": []
+						},
+						{
+							"name": "by category",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "tenant",
+										"value": "test4",
+										"type": "text"
+									}
+								],
+								"url": "localhost:3001/api/tenant/product/category/6782492990dc84228ceaa46c"
+							},
+							"response": []
+						},
+						{
+							"name": "Products by restaurant slug and category id",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "tenant",
+										"value": "test4",
+										"type": "text"
+									}
+								],
+								"url": "localhost:3001/api/tenant/product/restaurant/test4/category/6782492990dc84228ceaa46c"
+							},
+							"response": []
+						},
+						{
+							"name": "update product",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "tenant",
+										"value": "test4",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\"name\": \"updatedName\"}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "localhost:3001/api/tenant/product/67825e319a8cbe983beea664"
+							},
+							"response": []
+						},
+						{
+							"name": "toggle active",
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "tenant",
+										"value": "test4",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\"active\": false}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "localhost:3001/api/tenant/product/67825e319a8cbe983beea664"
+							},
+							"response": []
+						},
+						{
+							"name": "delete product",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "tenant",
+										"value": "test4",
+										"type": "text"
+									}
+								],
+								"url": "localhost:3001/api/tenant/product/67825f489a8cbe983beea677"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "category",
+					"item": [
+						{
+							"name": "create Category",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "tenant",
+										"value": "test4",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{t-token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "name",
+											"value": "test4",
+											"type": "text"
+										},
+										{
+											"key": "img",
+											"type": "file",
+											"src": "postman-cloud:///1ef9a2cd-88db-49a0-abcb-aada8b05a3eb"
+										}
+									]
+								},
+								"url": "localhost:3001/api/tenant/category"
+							},
+							"response": []
+						},
+						{
+							"name": "create subCategory",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "tenant",
+										"value": "test4",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{t-token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\"name\": \"sub1\"}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "localhost:3001/api/tenant/category/678273e20f0422e3c7251304/subcategories"
+							},
+							"response": []
+						},
+						{
+							"name": "get all",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "tenant",
+										"value": "test4",
+										"type": "text"
+									}
+								],
+								"url": "localhost:3001/api/tenant/category"
+							},
+							"response": []
+						},
+						{
+							"name": "sub category",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "tenant",
+										"value": "test4",
+										"type": "text"
+									}
+								],
+								"url": "localhost:3001/api/tenant/category/678273e20f0422e3c7251304/sub"
+							},
+							"response": []
+						},
+						{
+							"name": "update",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "tenant",
+										"value": "test4",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{t-token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\"name\": \"updated\"}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "localhost:3001/api/tenant/category/test4"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "addon",
+					"item": [
+						{
+							"name": "create addon Category",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "tenant",
+										"value": "test4",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{t-token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\"name\": \"test1\"}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "localhost:3001/api/tenant/addon/addoncategory"
+							},
+							"response": []
+						},
+						{
+							"name": "create addon",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "tenant",
+										"value": "test4",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{t-token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\"name\": \"addon1\", \"price\": 4, \"addonCategoryId\": \"678290c388fa8ed6f3aea79f\" }",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "localhost:3001/api/tenant/addon/"
+							},
+							"response": []
+						},
+						{
+							"name": "addons",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "tenant",
+										"value": "test4",
+										"type": "text"
+									}
+								],
+								"url": "localhost:3001/api/tenant/addon/"
+							},
+							"response": []
+						},
+						{
+							"name": "addonCategory",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "tenant",
+										"value": "test4",
+										"type": "text"
+									}
+								],
+								"url": "localhost:3001/api/tenant/addon/addoncategory"
+							},
+							"response": []
+						},
+						{
+							"name": "addon by category",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "tenant",
+										"value": "test4",
+										"type": "text"
+									}
+								],
+								"url": "localhost:3001/api/tenant/addon/678290c388fa8ed6f3aea79f"
+							},
+							"response": []
+						},
+						{
+							"name": "product's addons",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "tenant",
+										"value": "test4",
+										"type": "text"
+									}
+								],
+								"url": "localhost:3001/api/tenant/addon/product/67825e319a8cbe983beea664"
+							},
+							"response": []
+						},
+						{
+							"name": "update addonCategory",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "tenant",
+										"value": "test4",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{t-token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\"name\": \"updated\"}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "localhost:3001/api/tenant/addon/addoncategory/6782973c697c473e342f41a6"
+							},
+							"response": []
+						},
+						{
+							"name": "delete addon",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "tenant",
+										"value": "test4",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{t-token}}",
+										"type": "text"
+									}
+								],
+								"url": "localhost:3001/api/tenant/addon/6782937d88fa8ed6f3aea7d5"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "addresses",
+					"item": [
+						{
+							"name": "create city",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "tenant",
+										"value": "test3",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\"name\": \"Cairo\"}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "localhost:3001/api/tenant/address/city"
+							},
+							"response": []
+						},
+						{
+							"name": "cities",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "tenant",
+										"value": "test3",
+										"type": "text"
+									}
+								],
+								"url": "localhost:3001/api/tenant/address/city"
+							},
+							"response": []
+						},
+						{
+							"name": "create districe",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "tenant",
+										"value": "test3",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\"cityId\": \"67857633831a87e43c8a1681\", \"name\": \"الحي الثامن\", \"price\": 60}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "localhost:3001/api/tenant/address/district"
+							},
+							"response": []
+						},
+						{
+							"name": "districts",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "tenant",
+										"value": "test3",
+										"type": "text"
+									}
+								],
+								"url": "localhost:3001/api/tenant/address/districts"
+							},
+							"response": []
+						},
+						{
+							"name": "districts at a city",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "tenant",
+										"value": "test3",
+										"type": "text"
+									}
+								],
+								"url": "localhost:3001/api/tenant/address/district/cairo"
+							},
+							"response": []
+						},
+						{
+							"name": "create address",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": []
+						},
+						{
+							"name": "addresses",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "tenant",
+										"value": "test3",
+										"type": "text"
+									}
+								],
+								"url": "localhost:3001/api/tenant/address/"
+							},
+							"response": []
+						},
+						{
+							"name": "one address",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "tenant",
+										"value": "test3",
+										"type": "text"
+									}
+								],
+								"url": "localhost:3001/api/tenant/address/67857fb5541b82b64b1d2602"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "order",
+					"item": [
+						{
+							"name": "New Request",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "New Request",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "main",
+			"item": [
+				{
+					"name": "tenant-signup",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"businessName\": \"test4\", \"phone\": \"0111\", \"email\": \"test4@gmail.com\", \"password\": \"1234\", \"slug\": \"test4\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:3001/api/main/t-auth/signup"
+					},
+					"response": []
+				},
+				{
+					"name": "get all tenants",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "localhost:3001/api/main/t-auth/all"
+					},
+					"response": []
+				},
+				{
+					"name": "tenant login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"email\": \"test4@gmail.com\", \"password\": \"1234\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:3001/api/main/t-auth/login"
+					},
+					"response": []
+				},
+				{
+					"name": "get one tenant",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "localhost:3001/api/main/t-auth/tenant/677c373898ba40f4482bcebc"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

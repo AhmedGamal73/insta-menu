@@ -33,7 +33,7 @@ interface ICart extends Document {
   createdAt: Date;
 }
 
-const cartItemSchema = new Schema<ICartItem>({
+export const cartItemSchema = new Schema<ICartItem>({
   product: {
     id: { type: Schema.Types.ObjectId, ref: "Product", required: true },
     name: { type: String, required: true },
@@ -66,7 +66,7 @@ const cartItemSchema = new Schema<ICartItem>({
   priceAtTheTime: { type: Number, required: true },
 });
 
-const cartSchema = new Schema<ICart>({
+export const cartSchema = new Schema<ICart>({
   items: [cartItemSchema],
   createdAt: { type: Date, default: Date.now },
 });
