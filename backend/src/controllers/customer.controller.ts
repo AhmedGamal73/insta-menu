@@ -3,7 +3,8 @@ require("dotenv").config();
 const bcrypt = require("bcryptjs");
 import jwt from "jsonwebtoken";
 
-import { Customer } from "../models/customer.model";
+import { customerSchema } from "../models/customer.model";
+import { connectModel } from "./table.controller";
 
 // POST customer signup
 export async function postCustomerSignup(req: Request, res: Response) {
@@ -20,6 +21,7 @@ export async function postCustomerSignup(req: Request, res: Response) {
     }
 
     // Check if phone number exists
+    const Customer = await connectModel("Customer", customerSchema);
     const phoneExist = await Customer.findOne({ phone });
     if (phoneExist) {
       return res.status(406).json({ message: "Phone number already exists" });
@@ -42,6 +44,7 @@ export async function postCustomerSignup(req: Request, res: Response) {
 // GET customers
 export async function getCustomers(req: Request, res: Response) {
   try {
+    const Customer = await connectModel("Customer", customerSchema);
     const customers = await Customer.find();
     return res.json(customers);
   } catch (err) {
@@ -55,6 +58,7 @@ export async function postCustomerLogin(req: Request, res: Response) {
     const { phone, password } = req.body;
 
     // Check if phone number exists
+    const Customer = await connectModel("Customer", customerSchema);
     const customer = await Customer.findOne({ phone });
     if (!customer) {
       return res.status(401).json({ message: "Invalid phone number" });
@@ -81,7 +85,7 @@ export async function postCustomerLogin(req: Request, res: Response) {
 
     // Generate token
     const token = jwt.sign(
-      { _id: customer._id, phoneNumber: customer.phone },
+      { id: customer._id, phoneNumber: customer.phone },
       secretKey,
       { expiresIn: "1w" }
     );
@@ -92,9 +96,9 @@ export async function postCustomerLogin(req: Request, res: Response) {
 
     // Send token
     res.json({ token });
-  } catch (err) {
+  } catch (err: any) {
     console.log(err);
-    return res.status(500).send("Server error");
+    return res.status(500).json({success: false, message: err.message});
   }
 }
 
@@ -102,6 +106,7 @@ export async function postCustomerLogin(req: Request, res: Response) {
 export async function getCustomerController(req: Request, res: Response) {
   const { customerId } = req.params;
   try {
+    const Customer = await connectModel("Customer", customerSchema);
     const customer = await Customer.findById(customerId);
     return res.json(customer);
   } catch (err) {
@@ -116,6 +121,7 @@ export async function putCustomerFavoritesController(
 ) {
   const { customerId, favoriteProduct } = req.params;
   try {
+    const Customer = await connectModel("Customer", customerSchema);
     const customer = await Customer.findByIdAndUpdate(
       customerId,
       {
@@ -136,7 +142,9 @@ export async function putCustomerRemoveFavoriteController(
   res: Response
 ) {
   const { customerId, favoriteProduct } = req.params;
+    const Customer = await connectModel("Customer", customerSchema);
   try {
+    const Customer = await connectModel("Customer", customerSchema);
     const customer = await Customer.findByIdAndUpdate(
       customerId,
       {

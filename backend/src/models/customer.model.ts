@@ -12,7 +12,7 @@ export interface ICustomer extends Document {
 }
 
 // customer schema
-const customerSchema = new mongoose.Schema(
+export const customerSchema = new mongoose.Schema(
   {
     name: {
       type: String,

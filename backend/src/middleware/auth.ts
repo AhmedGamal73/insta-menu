@@ -1,7 +1,9 @@
+import { Customer } from './../models/restaurantUser';
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { NextFunction, Request, Response } from "express";
 import { ITenant, tenantSchema } from "../models/tenant.model";
 import { userSchema } from "../models/user.model";
+import {customerSchema, ICustomer} from "../models/customer.model";
 import { initAdminDbConnection } from "../db/adminDbConnections";
 const { BASE_DB_URI, ADMIN_DB_NAME } = process.env;
 interface IUser {
@@ -14,6 +16,7 @@ declare global {
     interface Request {
       user?: IUser; // Optional user property
       tenant?: ITenant; // Optional tenant property
+      customer?: ICustomer
     }
   }
 }
@@ -29,6 +32,7 @@ const isAuthenticated = async (
   }
   const Tenant = await dbConnection.model("Tenant", tenantSchema);
   const User = await dbConnection.model("User", userSchema);
+  const Customer = await dbConnection.model("Customer", customerSchema);
   try {
     const token: string | undefined = req.headers.authorization;
 
@@ -54,19 +58,22 @@ const isAuthenticated = async (
     }
     let user: IUser | null = await User.findById(payload.id, { _id: 1 });
     let tenant: ITenant | null = null;
+    let customer: ICustomer | null = null;
 
     if (!user) {
       tenant = await Tenant.findById(payload.id, { slug: 1 });
     }
 
     if (!user && !tenant) {
-      return res.status(404).json({ error: "User or Tenant not found" });
+      customer = await Customer.findById(payload.id, { _id: 1 });
     }
 
     if (user) {
       req.user = user; // Attach user info to req.user
     } else if (tenant) {
       req.tenant = tenant; // Attach tenant info to req.tenant
+    }else if(customer){
+      req.customer = customer;
     }
 
     next();

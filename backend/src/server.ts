@@ -50,7 +50,7 @@ app.use("/api/tenant/address", addressRouter);
 app.use("/api/tenant/restaurant", restaurantRouter);
 app.use("/api/tenant/qr", qrRouter);
 app.use("/api/user", userRouter);
-app.use("/api/customer", customerRouter);
+app.use("/api/main/customer", customerRouter);
 app.use("/api/cart", cartRouter);
 
 // mongoose.connect(MONGO_URL);

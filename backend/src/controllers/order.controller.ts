@@ -1,8 +1,7 @@
-import { Cart } from './../models/cart.model';
 import { Request, Response } from "express";
 import axiox from "axios";
 
-import {orderSchema} from "../models/order.model";
+import { orderSchema } from "../models/order.model";
 import { cartSchema } from "../models/cart.model";
 import {
   validateAddress,
@@ -10,14 +9,14 @@ import {
 } from "../services/order.service";
 import mongoose from "mongoose";
 import { Customer } from "../models/customer.model";
-import { connectModel } from './table.controller';
+import { connectModel } from "./table.controller";
 
 let order: any = {};
 
 export async function postOrderController(req: Request, res: Response) {
   try {
+    const customerToken: string = req.headers.authorization || "";
     const {
-      customerToken,
       address,
       cart,
       orderName,
@@ -37,18 +36,53 @@ export async function postOrderController(req: Request, res: Response) {
     if (!orderName || orderName == "") {
       return res.status(400).json("Order name is required");
     }
-
+    if (!vat) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Vat is required" });
+    }
+    if (!loungeTax) {
+      return res
+        .status(400)
+        .json({ success: false, message: "loungeTax is required" });
+    }
+    if (!phoneNumber) {
+      return res
+        .status(400)
+        .json({ success: false, message: "phoneNumber is required" });
+    }
+    if (!discount) {
+      return res
+        .status(400)
+        .json({ success: false, message: "discount is required" });
+    }
+    if (!total) {
+      return res
+        .status(400)
+        .json({ success: false, message: "total is required" });
+    }
+    if (!subtotal) {
+      return res
+        .status(400)
+        .json({ success: false, message: "subtotal is required" });
+    }
+    if (!orderType) {
+      return res
+        .status(400)
+        .json({ success: false, message: "orderType is required" });
+    }
     // verify customer token
     const customerId = await validateCustomerToken(customerToken);
     // verify address
     const addressId = await validateAddress(orderType, address);
-    const Cart = await connectModel("Cart" , cartSchema)
+    const Cart = await connectModel("Cart", cartSchema);
     const newCart = await await Cart.create({
       items: cart,
     });
+    if(!req.customer) {return res.status(400).json({ message: "Customer token not found" });}
 
     order = {
-      customerId,
+      customerId: req.customer.id,
       orderName: orderName,
       orderType,
       phoneNumber,
@@ -66,9 +100,12 @@ export async function postOrderController(req: Request, res: Response) {
       rating: 0,
       feedback: "",
       orderStatus: "Pending",
+      slug: req.headers.tenant,
     };
+    const Order = await connectModel("Order", orderSchema);
+    const newOrder = await Order.create(order);
 
-    return res.status(201).json(order);
+    return res.status(201).json(newOrder);
   } catch (error) {
     console.log(error);
     return res
@@ -128,6 +165,27 @@ export async function getOrdersController(req: Request, res: Response) {
   try {
     const Order = await connectModel("Order", orderSchema);
     const orders = await Order.find().sort({ createdAt: -1 });
+    return res.status(201).json(orders);
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ error: "An error occurred" });
+  }
+}
+
+export async function getOrdersForUser(req: Request, res: Response) {
+  try {
+    if (!req.customer) {
+      // Handle the case where req.customer is undefined
+      return res.status(400).json({ message: "Customer not found" });
+    }
+    // Now you can safely use req.customer
+    const customerId = req.customer._id;
+
+    const Order = await connectModel("Order", orderSchema);
+    const orders = await Order.find({ customerId }).sort({ createdAt: -1 });
+    if(orders.length === 0) {
+      return res.status(404).json({ message: "No orders found" });
+    }
     return res.status(201).json(orders);
   } catch (err) {
     console.log(err);
