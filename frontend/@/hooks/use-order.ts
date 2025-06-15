@@ -146,8 +146,8 @@ export const verifyOtp = async (data: object) => {
 };
 
 // Generate OTP
-export const generateOtp = async () => {
-  return await orderAPI.post("/order/generate-otp");
+export const generateOtp = async (data: { phoneNumber: string }) => {
+  return await orderAPI.post("/order/generate-otp", data);
 };
 
 // GET Order By ID

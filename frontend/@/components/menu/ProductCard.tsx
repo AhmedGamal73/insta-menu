@@ -4,25 +4,92 @@ import ProductPage from "./[ProductPage]";
 import variables from "@/config/variables";
 
 const ProductCard = ({ product, index, totalProductLength }) => {
-  const [price, setPrice] = useState(product.price);
-  const [salePrice, setSalePrice] = useState(product.salePrice);
+  const [price, setPrice] = useState(product?.price || 0);
+  const [salePrice, setSalePrice] = useState(product?.salePrice || 0);
 
   const [isModalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
-    if (product.variable) {
-      setPrice(product.variations.options[0].price);
-      setSalePrice(product.variations.options[0].salePrice);
+    if (product?.variable && product?.variations?.options?.length > 0) {
+      const firstOption = product.variations.options[0];
+      setPrice(firstOption?.price || 0);
+      setSalePrice(firstOption?.salePrice || 0);
     } else {
-      setPrice(product.price);
-      setSalePrice(product.salePrice);
+      setPrice(product?.price || 0);
+      setSalePrice(product?.salePrice || 0);
     }
   }, [product]);
+
+  if (!product) {
+    return null;
+  }
+
+  const renderPricing = () => {
+    if (product.variable && product.variations?.options?.length > 0) {
+      const firstOption = product.variations.options[0];
+      if (firstOption.salePrice > 0) {
+        return (
+          <div className="flex items-center gap-1">
+            <span className="text-xs font-rubikBold pe-2">
+              {firstOption.name}
+            </span>
+            <div>
+              <div className="flex justify-between">
+                <span className="line-through text-text">
+                  {firstOption.price}
+                </span>
+                <span className="text-xs">{variables.curancy.egp}</span>
+              </div>
+              <div className="flex justify-between">
+                <h6>{firstOption.salePrice}</h6>
+                <span className="text-xs">{variables.curancy.egp}</span>
+              </div>
+            </div>
+          </div>
+        );
+      }
+      return (
+        <div className="flex items-center gap-1">
+          <span className="text-xs font-rubikBold pe-2">
+            {firstOption.name}
+          </span>
+          <div className="flex justify-between text-[12px]">
+            <h6>{firstOption.price}</h6>
+            <span>{variables.curancy.egp}</span>
+          </div>
+        </div>
+      );
+    }
+
+    // For non-variable products
+    if (salePrice > 0) {
+      return (
+        <div>
+          <div className="flex items-center gap-1">
+            <span className="line-through">{price}</span>
+            <span className="text-xs">{variables.curancy.egp}</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <h6>{salePrice}</h6>
+            <span className="text-xs">{variables.curancy.egp}</span>
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div className="flex items-center gap-1">
+        <h6>{price}</h6>
+        <span className="text-xs">{variables.curancy.egp}</span>
+      </div>
+    );
+  };
+
   return (
     <div
       key={index}
       onClick={() => setModalOpen(true)}
-      className={`pb-4 flex justify-between items-center  px-4 ${
+      className={`pb-4 flex justify-between items-center px-4 ${
         index < totalProductLength - 1
           ? "border-dashed border-b border-gray-200"
           : ""
@@ -30,64 +97,19 @@ const ProductCard = ({ product, index, totalProductLength }) => {
     >
       <img
         src={product.imgURL}
-        className="pe-3 object-cover w-[90px] rounded-lg"
+        alt={product.name}
+        className="pe-3 object-cover w-[90px] h-[90px] rounded-lg"
       />
       <div className="flex items-center justify-between w-full gap-4">
         <div className="flex flex-col gap-2 text-start">
           <h5 className="text-secondary">{product.name}</h5>
-          <p>{product.description}</p>
+          <p className="text-sm text-gray-600">{product.description}</p>
         </div>
-        {product.variable && salePrice ? (
-          <div className="flex items-center gap-1">
-            <span className="text-xs font-rubikBold pe-2">
-              {product.variations.options[0].name}
-            </span>
-            <div>
-              <div className="flex justify-between">
-                <span className="line-through text-text">{price}</span>
-                <span className="text-xs">{variables.curancy.egp}</span>
-              </div>
-              <div className="flex justify-between">
-                <h6>{salePrice}</h6>
-                <span className="text-xs">{variables.curancy.egp}</span>
-              </div>
-            </div>
-          </div>
-        ) : product.variable && salePrice === 0 ? (
-          <div className="flex items-center gap-1">
-            <span className="text-xs font-rubikBold pe-2">
-              {product.variations.options[0].name}
-            </span>
-            <div className="flex justify-between text-[12px]">
-              <h6>{price}</h6>
-              <span>{variables.curancy.egp}</span>
-            </div>
-          </div>
-        ) : !product.variable && salePrice > 0 ? (
-          <div>
-            <div className="flex items-center gap-1">
-              <span className="line-through">{price}</span>
-              <span className="text-xs">{variables.curancy.egp}</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <h6>{salePrice}</h6>
-              <span className="text-xs">{variables.curancy.egp}</span>
-            </div>
-          </div>
-        ) : !product.variable && salePrice === 0 ? (
-          <div className="flex items-center gap-1">
-            <h6 className="line-through text-text">{price}</h6>
-            <span className="text-xs">{variables.curancy.egp}</span>
-          </div>
-        ) : (
-          ""
-        )}
+        {renderPricing()}
       </div>
-      <div>
-        <Modal isOpen={isModalOpen} onClose={() => setModalOpen(false)}>
-          <ProductPage onClose={() => setModalOpen(false)} product={product} />
-        </Modal>
-      </div>
+      <Modal isOpen={isModalOpen} onClose={() => setModalOpen(false)}>
+        <ProductPage onClose={() => setModalOpen(false)} product={product} />
+      </Modal>
     </div>
   );
 };

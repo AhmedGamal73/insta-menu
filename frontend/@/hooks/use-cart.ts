@@ -1,4 +1,4 @@
-import axios from "axios";
+import { API_URL } from "@/config/variables";
 import { useQuery } from "react-query";
 
 export type CartItems = {
@@ -13,10 +13,6 @@ export type Cart = {
   _id?: string;
   items: CartItems[];
 };
-
-const cartAPI = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
-});
 
 // GET Cart
 export const useGetCartById = (id: string) => {
@@ -36,5 +32,5 @@ export const useGetCartById = (id: string) => {
 
 // GET Cart
 export const getCart = async (id: string) => {
-  return await cartAPI.get(`/cart/${id}`);
+  return await API_URL.get(`/cart/${id}`);
 };

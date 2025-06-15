@@ -1,33 +1,27 @@
 import axios from "axios";
 import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useRouter } from "next/router";
+import { Product } from "@/types/product";
 
 const productApi = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
 });
 
-export type Product = {
-  _id?: string;
-  name: string;
-  price?: number;
-  salePrice?: number;
-  description?: string;
-  imgURL: string;
-  categoryId?: string;
-  subcategoryId?: string;
-  variable?: boolean;
-  variations?: {
-    title: string;
-    options: [{ name: string; price: number; salePrice: number }];
-  };
-  active?: boolean;
-  addonCategory?: { id: string; name: string };
-  addons?: string[];
-  restaurantId: string;
-};
+// Add request interceptor to include tenant slug in headers
+productApi.interceptors.request.use((config) => {
+  // Get tenant slug from URL path
+  const path = window.location.pathname;
+  const tenantSlug = path.split("/")[1];
+
+  if (tenantSlug) {
+    config.headers["slug"] = tenantSlug;
+  }
+  return config;
+});
 
 // GET Products
 const getProducts = async () => {
-  return await productApi.get("/product");
+  return await productApi.get("/tenant/product");
 };
 
 export const useProduct = () => {
@@ -160,6 +154,9 @@ export const useInActiveProducts = () => {
 
 export const useUpdateProductActiveStatus = () => {
   const queryClient = useQueryClient();
+  const router = useRouter();
+  const tenantSlug = router.query.tenantId as string;
+
   return useMutation(
     async (id: string) => {
       const { data: currentProduct } = await productApi.get(`/product/${id}`);
@@ -170,9 +167,9 @@ export const useUpdateProductActiveStatus = () => {
     },
     {
       onSuccess: () => {
-        queryClient.invalidateQueries("products");
-        queryClient.invalidateQueries("active-products");
-        queryClient.invalidateQueries("inactive-products");
+        queryClient.invalidateQueries(["products", tenantSlug]);
+        queryClient.invalidateQueries(["active-products", tenantSlug]);
+        queryClient.invalidateQueries(["inactive-products", tenantSlug]);
       },
     }
   );

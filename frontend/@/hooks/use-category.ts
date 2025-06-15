@@ -1,19 +1,6 @@
 import { API_URL } from "@/config/variables";
+import { Category, Subcategory } from "@/types/category";
 import { QueryClient, useQuery } from "react-query";
-
-export interface Category {
-  _id?: string;
-  name: string;
-  imgURL: string;
-  subcategories?: Subcategory[];
-}
-
-export interface Subcategory {
-  _id?: string;
-  name: string;
-}
-
-const queryClient = new QueryClient();
 
 // GET Categories
 export const useCategory = () => {

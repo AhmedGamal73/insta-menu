@@ -6,6 +6,7 @@ import "../@/styles/global.css";
 
 import { Toaster } from "@/components/ui/toaster";
 import { CartProvider } from "@/context/CartContext";
+import { TenantProvider } from "@/context/tenant-context";
 
 const queryClient = new QueryClient();
 
@@ -14,8 +15,10 @@ function MyApp({ Component, pageProps }: AppProps) {
     <CartProvider>
       <QueryClientProvider client={queryClient}>
         <DirectionProvider dir="rtl">
-          <Component {...pageProps} />
-          <Toaster />
+          <TenantProvider>
+            <Component {...pageProps} />
+            <Toaster />
+          </TenantProvider>
         </DirectionProvider>
       </QueryClientProvider>
     </CartProvider>

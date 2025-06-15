@@ -47,23 +47,24 @@ export const CategoryProductsList = () => {
             {categoriesIsLoading ? (
               <LoadingScreen />
             ) : (
-              categories.map((category, index) => (
-                <li key={index} className="p-0 flex flex-col">
-                  <div
-                    key={index}
-                    onClick={() => setCategory(category)}
-                    className="min-w-16 flex flex-col gap-2 justify-between items-center rounded-[30px] p-3 shadow-blur bg-white"
-                  >
-                    {category.imgURL && (
-                      <img
-                        className="w-[50px] h-[50px] bg-transparent"
-                        src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${category.imgURL}`}
-                      />
-                    )}
-                    <h6 className="text-text">{category.name}</h6>
-                  </div>
-                </li>
-              ))
+              // categories.map((category, index) => (
+              //   <li key={index} className="p-0 flex flex-col">
+              //     <div
+              //       key={index}
+              //       onClick={() => setCategory(category)}
+              //       className="min-w-16 flex flex-col gap-2 justify-between items-center rounded-[30px] p-3 shadow-blur bg-white"
+              //     >
+              //       {category.imgURL && (
+              //         <img
+              //           className="w-[50px] h-[50px] bg-transparent"
+              //           src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${category.imgURL}`}
+              //         />
+              //       )}
+              //       <h6 className="text-text">{category.name}</h6>
+              //     </div>
+              //   </li>
+              // ))
+              <div></div>
             )}
           </ul>
         </div>

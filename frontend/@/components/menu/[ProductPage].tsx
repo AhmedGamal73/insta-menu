@@ -14,49 +14,58 @@ interface productsProps {
 }
 
 const ProductPage: React.FC<productsProps> = ({ product, onClose }) => {
-  const { data: addons } = useGetProductAddons(product._id);
+  const { data: addons } = useGetProductAddons(product?._id);
 
   const [note, setNote] = useState("");
   const [selectedAddons, setSelectedAddons] = useState([]);
   const [addonsPrice, setAddonsPrice] = useState(0);
-  const [selectedVariant, setSelectedVariant] = useState(
-    product.variable && product.variations.options
-      ? product.variations.options[0]
-      : null
-  );
-  const [salePrice, setSalePrice] = useState(
-    product.variable && product.variations.options[0].salePrice
-      ? selectedVariant.salePrice
-      : product.variable && product.salePrice
-      ? product.salePrice
-      : 0
-  );
   const [itemNumber, setItemNumber] = useState(1);
-  const [price, setPrice] = useState(
-    product.variable ? selectedVariant.price : product.price
-  );
 
-  const { addItem } = useContext(CartContext);
+  // Safely initialize selectedVariant
+  const [selectedVariant, setSelectedVariant] = useState(() => {
+    if (product?.variable && product?.variations?.options?.length > 0) {
+      return product.variations.options[0];
+    }
+    return null;
+  });
+
+  // Safely initialize price and salePrice
+  const [price, setPrice] = useState(() => {
+    if (product?.variable && selectedVariant) {
+      return selectedVariant.price || 0;
+    }
+    return product?.price || 0;
+  });
+
+  const [salePrice, setSalePrice] = useState(() => {
+    if (product?.variable && selectedVariant) {
+      return selectedVariant.salePrice || 0;
+    }
+    return product?.salePrice || 0;
+  });
 
   // Handle Variants Selection
   const handleVariant = (index: number) => {
+    if (!product?.variations?.options?.[index]) return;
     const newVariant = product.variations.options[index];
     setSelectedVariant(newVariant);
-    setPrice(product.variable ? selectedVariant.price : product.price);
+    setPrice(newVariant?.price || 0);
+    setSalePrice(newVariant?.salePrice || 0);
   };
 
   const handlePlus = () => {
-    const newItemNumber = itemNumber + 1;
-    setItemNumber(newItemNumber);
+    setItemNumber((prev) => prev + 1);
   };
+
   const handleMinus = () => {
-    if (itemNumber === 1) return;
-    const newItemNumber = itemNumber - 1;
-    setItemNumber(newItemNumber);
+    if (itemNumber <= 1) return;
+    setItemNumber((prev) => prev - 1);
   };
 
   // Add to cart
   const handleAddToCart = () => {
+    if (!product) return;
+
     const item = {
       product: {
         id: product._id,
@@ -64,14 +73,12 @@ const ProductPage: React.FC<productsProps> = ({ product, onClose }) => {
         imgURL: product.imgURL,
         price: price,
         salePrice: salePrice,
-        restaurantId: product.restaurantId ? product.restaurantId : null,
+        restaurantId: product.restaurantId || null,
       },
       quantity: itemNumber,
       addons: selectedAddons,
       variations: product.variable ? selectedVariant : [],
-      total: salePrice
-        ? salePrice * itemNumber + addonsPrice
-        : price * itemNumber + addonsPrice,
+      total: (salePrice > 0 ? salePrice : price) * itemNumber + addonsPrice,
       note: note,
       priceAtTheTime: salePrice,
     };
@@ -93,40 +100,27 @@ const ProductPage: React.FC<productsProps> = ({ product, onClose }) => {
 
   const handleCheckboxChange = (e, addon) => {
     if (e.target.checked) {
-      setSelectedAddons((selectedAddons) => [...selectedAddons, addon]);
-      setAddonsPrice(addonsPrice + addon.price);
+      setSelectedAddons((prev) => [...prev, addon]);
+      setAddonsPrice((prev) => prev + (addon?.price || 0));
     } else {
-      setSelectedAddons(
-        selectedAddons.filter((selectedOne) => selectedOne._id !== addon._id)
+      setSelectedAddons((prev) =>
+        prev.filter((selectedOne) => selectedOne._id !== addon._id)
       );
-      setAddonsPrice(addonsPrice - addon.price);
+      setAddonsPrice((prev) => prev - (addon?.price || 0));
     }
   };
 
   useEffect(() => {
-    if (product.variable && selectedVariant) {
-      setSalePrice(selectedVariant.salePrice);
-      setPrice(selectedVariant.price);
-    } else {
-      setSalePrice(product.salePrice);
-      setPrice(product.price);
-    }
-  }, [selectedVariant, itemNumber, salePrice]);
+    if (!product?.variable || !selectedVariant) return;
 
-  useEffect(() => {
-    if (product.variable) {
-      setSelectedVariant(product.variations.options[0]);
-    }
-    if (product.variable && product.variations.options[0].salePrice) {
-      setSalePrice(product.variations.options[0].salePrice);
-    } else {
-      setSalePrice(product.salePrice);
-    }
-  }, []);
+    setPrice(selectedVariant?.price || 0);
+    setSalePrice(selectedVariant?.salePrice || 0);
+  }, [selectedVariant]);
 
-  useEffect(() => {
-    console.log(selectedAddons);
-  }, [selectedAddons]);
+  if (!product) {
+    return null;
+  }
+
   return (
     <div className="flex flex-col gap-8 justify-between relative pb-[4rem]">
       <div className="flex justify-between">
@@ -135,12 +129,16 @@ const ProductPage: React.FC<productsProps> = ({ product, onClose }) => {
         </button>
         <h1>{product.name}</h1>
         <div className="flex gap-2 justify-between items-center">
-          <span>{selectedVariant ? selectedVariant.name : ""}</span>
+          <span>{selectedVariant?.name || ""}</span>
           <h1 className="text-warning">{price}</h1>
         </div>
       </div>
       <div className="flex flex-col justify-center items-center">
-        <img src={product.imgURL} className="w-full rounded-lg" />
+        <img
+          src={product.imgURL}
+          alt={product.name}
+          className="w-full rounded-lg"
+        />
         <div className="flex flex-col justify-center items-center w-full px-2">
           <div className="flex flex-col items-center justify-center gap-2 w-full">
             <div className="flex pt-4 justify-center w-full gap-4 flex-wrap">
@@ -151,8 +149,7 @@ const ProductPage: React.FC<productsProps> = ({ product, onClose }) => {
                     onClick={() => handleVariant(index)}
                     key={index}
                     variant={
-                      selectedVariant !== undefined &&
-                      selectedVariant !== option
+                      selectedVariant && selectedVariant !== option
                         ? "outline"
                         : "secondary"
                     }
@@ -164,7 +161,7 @@ const ProductPage: React.FC<productsProps> = ({ product, onClose }) => {
             <div className="w-full items-center flex justify-between px-2">
               <div className="flex gap-4 items-center">
                 <Button
-                  onClick={() => handlePlus()}
+                  onClick={handlePlus}
                   variant="outline"
                   className="h-8 w-8 p-2"
                 >
@@ -172,14 +169,14 @@ const ProductPage: React.FC<productsProps> = ({ product, onClose }) => {
                 </Button>
                 {itemNumber}
                 <Button
-                  onClick={() => handleMinus()}
+                  onClick={handleMinus}
                   variant="outline"
-                  className=" h-8 w-8 p-2"
+                  className="h-8 w-8 p-2"
                 >
                   <Minus />
                 </Button>
               </div>
-              {salePrice ? (
+              {salePrice > 0 ? (
                 <div className="flex justify-between items-center gap-2">
                   <span className="text-gray line-through">
                     {price * itemNumber}{" "}
@@ -197,37 +194,34 @@ const ProductPage: React.FC<productsProps> = ({ product, onClose }) => {
                 </h2>
               )}
             </div>
-            <p className="ml-2 pt-8 text-start ali w-full">
-              {product.description}
-            </p>
+            <p className="ml-2 pt-8 text-start w-full">{product.description}</p>
 
             <div className="w-full flex flex-col gap-2 items-start mt-4">
               <h6 className="text-gray-400">قم بإختيار اللإضافات</h6>
               <ul className="flex gap-4 flex-wrap">
-                {addons &&
-                  addons.map((addon) => (
-                    <label
+                {addons?.map((addon) => (
+                  <label
+                    key={addon._id}
+                    className={
+                      selectedAddons?.includes(addon)
+                        ? "text-primary bg-secondary text-white text-ms rounded-xl border border-secondary p-2"
+                        : "text-gray-400 text-ms rounded-xl border p-2"
+                    }
+                  >
+                    <input
+                      className="hidden"
+                      type="checkbox"
                       key={addon._id}
-                      className={
-                        selectedAddons?.includes(addon)
-                          ? "text-primary bg-secondary text-white text-ms rounded-xl border border-secondary p-2"
-                          : "text-gray-400 text-ms rounded-xl border p-2"
-                      }
-                    >
-                      <input
-                        className="hidden"
-                        type="checkbox"
-                        key={addon._id}
-                        value={addon._id}
-                        checked={selectedAddons?.includes(addon) ? true : false}
-                        onChange={(e) => handleCheckboxChange(e, addon)}
-                      />
-                      <span className="flex gap-2 items-center">
-                        {addon.name}
-                        {" +" + addon.price + " " + variables.curancy.egp}
-                      </span>
-                    </label>
-                  ))}
+                      value={addon._id}
+                      checked={selectedAddons?.includes(addon)}
+                      onChange={(e) => handleCheckboxChange(e, addon)}
+                    />
+                    <span className="flex gap-2 items-center">
+                      {addon.name}
+                      {" +" + addon.price + " " + variables.curancy.egp}
+                    </span>
+                  </label>
+                ))}
               </ul>
             </div>
             <div className="w-full flex flex-col items-start justify-start mt-4 gap-2">

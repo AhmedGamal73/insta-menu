@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import { useGetCustomerById } from "@/hooks/use-customer";
 
 const OffersSlider = () => {
-  let customerId: string;
+  let customerId: any;
   useEffect(() => {
     const customerToken = Cookies.get("customerToken");
     const decodedToken = jwt.decode(customerToken);
