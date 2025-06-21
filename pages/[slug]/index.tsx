@@ -2,10 +2,9 @@ import React, { useEffect } from "react";
 import { MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import BranchItem from "@/components/main/BranchItem";
-import BranchLayout from "@/components/layouts/BranchLayout";
+import BranchLayout from "@/components/layouts/TenantLayout";
 import { useTenantContext } from "@/context/tenant-context";
-import { useRouter } from "next/router";
-import { useTenant } from "@/hooks/use-tenant";
+import { useGetTenant } from "@/hooks/use-tenant";
 import { useGetBranches } from "@/hooks/use-branch";
 import { GetServerSideProps } from "next";
 
@@ -33,11 +32,15 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 };
 
 const Branches: React.FC<BranchesProps> = ({ initialSlug }) => {
-  const router = useRouter();
-  const { data: tenant, isLoading: tenantLoading } = useTenant(initialSlug);
+  const { data: tenant, isLoading: tenantLoading } = useGetTenant(initialSlug);
   const { data: branches, isLoading: branchesLoading } = useGetBranches();
   const { setCurrentTenant, currentTenant } = useTenantContext();
 
+  let theme = {
+    primary: "",
+    secondary: "",
+    background: "",
+  };
   // Set tenant data when it's loaded
   useEffect(() => {
     if (tenant && !currentTenant) {
@@ -50,13 +53,27 @@ const Branches: React.FC<BranchesProps> = ({ initialSlug }) => {
     } else {
       console.log("can't find branches");
     }
-  }, [tenant, setCurrentTenant, currentTenant]);
 
-  const theme = {
-    primary: tenant?.theme?.primary || "#ff6b6b",
-    secondary: tenant?.theme?.secondary || "#666666",
-    background: tenant?.theme?.background || "#ffffff",
-  };
+    if (currentTenant) {
+      console.log(currentTenant.businessName);
+    } else {
+      console.log("tenant not exist");
+    }
+
+    if (tenant?.settings) {
+      theme = {
+        primary: tenant?.settings.theme?.primaryColor,
+        secondary: tenant?.settings.theme?.secondaryColor,
+        background: tenant?.settings.theme?.backgroundColor,
+      };
+    } else {
+      theme = {
+        primary: "#ff6b6b",
+        secondary: "#666666",
+        background: "#ffffff",
+      };
+    }
+  }, [tenant, setCurrentTenant, currentTenant]);
 
   if (tenantLoading) {
     return (
@@ -73,20 +90,11 @@ const Branches: React.FC<BranchesProps> = ({ initialSlug }) => {
       </div>
     );
   }
+
   return (
-    <BranchLayout title={tenant.name}>
+    <BranchLayout title={currentTenant?.businessName}>
       {/* Header Info */}
       <div className="bg-white shadow-sm">
-        <div className="flex items-center justify-end p-4">
-          <Button
-            size="icon"
-            className="text-white rounded-full"
-            style={{ backgroundColor: theme.primary }}
-          >
-            <MapPin className="h-5 w-5" />
-          </Button>
-        </div>
-
         {/* Map placeholder */}
         <div className="h-32 bg-gray-200 relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-b from-gray-100 to-gray-300"></div>

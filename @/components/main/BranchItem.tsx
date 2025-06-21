@@ -2,27 +2,28 @@
 
 import React, { useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { BranchItemProps } from "@/types/restaurant";
+import { Branch } from "@/types/branch";
 import { useRouter } from "next/router";
 import { useTenantContext } from "@/context/tenant-context";
 import { ChevronLeft } from "lucide-react";
+
+interface BranchItemProps {
+  branch: Branch;
+  isLast?: boolean;
+}
 
 const BranchItem: React.FC<BranchItemProps> = ({ branch, isLast }) => {
   const router = useRouter();
   const { currentTenant } = useTenantContext();
 
   const handleNavToBranchMenu = () => {
-    const slug = currentTenant.tenant.slug;
+    const slug = currentTenant?.slug;
     if (!slug) {
       console.error("Tenant slug is not available");
       return;
     }
     router.push(`/${slug}/menu?branchId=${branch._id}`);
   };
-
-  useEffect(() => {
-    console.log(currentTenant.tenant.slug);
-  }, []);
 
   return (
     <div
@@ -34,8 +35,8 @@ const BranchItem: React.FC<BranchItemProps> = ({ branch, isLast }) => {
       {/* Branch Image */}
       <div className="w-16 h-16 bg-gray-200 rounded-lg overflow-hidden ml-4 flex-shrink-0">
         <img
-          src={branch.image}
-          alt={branch.name}
+          src={branch.bgImg}
+          alt={branch.title}
           className="w-full h-full object-cover"
           onError={(e) => {
             e.currentTarget.style.display = "none";
@@ -46,12 +47,12 @@ const BranchItem: React.FC<BranchItemProps> = ({ branch, isLast }) => {
 
       {/* Branch Info */}
       <div className="flex-1">
-        <h3 className="font-semibold text-gray-900 text-lg mb-1">
+        <h3 className="font-semibold text-gray-900 text-sm mb-1">
           {branch.title}
         </h3>
-        {branch.address && (
+        {/* {branch.address && (
           <p className="text-gray-500 text-sm line-clamp-1">{branch.address}</p>
-        )}
+        )} */}
       </div>
 
       {/* Navigation Arrow */}

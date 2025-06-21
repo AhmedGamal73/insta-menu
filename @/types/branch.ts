@@ -1,18 +1,30 @@
 export interface Branch {
   _id: string;
-  name: string;
-  description?: string;
-  address?: string;
-  location?: {
-    lat: number;
-    lng: number;
-  };
+  title: string;
+  slug: string;
+  tags: string[];
+  bgImg?: string;
+  categories?: string[];
+  orders?: string[];
+  openingHours?: string;
+  closingHours?: string;
   phone?: string;
-  openingHours?: {
-    open: string;
-    close: string;
+  address:
+    | {
+        street: string;
+        city: string;
+        state: string;
+        country: string;
+        postalCode: string;
+      }
+    | string; // For cases where `address` is just an ID
+  location: {
+    type: string;
+    coordinates: [number, number]; // [longitude, latitude]
   };
-  isActive?: boolean;
-  tenantId: string;
-  image?: string;
+  isActive: boolean;
+  managerName?: string;
+  images: string[];
+  createdAt?: string; // ISO date string
+  updatedAt?: string;
 }

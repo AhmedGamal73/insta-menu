@@ -1,15 +1,12 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/router";
 
 import Slider from "@/components/menu/Slider";
-import { ProductsList } from "@/components/menu/ItemList";
-import { ModalContext } from "@/context";
-import Layout from "./Layout";
+import { ItemsList } from "@/components/menu/ItemList";
 import { useGetActiveItems, useGetItems } from "@/hooks/use-items";
 import { useGetRestaurantCategories } from "@/hooks/use-restaurant";
 import { useTenantContext } from "@/context/tenant-context";
 import { useGetBranchById } from "@/hooks/use-branch";
-import BranchItem from "@/components/main/BranchItem";
 import { BranchLayout } from "@/components/layouts";
 
 const Menu = () => {
@@ -55,11 +52,13 @@ const Menu = () => {
 
   return (
     <BranchLayout
-      title={`قائمة طعام ${currentTenant ? `- ${currentTenant.name}` : ""}`}
+      title={`قائمة طعام ${
+        currentTenant ? `- ${currentTenant.businessName}` : ""
+      }`}
     >
       <div className="flex flex-col w-1/1" dir="rtl">
         <div
-          style={{ backgroundImage: `url(${currentTenant?.bgImg})` }}
+          style={{ backgroundImage: `url(${currentTenant?.logo})` }}
           className="flex flex-col p-4 h-52 bg-center bg-cover bg-no-repeat image"
         ></div>
         <div className="flex mt-[-2rem] bg-white flex-col gap-4 pt-6 rounded-[20px]">
@@ -76,7 +75,7 @@ const Menu = () => {
             selectedItem={selectedCategory}
             setSelectedItem={setSelectedCategory}
           />
-          <ProductsList data={filteredProducts} isLoading={productsLoading} />
+          <ItemsList data={filteredProducts} isLoading={productsLoading} />
         </div>
       </div>
     </BranchLayout>

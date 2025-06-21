@@ -1,43 +1,41 @@
-export type Tenant = {
-  tenant: any;
-  _id: string;
-  name: string;
-  title: string;
-  description?: string;
+export interface Tenant {
+  businessName: string;
+  email: string;
+  phone: string;
   slug: string;
+  password: string;
+  active: boolean;
   logo?: string;
-  bgImg?: string;
-  currency?: string;
-  active?: boolean;
-  createdAt?: string;
-  updatedAt?: string;
-  theme?: {
-    primary?: string;
-    secondary?: string;
-    accent?: string;
-    background?: string;
+  businessType?: string;
+  taxNumber?: string;
+  currency: string;
+  timezone: string;
+  languages: string[];
+  contactPerson: {
+    name: string;
+    phone: string;
+    email: string;
+    role: string;
   };
-  contact?: {
-    phone?: string;
-    email?: string;
-    address?: string;
-    location?: {
-      lat: number;
-      lng: number;
-    };
-  };
+  subscriptionPlan?: string;
+  subscriptionStatus?: "active" | "expired" | "trial";
+  trialEndsAt?: Date;
   settings?: {
-    deliveryEnabled?: boolean;
-    pickupEnabled?: boolean;
-    dineInEnabled?: boolean;
-    reservationEnabled?: boolean;
-    orderingEnabled?: boolean;
-    paymentMethods?: string[];
-    deliveryFee?: number;
-    minimumOrder?: number;
-    orderingHours?: {
-      open: string;
-      close: string;
+    orderNumberPrefix?: string;
+    defaultTax?: number;
+    allowOnlineOrders: boolean;
+    requireAuth: boolean;
+    autoAcceptOrders: boolean;
+    notificationEmail?: string;
+    smsNotifications: boolean;
+    waiterAcceptOrders?: boolean;
+    theme?: {
+      primaryColor?: string;
+      secondaryColor?: string;
+      accentColor?: string;
+      backgroundColor?: string;
+      textColor?: string;
+      darkMode?: boolean;
     };
   };
-};
+}

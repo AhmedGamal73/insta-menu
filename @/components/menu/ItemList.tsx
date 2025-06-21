@@ -3,7 +3,7 @@ import { Key, useEffect } from "react";
 import LoadingScreen from "../ui/loadingScreen";
 import ItemCard from "./ItemCard";
 
-export const ProductsList = ({ data, isLoading }) => {
+export const ItemsList = ({ data, isLoading }) => {
   useEffect(() => {
     console.log(data);
   });

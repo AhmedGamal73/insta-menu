@@ -4,19 +4,21 @@ import { Tenant } from "@/types/tenant";
 
 // Get tenant by slug
 const getTenant = async (slug: string) => {
-  try {
-    const { data } = await API_URL.get(`/main/auth/tenant/${slug}`);
-    return data;
-  } catch (error) {
-    console.error("Error fetching tenant:", error);
-    throw error;
-  }
+  return await API_URL.get(`/main/auth/tenant/${slug}`);
 };
 
-export const useTenant = (slug: string) => {
+export const useGetTenant = (slug: string) => {
   return useQuery<Tenant>({
     queryKey: ["tenant", slug],
-    queryFn: () => getTenant(slug),
+    queryFn: async () => {
+      try {
+        const { data } = await getTenant(slug);
+        return data.tenant;
+      } catch (error) {
+        console.log(error);
+        throw error;
+      }
+    },
     enabled: !!slug, // Only run query if identifier is provided
     staleTime: 1000 * 60 * 5, // Consider data fresh for 5 minutes
     cacheTime: 1000 * 60 * 30, // Keep data in cache for 30 minutes
