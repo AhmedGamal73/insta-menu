@@ -1,20 +1,10 @@
+import { Addon, AddonCategory } from "@/types/item";
 import axios from "axios";
 import { QueryClient, useQuery } from "react-query";
 
 const addonApi = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
 });
-
-export interface Addon {
-  _id?: string;
-  name: string;
-  price: number;
-  addonCategoryId: string;
-}
-
-export interface AddonCategory {
-  name: string;
-}
 
 // GET Addon By ID
 export const useAddon = (id: string) => {
@@ -79,12 +69,12 @@ export const useGetAddonsCategories = () => {
   });
 };
 
-export const useGetProductAddons = (productId: string) => {
+export const useGetItemAddons = (itemId: string) => {
   return useQuery({
-    queryKey: ["ProductAddons", productId],
+    queryKey: ["ItemAddons", itemId],
     queryFn: async () => {
       try {
-        const { data } = await getProductAddons(productId);
+        const { data } = await getItemAddons(itemId);
         return data;
       } catch (err) {
         console.log(err);
@@ -99,8 +89,8 @@ export const getAddons = async () => {
 };
 
 // GET Addon names
-export const getProductAddons = async (productId: string) => {
-  return await addonApi.get(`/addon/product/${productId}`);
+export const getItemAddons = async (itemId: string) => {
+  return await addonApi.get(`/addon/item/${itemId}`);
 };
 
 // GET Addons by category

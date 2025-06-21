@@ -5,7 +5,7 @@ import { columns } from "./columns";
 import useProduct, {
   useActiveProducts,
   useInActiveProducts,
-} from "@/hooks/use-product";
+} from "@/hooks/use-items";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Spinner from "@/components/ui/spinner";
 

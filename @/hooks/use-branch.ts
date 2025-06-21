@@ -18,10 +18,6 @@ branchApi.interceptors.request.use((config) => {
   return config;
 });
 
-const getBranches = async () => {
-  return await branchApi.get("/tenant/branches");
-};
-
 const getBranchById = async (branchId: string) => {
   return await branchApi.get(`/tenant/branch/${branchId}`);
 };
@@ -30,10 +26,8 @@ const getActiveBranches = async () => {
   return await branchApi.get("/tenant/branches/active");
 };
 
-const getBranchesBySlug = async (slug: string) => {
-  return await branchApi.get("/tenant/branch", {
-    headers: { slug },
-  });
+const getBranches = async () => {
+  return await branchApi.get("/tenant/branch", {});
 };
 
 export const useGetBranches = () => {
@@ -42,7 +36,7 @@ export const useGetBranches = () => {
     queryFn: async () => {
       try {
         const { data } = await getBranches();
-        return data;
+        return data.data;
       } catch (error) {
         console.error("Error fetching branches:", error);
         throw error;
@@ -85,24 +79,5 @@ export const useGetActiveBranches = () => {
     },
     staleTime: 1000 * 60 * 5,
     cacheTime: 1000 * 60 * 30,
-  });
-};
-
-export const useGetBranchesBySlug = (slug: string) => {
-  return useQuery<Branch[]>({
-    queryKey: ["branches", slug],
-    queryFn: async () => {
-      try {
-        const { data } = await getBranchesBySlug(slug);
-        return data;
-      } catch (error) {
-        console.error("Error fetching branches:", error);
-        throw error;
-      }
-    },
-    enabled: !!slug, // Only run query if slug is provided
-    staleTime: 1000 * 60 * 5,
-    cacheTime: 1000 * 60 * 30,
-    retry: 2,
   });
 };

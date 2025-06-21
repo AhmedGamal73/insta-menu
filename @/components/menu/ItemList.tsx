@@ -1,7 +1,7 @@
-import { Product } from "@/hooks/use-product";
+import { Item } from "@/types/item";
 import { Key, useEffect } from "react";
-import ProductCard from "./ProductCard";
 import LoadingScreen from "../ui/loadingScreen";
+import ItemCard from "./ItemCard";
 
 export const ProductsList = ({ data, isLoading }) => {
   useEffect(() => {
@@ -12,12 +12,12 @@ export const ProductsList = ({ data, isLoading }) => {
       {isLoading ? (
         <LoadingScreen />
       ) : data && data.length > 0 ? (
-        data.map((product: Product, index: Key) => {
+        data.map((product: Item, index: Key) => {
           return (
-            <ProductCard
+            <ItemCard
               index={index}
-              product={product}
-              totalProductLength={data.length}
+              item={product}
+              totalItemLength={data.length}
             />
           );
         })

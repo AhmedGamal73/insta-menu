@@ -1,16 +1,16 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { GetServerSideProps } from "next";
 
-import { useCategory } from "@/hooks/use-category";
 import Slider from "@/components/menu/Slider";
-import { ProductsList } from "@/components/menu/ProductsList";
+import { ProductsList } from "@/components/menu/ItemList";
 import { ModalContext } from "@/context";
 import Layout from "./Layout";
-import { useGetProductsBranchId } from "@/hooks/use-product";
+import { useGetActiveItems, useGetItems } from "@/hooks/use-items";
 import { useGetRestaurantCategories } from "@/hooks/use-restaurant";
 import { useTenantContext } from "@/context/tenant-context";
 import { useGetBranchById } from "@/hooks/use-branch";
+import BranchItem from "@/components/main/BranchItem";
+import { BranchLayout } from "@/components/layouts";
 
 const Menu = () => {
   const [selectedCategory, setSelectedCategory] = useState("all");
@@ -18,16 +18,15 @@ const Menu = () => {
   const { branchId } = router.query; // This gets the branchId from URL query
   const { currentTenant } = useTenantContext();
 
-
-
   // Fetch branch data if branchId exists
   const { data: branch, isLoading: branchLoading } = useGetBranchById(
     branchId as string
   );
 
-  // Fetch products for the specific branch
-  const { data: branchProducts, isLoading: productsLoading } =
-    useGetProductsBranchId(branchId as string);
+  // Get active branch items
+  const { data: activeItems, isLoading: productsLoading } = useGetActiveItems(
+    branchId as string
+  );
 
   const { data: categories, isLoading: categoriesLoading } =
     useGetRestaurantCategories(currentTenant?.slug || "");
@@ -49,13 +48,15 @@ const Menu = () => {
   // Filter products by category if needed
   const filteredProducts =
     selectedCategory === "all"
-      ? branchProducts
-      : branchProducts?.filter(
+      ? activeItems
+      : activeItems?.filter(
           (product) => product.categoryId === selectedCategory
         );
 
   return (
-    <Layout title={`قائمة طعام ${branch ? `- ${branch.name}` : ""}`}>
+    <BranchLayout
+      title={`قائمة طعام ${currentTenant ? `- ${currentTenant.name}` : ""}`}
+    >
       <div className="flex flex-col w-1/1" dir="rtl">
         <div
           style={{ backgroundImage: `url(${currentTenant?.bgImg})` }}
@@ -78,7 +79,7 @@ const Menu = () => {
           <ProductsList data={filteredProducts} isLoading={productsLoading} />
         </div>
       </div>
-    </Layout>
+    </BranchLayout>
   );
 };
 

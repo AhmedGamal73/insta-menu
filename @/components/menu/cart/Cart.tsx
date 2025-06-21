@@ -16,7 +16,6 @@ import { ShoppingBag, X } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { CustomerInfoModal } from "../CustomerInfo";
 import { toast } from "../../ui/use-toast";
-import Link from "next/link";
 import CartItems from "./CartItems";
 
 interface Addon {

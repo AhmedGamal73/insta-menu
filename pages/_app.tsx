@@ -1,9 +1,8 @@
+// pages/_app.tsx
 import { DirectionProvider } from "@radix-ui/react-direction";
 import { AppProps } from "next/app";
 import { QueryClient, QueryClientProvider } from "react-query";
-
 import "../@/styles/global.css";
-
 import { Toaster } from "@/components/ui/toaster";
 import { CartProvider } from "@/context/CartContext";
 import { TenantProvider } from "@/context/tenant-context";

@@ -3,7 +3,7 @@ import Link from "next/link";
 import Cookies from "js-cookie";
 import jwt from "jsonwebtoken";
 
-import { useGetOfferProducts } from "@/hooks/use-product";
+import { useGetOfferProducts } from "@/hooks/use-items";
 import LoadingScreen from "../ui/loadingScreen";
 import { useEffect, useState } from "react";
 import { useGetCustomerById } from "@/hooks/use-customer";

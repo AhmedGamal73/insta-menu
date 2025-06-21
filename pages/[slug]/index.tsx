@@ -1,13 +1,12 @@
-"use client";
-
 import React, { useEffect } from "react";
-import { MapPin, ChevronLeft } from "lucide-react";
+import { MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import BranchItem from "@/components/main/BranchItem";
+import BranchLayout from "@/components/layouts/BranchLayout";
 import { useTenantContext } from "@/context/tenant-context";
 import { useRouter } from "next/router";
 import { useTenant } from "@/hooks/use-tenant";
-import { useGetBranchesBySlug } from "@/hooks/use-branch";
+import { useGetBranches } from "@/hooks/use-branch";
 import { GetServerSideProps } from "next";
 
 interface BranchesProps {
@@ -36,8 +35,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 const Branches: React.FC<BranchesProps> = ({ initialSlug }) => {
   const router = useRouter();
   const { data: tenant, isLoading: tenantLoading } = useTenant(initialSlug);
-  const { data: branches, isLoading: branchesLoading } =
-    useGetBranchesBySlug(initialSlug);
+  const { data: branches, isLoading: branchesLoading } = useGetBranches();
   const { setCurrentTenant, currentTenant } = useTenantContext();
 
   // Set tenant data when it's loaded
@@ -45,6 +43,12 @@ const Branches: React.FC<BranchesProps> = ({ initialSlug }) => {
     if (tenant && !currentTenant) {
       setCurrentTenant(tenant);
       console.log("Tenant loaded:", tenant);
+    }
+
+    if (branches) {
+      console.log(branches);
+    } else {
+      console.log("can't find branches");
     }
   }, [tenant, setCurrentTenant, currentTenant]);
 
@@ -69,20 +73,11 @@ const Branches: React.FC<BranchesProps> = ({ initialSlug }) => {
       </div>
     );
   }
-
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
+    <BranchLayout title={tenant.name}>
+      {/* Header Info */}
       <div className="bg-white shadow-sm">
-        <div className="flex items-center justify-between p-4">
-          <Button variant="ghost" size="icon" className="text-gray-600">
-            <ChevronLeft className="h-6 w-6" />
-          </Button>
-
-          <div className="text-2xl font-bold" style={{ color: theme.primary }}>
-            {tenant.name}
-          </div>
-
+        <div className="flex items-center justify-end p-4">
           <Button
             size="icon"
             className="text-white rounded-full"
@@ -117,7 +112,7 @@ const Branches: React.FC<BranchesProps> = ({ initialSlug }) => {
           <div className="p-4 text-center text-gray-500">No branches found</div>
         )}
       </div>
-    </div>
+    </BranchLayout>
   );
 };
 

@@ -5,7 +5,7 @@ import {
   Product,
   deleteProduct,
   useUpdateProductActiveStatus,
-} from "@/hooks/use-product";
+} from "@/hooks/use-items";
 import { Pencil, Trash2 } from "lucide-react";
 import { useMutation, useQueryClient } from "react-query";
 import { toast } from "@/components/ui/use-toast";

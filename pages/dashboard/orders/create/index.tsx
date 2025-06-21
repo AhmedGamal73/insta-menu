@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import Box from "@/components/ui/Box";
 import CartItemHeader from "@/components/dashboard/orders/CartItemHeader";
 import { useGetCartById } from "@/hooks/use-cart";
-import { useGetProductById } from "@/hooks/use-product";
+import { useGetProductById } from "@/hooks/use-items";
 
 const OrderPage = () => {
   const router = useRouter();

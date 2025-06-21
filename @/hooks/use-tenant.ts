@@ -5,7 +5,7 @@ import { Tenant } from "@/types/tenant";
 // Get tenant by slug
 const getTenant = async (slug: string) => {
   try {
-    const { data } = await API_URL.get(`/main/t-auth/tenant/${slug}`);
+    const { data } = await API_URL.get(`/main/auth/tenant/${slug}`);
     return data;
   } catch (error) {
     console.error("Error fetching tenant:", error);

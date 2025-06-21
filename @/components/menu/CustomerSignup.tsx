@@ -46,9 +46,7 @@ function CustomerSignupDialog({ onSignup }) {
   const form = useForm<CustomerSignup>({
     resolver: zodResolver(customerSchema),
     defaultValues: {
-      name: "",
       phone: "",
-      address: "",
       password: "",
       confirmPassword: "",
     },
@@ -108,19 +106,6 @@ function CustomerSignupDialog({ onSignup }) {
       >
         <FormField
           control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>الاسم</FormLabel>
-              <FormControl>
-                <Input placeholder="مثلاً احمد حسام" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
           name="phone"
           render={({ field }) => (
             <FormItem>
@@ -132,21 +117,6 @@ function CustomerSignupDialog({ onSignup }) {
             </FormItem>
           )}
         />
-        {!isIndoor && (
-          <FormField
-            control={form.control}
-            name="address"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>العنوان</FormLabel>
-                <FormControl>
-                  <Input placeholder="مثلاً: 50 شارع الميرغني" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        )}
 
         <FormField
           control={form.control}

@@ -1,9 +1,9 @@
 import { Key } from "react";
 import * as React from "react";
 
-import { useActiveProductsByCategoryId } from "@/hooks/use-product";
-import { Product } from "@/hooks/use-product";
-import ProductCard from "../menu/ProductCard";
+import { useActiveProductsByCategoryId } from "@/hooks/use-items";
+import { Product } from "@/hooks/use-items";
+import ProductCard from "../menu/ItemCard";
 
 import { Button } from "@/components/ui/button";
 import {

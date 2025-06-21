@@ -1,4 +1,4 @@
-import { Category } from "@/hooks/use-category";
+import { Category } from "@/types/category";
 
 const Slider = ({ data = [], selectedItem, setSelectedItem }) => {
   const allOption = { _id: "all", name: "الجميع" };

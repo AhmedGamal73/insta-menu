@@ -1,4 +1,4 @@
-export type Product = {
+export type Item = {
   _id: string;
   name: string;
   clickId: string;
@@ -33,3 +33,14 @@ export type Product = {
   ingredients: any[]; // Replace `any` with actual ingredient structure if defined
   addons: any[]; // Replace `any` if your addons array has a defined structure
 };
+
+export interface Addon {
+  _id?: string;
+  name: string;
+  price: number;
+  addonCategoryId: string;
+}
+
+export interface AddonCategory {
+  name: string;
+}
